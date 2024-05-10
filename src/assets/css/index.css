@@ -1,0 +1,244 @@
+:root{
+  /* 白天样式 */
+  --content-bgc:#f7f9fe;
+  /*  内容的背景颜色*/
+  --box-bgc:#fff;
+  /*  盒子的白*/
+  --box-shadow:0.2vw 0.2vw 1vw rgba(0,0,0,0.2);
+  /*  卡片的阴影样式*/
+  --boxHoverShadow:0.5vw 0.5vw 1.1vw rgba(0,0,0,0.3);  
+  /*  边框hover的阴影样式 */
+  --fontNormal:#363636;
+  /*  常规*/
+  --settingColor:#000;
+  /*  工具栏*/
+  --icon-color:#363636;
+  --box-border:1px solid #e3e8f7;
+  --canvas-bgc:#eee;
+  /*  滚动条样式*/
+  --scrollbar-bgc:#555;
+  --scrollbar-thumb-bgc:#999;
+  --scrollbar-thumbhovered-bgc:#555;
+
+  --btn-border:1px solid #363636;
+
+  --modal-bgc:#f7f9fe;
+  --modal-bgc-bar:#f0f5ff;
+
+  /*  颜色*/
+  --nomal-clr: #55efc4;
+  --warningI-clr: #ffeaa7;
+  --warningII-clr: #fab1a0;
+  --dangerI-clr: #e17055;
+  --dangerII-clr: #d63031;
+
+
+  
+}
+
+.container {
+    margin: 20px 30px;
+    padding: 10px 20px ;
+    border: var(--box-border);
+    border-radius:12px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    background-color: var(--box-bgc);
+  }
+
+.dark{
+  --content-bgc:#18171d;
+  /*  内容的背景颜色*/
+  --box-bgc:#1b1c20;
+  --box-shadow: none;
+  --boxHoverShadow: none;
+  --settingColor:#fff;
+  --fontNormal:#fff;
+  --icon-color:#f7f7fa;
+  --box-border:1px solid #3d3d3f;
+  --canvas-bgc:#1b1c20;
+  --scrollbar-thumb-bgc:#aaa;
+  --scrollbar-thumbhovered-bgc:#eee;
+
+  --btn-border:1px solid #f7f7fa;
+
+  --modal-bgc:#333;
+  --modal-bgc-bar:#3a3a3a;
+}
+
+body {
+  background-color: var(--content-bgc)
+}
+
+/* 针对Webkit内核浏览器的全局滚动条样式 */
+
+/* 滚动条整体部分 */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+    background-color: transparent;
+}
+
+::-webkit-scrollbar-corner {
+    background-color: transparent;
+}
+
+/* 滚动条滑块部分 */
+::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb-bgc);
+    border-radius: 5px;
+    background-clip: padding-box;
+}
+
+/* 滚动条两端按钮 */
+::-webkit-scrollbar-button {
+    display: none;
+}
+
+/* 滑块悬浮效果 */
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--scrollbar-thumbhovered-bgc);
+}
+
+
+
+
+
+
+/*游戏相关css*/
+.game-title{
+    font-family: SmileySans-Oblique;
+    font-size: 1.5rem;
+  }
+
+.game {
+    padding: 30px 0;
+  }
+
+.game-btn {
+  margin: 20px auto;
+  width: fit-content;
+  padding: 3px 10px;
+  border: var(--btn-border);
+  cursor: pointer;
+  border-radius: 5px;
+  user-select: none;       /* 标准语法 */
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none;    /* Firefox */
+  -ms-user-select: none;     /* IE/Edge */
+}
+
+.game-btn-circle {
+  margin: 20px auto;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  padding: 5px;
+  border: var(--btn-border);
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+
+
+/*  文章内容重点标记样式*/
+.c-orange{
+    color: #FF7F50
+}
+
+.c-darkblue{
+    color: #008B8B;
+}
+
+.b-lemon{
+    background-color: #FFFACD;
+    color: #333;
+}
+
+.wavy-green {
+    text-decoration: green wavy underline;
+}
+
+.underline {
+    text-decoration: underline;
+}
+
+.mytable {
+    border-collapse: collapse; /* 合并边框 */
+    user-select: none;       /* 标准语法 */
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none;    /* Firefox */
+    -ms-user-select: none;     /* IE/Edge */
+}
+
+.mytable > th, td {
+    border: var(--box-border); /* 单元格边框 */
+    text-align: center; /* 文字左对齐 */
+}
+
+.nocopy {
+    user-select: none;       /* 标准语法 */
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none;    /* Firefox */
+    -ms-user-select: none;     /* IE/Edge */
+}
+
+mjx-container[jax="CHTML"][display="true"] {
+    text-align: left!important;
+    margin:0!important;
+}
+
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    background-color: var(--modal-bgc);
+    box-shadow: var(--box-shadow);
+    transform: translate(-50%,-50%);
+    border-radius: 8px;
+    overflow: hidden;
+    z-index: 999;
+}
+
+.modal > div{
+    padding: 6px 8px;
+}
+
+.modal-bar {
+    display: flex;
+    justify-content: end;
+}
+
+.modal-bar:active {
+    background-color: var(--modal-bgc-bar);
+}
+
+.modal-close {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background-color: #ff5252;
+}
+.modal-content {
+    padding: 5px 6px;
+}
+
+.modal-content > *{
+    margin-bottom: 12px;
+}
+
+.modal-line{
+    display: flex;
+    align-items: center;
+}
+
+.line14{
+    height: 14px;
+    line-height: 14px;
+}
+
+.modal-line.center{
+    justify-content: center;
+}

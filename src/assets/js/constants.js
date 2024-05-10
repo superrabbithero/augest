@@ -1,0 +1,1 @@
+export const MY_EVN = process.env.VUE_APP_ENV
