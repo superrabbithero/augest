@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "(node generateDocsList.js) && (vue-cli-service serve)",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "generate-docslist-script":""
   },
   "dependencies": {
     "@icon-park/vue-next": "^1.4.2",

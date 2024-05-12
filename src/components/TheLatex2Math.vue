@@ -43,7 +43,7 @@ export default {
     })
     
     watch(()=> props.latex,
-    (newValue)=>{
+    ()=>{
       //直接调用TypeSet()也可以，但是会重新渲染页面所有公式
       TypeSet([document.getElementsByClassName("output")])
     })

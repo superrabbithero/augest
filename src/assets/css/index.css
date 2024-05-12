@@ -3,6 +3,7 @@
   --content-bgc:#f7f9fe;
   /*  内容的背景颜色*/
   --box-bgc:#fff;
+  --box-hightlight:#ededed7a;
   /*  盒子的白*/
   --box-shadow:0.2vw 0.2vw 1vw rgba(0,0,0,0.2);
   /*  卡片的阴影样式*/
@@ -52,6 +53,7 @@
   --content-bgc:#18171d;
   /*  内容的背景颜色*/
   --box-bgc:#1b1c20;
+  --box-hightlight:#252525;
   --box-shadow: none;
   --boxHoverShadow: none;
   --settingColor:#fff;
@@ -241,4 +243,80 @@ mjx-container[jax="CHTML"][display="true"] {
 
 .modal-line.center{
     justify-content: center;
+}
+
+
+
+.home-container {
+width: -moz-available;
+width: -webkit-fill-available;
+width: fill-available;
+display: flex;
+}
+
+.home-left{
+display: flex;
+flex:0 0 75%;
+}
+
+.home-left.col{
+    display: flex;
+    flex:0 0 75%;
+    flex-direction: column;
+}
+
+.home-right{
+display: flex;
+flex:0 0 25%;
+}
+
+.card-content{
+flex:1;
+width: 0;
+height: fit-content;
+padding: 10px 10px;
+margin: 20px 30px;
+background-color: var(--box-bgc);
+border: var(--box-border);
+border-radius:12px;
+}
+
+.home-left.col .card-content{
+    width: auto;
+}
+
+.card-title {
+padding: 10px;
+}
+
+.home-right > .card-content{
+margin-left: -10px;
+}
+
+@media (max-width: 1000px) {
+.home-container {
+    flex-direction: column;
+}
+
+.home-left{
+    flex:1;
+}
+
+.home-right{
+    flex:1;
+}
+
+.home-right > .card-content{
+    margin-left: 30px;
+    margin-top:0;
+}
+
+.mobile-none{
+    display: none;
+}
+}
+
+.box-fixed{
+    position: fixed; 
+    width: -webkit-fill-available;
 }

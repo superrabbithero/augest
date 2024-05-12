@@ -9,7 +9,7 @@
         <IconWrapper iconName="Home" theme="outline" :strokeWidth='4' />
       </div>
       <div class="head-item"  style="margin-left: auto;">
-        <div class="pagetitle">{{$route.meta.title}}</div>
+        <div class="pagetitle">{{$route.meta.title?$route.meta.title:decodeURIComponent($route.path).slice(6)}}</div>
       </div>
       <div class="head-item" @click="changeStyle" style="margin-left: auto;">
         <IconWrapper iconName="DarkMode" theme="outline" :strokeWidth='4' />

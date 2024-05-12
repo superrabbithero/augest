@@ -5,8 +5,8 @@
 </template>
 <script>
 import 'github-markdown-css';
-import 'highlight.js'
-import 'highlightjs-line-numbers.js';
+// import 'highlight.js'
+// import 'highlightjs-line-numbers.js';
 export default {
     props:{
         mdFileName:{
@@ -17,21 +17,16 @@ export default {
     data() {
         return {
             markdownContent: null,
-            headings:[]
         }
     },
 
     updated(){
-        var that = this
-        console.log(that.$refs.markdownRef.innerHTML)  
-        var mkStr = that.$refs.markdownRef.innerHTML
-
-        const regex = /<h3>(.*?)<\/h3>/g;
-        let match;
-        while ((match = regex.exec(mkStr)) !== null) {
-          that.headings.push(match[1]);
-}
-        console.log(that.headings)
+        
+        this.findMarkdownHeadings();
+        
+    },
+    mounted(){
+        
     },
     created() {
         var that = this
@@ -43,7 +38,22 @@ export default {
 
         
         
-    }
+    },
+    methods: {
+    findMarkdownHeadings() {
+      // 选择class为'markdown-body'下所有的h1-6元素
+      const headings = document.querySelectorAll('.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4, .markdown-body h5, .markdown-body h6');
+
+      // 转换成数组
+      this.$parent.headingsList = Array.from(headings).map(element => {
+        return {
+          level: parseInt(element.tagName[1]), // 提取标题级别
+          content: element.textContent.trim(),// 提取标题内容
+          ele:element 
+        };
+      });
+    },
+  }
 }
 </script>
 
@@ -51,15 +61,16 @@ export default {
     .markdown-body {
        color:var(--fontnormal);
        background-color: var(--box-bgc);
+       width: -webkit-fill-available;
     }
 
     .markdown-body body {
        background-color: var(--box-bgc);
     }
 
-    @media (max-width: 767px) {
+    /* @media (max-width: 767px) {
         .markdown-body {
             padding: 15px;
         }
-    }
+    } */
 </style>
