@@ -270,18 +270,27 @@ display: flex;
 flex:0 0 25%;
 }
 
+.home-right.col{
+display: flex;
+flex:0 0 25%;
+flex-direction: column;
+}
+
 .card-content{
 flex:1;
 width: 0;
 height: fit-content;
 padding: 10px 10px;
-margin: 20px 30px;
+margin: 20px 30px 0 30px;
 background-color: var(--box-bgc);
 border: var(--box-border);
 border-radius:12px;
 }
 
-.home-left.col .card-content{
+
+
+.home-left.col .card-content,.home-right.col .card-content{
+    flex: none;
     width: auto;
 }
 

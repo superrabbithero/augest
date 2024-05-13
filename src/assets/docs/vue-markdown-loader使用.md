@@ -1,3 +1,11 @@
+<!--
+title:vue-markdown-loader使用
+date: 2024-05-10 01:00:00
+tags : - markdown - vue
+categories:
+    - 建站日志
+-->
+
 ### 前言
 去年12月左右有了自己制作博客的想法，当时使用markdown-it前端解析了md文件，也没怎么去管。最近再看代码的时候感觉特别长，而且在展示本地的博客内容时loading界面时间较长，就想着有没有预加载的可能。问了gpt3.5后推荐了markdown-loader，再百度了一下，大概是在打包的时候，利用webpack将.md的文件预处理成html文件，因此静态访问就不会再loading了。
 

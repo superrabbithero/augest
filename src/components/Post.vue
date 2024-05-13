@@ -77,9 +77,14 @@ export default {
 
 
 .markdown-menu-item{
+  overflow: hidden;
+/*  height: 28px;*/
+  line-height: 28px;
   padding: 10px 10px;
   border-radius: 5px;
   filter:blur(2px);
+  cursor: pointer;
+  transition: font-size 0.3s ease, background-color 0.3s ease, filter 0.3s ease;
 }
 
 .markdown-menu-item.active{

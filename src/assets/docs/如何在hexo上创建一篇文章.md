@@ -1,10 +1,10 @@
----
+<!--
 title: 如何在hexo上创建一篇文章
 date: 2023-08-16 11:15:08
-tags: Hexo
+tags: -Hexo
 categories:
     - 搭建博客
----
+-->
 ### 新建文章
 使用命令行来新建文章
 ```powershell

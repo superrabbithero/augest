@@ -1,13 +1,9 @@
----
-title: Butterfly外挂css和js
+<!--
+title:Butterfly外挂css和js
 date: 2023-08-21 17:26:42
-tags: 
-	- 教程
-	- Hexo
-	- butterfly
-categories:
-  - 搭建博客
----
+tags: -教程 -Hexo -butterfly
+categories: - 搭建博客
+-->
 ## 自定义博客主题中元素的样式
 ### 提要
 在markdown编辑博客时发现一些word中的样式，如改变字体颜色、字体、字号、背景颜色等无法灵活实现，因此在md文本中添加了`<font>`的类名来修改文档中文字的样式。因为md文本文件中添加的`<style>`样式只能作用在当前文件中，所以需要进行统一设置。以下就是挂载自定义css的办法（不建议修改源码），同样可以添加自定义js代码。

@@ -1,15 +1,11 @@
----
+<!--
 title: Butterfly安装文档
 date: 2023-08-16 14:04:16
-tags:
-  - 教程
-  - Hexo
-  - 主題
-  - butterfly
+tags:- 教程 - Hexo - 主題 - butterfly
 cover: https://jsd.012700.xyz/gh/jerryc127/CDN/img/butterfly-docs-01-cover.png
 categories:
   - 搭建博客
----
+-->
 
 ### 安装
 #### gitee安装
