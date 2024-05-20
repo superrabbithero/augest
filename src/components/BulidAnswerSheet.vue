@@ -787,6 +787,7 @@ export default {
         });
     },
 
+
     fillAnswerCard(){
       console.log(this.anchorxy)
       if(!(this.anchorxy.x || this.anchorxy.x)){
@@ -875,6 +876,7 @@ export default {
               }
             })
           }else if(Eachsection.sectionType.includes("ScoreBox") && (((that.fillSubj&&that.fillError==0))||(that.fillError!=4&&that.fillError!=0))){
+            //填涂主观题
             var score = [1,3,0]
             var sectionx = Eachsection.rect.x
             
@@ -885,6 +887,11 @@ export default {
             var endY = startY + 3*subsection.cellHeight*scale
             var tensX = null
             var oneX = null
+
+            // 默认满分
+            var fullscore = Math.floor(Math.abs(subsection.maxIntegerScore));
+            score = [Math.floor(fullscore / 10),fullscore%10,0]
+            console.log(score)
             if(subsection.maxIntegerScore <= subsection.maxSingleBoxScore){
               oneX = anchorxy.x + ((17.5-10*score[0]-score[1])*cellwidth+sectionx)*scale
             }else{
@@ -1010,8 +1017,11 @@ export default {
   line-height: 70px;
   cursor: pointer;
   font-family: SmileySans-Oblique;
+  transition: background-color 0.3s ease, color 0.3s ease;
 /*  color: #3e3e3e;*/
 }
+
+
 
 @media (any-hover:hover){
   .start-btn:hover {

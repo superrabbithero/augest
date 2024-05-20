@@ -27,7 +27,7 @@ const docsList = mdFiles.map(file => {
     const dash_regex = /-\s*(\w+)/g
 
     const title = titleMatch ? titleMatch[1] : 'Untitled';
-    const date = dateMatch ? titleMatch[1] : 'Untitled';
+    const date = dateMatch ? dateMatch[1] : 'Undated';
     const tagsStr = tagsMatch?tagsMatch[1]:""
     let tags = []
 
@@ -38,7 +38,8 @@ const docsList = mdFiles.map(file => {
     const doc = {
         title,
         path: `/post/${file.replace('.md', '')}`,
-        tags
+        tags,
+        date
     }
     tags.forEach(tag=>{
         if(!tagIndex[tag]){
@@ -48,6 +49,8 @@ const docsList = mdFiles.map(file => {
     })
     return doc
 });
+
+docsList.sort((a, b) => new Date(b.date) - new Date(a.date));
 
 // 将目录写入 JSON 文件
 fs.writeFileSync(path.resolve(__dirname, 'src/assets/json', 'docsList.json'), JSON.stringify(docsList, null, 2));

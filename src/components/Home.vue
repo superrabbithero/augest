@@ -10,14 +10,20 @@
       <div v-for="(docfile, index) in filteredJson" class="card-content">
         <div class="md-card-item">
           <div class="title"  @click="goto(docfile.path)">{{docfile.title}}</div>
-          <div class="tags">
-            <div class="tags-item" @click="goTagList(tag)" v-for="tag in docfile.tags">
-              <IconWrapper  iconName="PoundSign" theme="outline" :strokeWidth='2' size="16" />
-              {{tag}}
+          <div class="md-card-info">
+            <div class="tags">
+              <div class="tags-item" @click="goTagList(tag)" v-for="tag in docfile.tags">
+                <IconWrapper  iconName="PoundSign" theme="outline" :strokeWidth='2' size="16" />
+                {{tag}}
+              </div>
+            </div>
+            <div class="date">
+              {{docfile.date}}
             </div>
           </div>
         </div>
       </div>
+      <pagination v-if="totalPages > 1" :totalPages="totalPages" @page-change="handlePageChange"></pagination>
     </div>
     <div class="home-right col">
       <div class="card-content">
@@ -34,11 +40,13 @@
 import HealthCard from "./HomeComponents/HealthCard.vue"
 import docsListJson from "@/assets/json/docsList.json"
 import tagIndexJson from "@/assets/json/tagIndex.json"
+import pagination from './Model/Pagination.vue'
 
 export default {
   name: "Home",
   components:{
     HealthCard,
+    pagination
   },
   data(){
     return {
@@ -46,7 +54,10 @@ export default {
       tagIndexJson,
       filteredJson:null,
       tags:[],
-      currentTag:null
+      currentTag:null,
+      pageSize:5,
+      keyword:null,
+      totalPages:0
     }
   },
   mounted(){
@@ -57,13 +68,20 @@ export default {
     goto(path){
       this.$router.push(path)
     },
-    searchPosts(keyword=null,pageSize=10,pageNumber=1){
+    handlePageChange(page){
+      console.log("监听："+page)
+      this.filteredJson = this.searchPosts(page).results
+    },
+    searchPosts(pageNumber=1){
       // 过滤出包含关键字的标题
+      var pageSize = this.pageSize
+      var keyword = this.keyword
 
       const filteredPosts = keyword ? docsListJson.filter(post => post.title.includes(keyword)) : docsListJson;
 
       // 计算总页数
       const totalPages = Math.ceil(filteredPosts.length / pageSize);
+      this.totalPages = totalPages
 
       // 根据页数和每页大小计算起始索引
       const startIndex = (pageNumber - 1) * pageSize;
@@ -86,6 +104,8 @@ export default {
       if(this.currentTag != tag){
         this.currentTag = tag
         this.filteredJson = tagIndexJson[this.currentTag]
+        this.totalPages = Math.ceil(this.filteredJson.length / this.pageSize)
+
       }else{
         this.currentTag = null
         this.filteredJson = this.searchPosts().results
@@ -119,11 +139,20 @@ export default {
   color: #aeaeae;
 }
 
-.md-card-item .tags{
+.md-card-info {
+  display: flex;
+  justify-content: space-between
+}
+.md-card-info .tags{
   display: flex;
 }
 
-.md-card-item .tags .tags-item{
+.md-card-info .date{
+  font-size: 14px;
+
+}
+
+.md-card-info .tags .tags-item{
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -142,7 +171,7 @@ export default {
   transition:color 0.3s ease,
 }
 
-.md-card-item .title:hover,.md-card-item .tags .tags-item:hover{
+.md-card-item .title:hover,.md-card-info .tags .tags-item:hover{
   color: #ffc848;
 }
 

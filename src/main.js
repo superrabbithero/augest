@@ -48,7 +48,8 @@ app
 
 // 将常量挂载到应用程序的全局配置中
 app.config.globalProperties.$constants = {
-  MY_EVN
+  MY_EVN,
+  DARK:false,
 };
 
 
