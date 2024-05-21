@@ -100,6 +100,10 @@
     background-color: var(--box-bgc);
   }
 
+.container.left {
+    align-items: flex-start;
+  }
+
 .dark{
   --content-bgc:#18171d;
   /*  内容的背景颜色*/

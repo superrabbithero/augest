@@ -10,6 +10,7 @@ import Post from "@/components/Post"
 import Pct2Fct from "@/components/Pct2Fct"
 import Ziliaofx from "@/components/ziliaofx"
 import GifEdit from "@/components/page/GifEdit"
+import zhenti from "@/components/zhenti/zhenti"
 
 
 
@@ -83,6 +84,14 @@ const routes = [
         component: GifEdit,
         meta:{
             title: 'GIF动图编辑'
+        }
+    },
+    {
+        path: '/zhenti',
+        name: 'zhenti',
+        component: zhenti,
+        meta:{
+            title: '真题'
         }
     }
 
