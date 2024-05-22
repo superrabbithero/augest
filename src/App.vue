@@ -41,6 +41,13 @@
   </div>
   <div class="header-block"></div>
   <router-view></router-view>
+  <div class="footer">
+    <div class="footer-link">
+    </div>
+    <div class="footer-bar">
+      <div>©2023 - 2024 By SuperRabbitHero</div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -249,7 +256,26 @@ export default {
   font-size: 1.25rem;
   font-family: SmileySans-Oblique;
 }
+.footer-link{
+  height: 300px;
+}
 
+.footer-bar {
+  background-color: var(--content-bgc);
+  height: 80px;
+  border-top: var(--box-border);
+
+/*  position: fixed;*/
+/*  z-index: 998;*/
+  margin-top: 20px;
+  width: 100%;
+  width: fill-available;
+  bottom: 0;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  padding: 0 30px;
+}
 
 
 /*.logo {

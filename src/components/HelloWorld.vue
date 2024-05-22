@@ -1,29 +1,48 @@
 <template>
   <div class="hello">
-    <h1>hello, world</h1>
-    <TheLatex2Math :latex="'\\frac{1}{2}'" />
-    <JsonModel :json-data="jsonData"></JsonModel>
+    <h1>组件展示及测试界面</h1>
   </div>
+  <button @click="latx_show=!latx_show">公式</button>
+  
+  <button @click="json_show=!json_show">Json展示</button>
   <button @click="showToast">展示toast</button>
   <button @click="testapi">测试api</button>
-  <md-loader :mdFileName="'更新文档'"></md-loader>
+  <button @click="page_show = !page_show">分页控件</button>
+  <button @click="md_show = !md_show">markdown展示</button>
+
+  <TheLatex2Math v-if="latx_show" :latex="'\\frac{1}{2}'" />
+  <JsonModel v-if="json_show" :json-data="jsonData"></JsonModel>
+  <md-loader v-if="md_show" :mdFileName="'更新文档'"></md-loader>
+  <div  v-if="page_show">
+    <input v-model="totalPages" type="text"/>
+    <pagination :totalPages="totalPages"></pagination>
+  </div>
+  
+  
 </template>
 
 <script>
 import TheLatex2Math from './TheLatex2Math'
 import JsonModel from './Model/JsonModel.vue'
+import pagination from './Model/Pagination.vue'
 import {login, getanswercard} from "@/assets/js/xueceapi.js"
 
 export default {
   name: 'HelloWorld',
   components: {
     TheLatex2Math,
-    JsonModel
+    JsonModel,
+    pagination
   },
   data(){
     return {
       jsonData: { "name": "John", "age": { "name": "John", "age": 30 } },
-      toastType: 0
+      toastType: 0,
+      page_show:false,
+      md_show:false,
+      latx_show:false,
+      json_show:false,
+      totalPages:6
     }
   },
 

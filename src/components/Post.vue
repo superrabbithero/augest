@@ -46,7 +46,7 @@ export default {
     scrollToHeading(targetElement,index) {
       if (targetElement) {
         this.targetIndex = index
-        const offset = targetElement.getBoundingClientRect().top - 75;
+        const offset = targetElement.getBoundingClientRect().top - 61;
 
         // console.log(offset)
 
@@ -62,7 +62,7 @@ export default {
       const currentScrollPos = window.scrollY
       // console.log('gundong')
       that.headingsList.forEach((heading,index) => {
-        const elemTop = heading.ele.offsetTop
+        const elemTop = heading.ele.offsetTop - 100
         if (elemTop <= currentScrollPos){
           that.targetIndex = index
         }

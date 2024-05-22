@@ -4,7 +4,7 @@
     </div>
 </template>
 <script>
-import 'github-markdown-css';
+
 // import 'highlight.js'
 // import 'highlightjs-line-numbers.js';
 export default {
@@ -58,6 +58,9 @@ export default {
 </script>
 
 <style>
+
+    @import url('@/assets/css/github-markdown.css');
+    
     .markdown-body {
        color:var(--fontnormal);
        background-color: var(--box-bgc);
