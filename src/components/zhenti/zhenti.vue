@@ -1,5 +1,20 @@
 <template>	
-	<div class="container left">
+	 <div class="header" style="background: none;justify-content: flex-end;pointer-events: none;border:none">
+		<div class="head-item" v-show="pencanvas_show">			
+        	00:00
+		</div>
+		<div class="head-item" v-show="pencanvas_show" @click="pencanvas_show=!pencanvas_show" style="pointer-events:auto">			
+        	<IconWrapper iconName="PauseOne" theme="outline" :strokeWidth='4' />
+		</div>
+		<div class="head-item" v-show="!pencanvas_show" @click="pencanvas_show=!pencanvas_show" style="pointer-events:auto">
+			<IconWrapper iconName="Play" theme="outline" :strokeWidth='4' />
+		</div>  
+		<div class="head-item" style="width:22px">
+			
+		</div>  
+  	</div>
+	<div class="container left" style="position:relative;">
+		<pencanvas v-if="pencanvas_show"></pencanvas>
 		<h3>一、常识判断</h3>
 		<div class="question" v-for="(question,index) in jsonData.questions_1">
 			<div class="question_content" v-html="question.content"></div>
@@ -131,14 +146,17 @@
 <script>
 // import TheLatex2Math from './TheLatex2Math'
 import jsonData from "@/assets/json/2022_js_C_test.json"
+import pencanvas from "../Model/PenCanvas.vue"
 
 export default {
   components: {
+  	pencanvas
   },
   data(){
     return {
       jsonData,
-      letters:['A.','B.','C.','D.']
+      letters:['A.','B.','C.','D.'],
+	  pencanvas_show:false
     }
   },
 
@@ -149,20 +167,23 @@ export default {
 
 }
 </script>
-<style>
+<style scoped>
 	.question{
-		margin-top: 10px;
+		margin-bottom: 30px;
 		text-align: left;
 		display: flex;
 		flex-direction: column;
 		width: 100%;
 
 	}
-	.question_content, .question_options{
+	.question_content{
+		white-space: pre-wrap;
+	}
+	.question_options{
 		display: flex;
 		flex-wrap: wrap;
     	justify-content: space-between;
-		margin-top: 5px;
+		margin-top: 10px;
 		white-space: pre-wrap;
 	}
 	.question_options_group{
