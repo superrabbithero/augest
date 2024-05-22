@@ -1,6 +1,6 @@
 <template>	
-	<div class="container left">
-		<JsonModel :json-data="jsonData"></JsonModel>
+	<div class="container left" style="position:relative;">
+		<pencanvas></pencanvas>
 		<h3>一、常识判断</h3>
 		<div class="question" v-for="(question,index) in jsonData.questions_1">
 			<div class="question_content">{{question.content}}</div>
@@ -89,11 +89,11 @@
 <script>
 // import TheLatex2Math from './TheLatex2Math'
 import jsonData from "@/assets/json/2022_js_C_test.json"
-import JsonModel from '../Model/JsonModel.vue'
+import pencanvas from "../Model/PenCanvas.vue"
 
 export default {
   components: {
-  	JsonModel,
+  	pencanvas
   },
   data(){
     return {
@@ -109,7 +109,7 @@ export default {
 
 }
 </script>
-<style>
+<style scoped>
 	.question{
 		margin-top: 10px;
 		text-align: left;

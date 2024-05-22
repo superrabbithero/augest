@@ -113,7 +113,7 @@
   --boxHoverShadow: none;
   --settingColor:#fff;
   --fontNormal:#fff;
-  --icon-color:#f7f7fa;
+  --icon-color:#ffffffab;
   --box-border:1px solid #3d3d3f;
   --canvas-bgc:#1b1c20;
   --scrollbar-thumb-bgc:#aaa;
@@ -288,12 +288,20 @@ body {
     text-align: center; /* 文字左对齐 */
 }
 
-.nocopy {
-    user-select: none;       /* 标准语法 */
-    -webkit-user-select: none; /* Safari */
-    -moz-user-select: none;    /* Firefox */
-    -ms-user-select: none;     /* IE/Edge */
-}
+.nocopy, .none-select{
+    /* iOS Safari */
+    -webkit-touch-callout: none;
+    /* Chrome/Safari/Opera */
+    -webkit-user-select: none;
+    /* Konqueror */
+    -khtml-user-select: none;
+    /* Firefox */
+    -moz-user-select: none;
+    /* Internet Explorer/Edge */
+    -ms-user-select: none;
+    /* Non-prefixed version, currently not supported by any browser */
+    user-select: none;
+  }
 
 mjx-container[jax="CHTML"][display="true"] {
     text-align: left!important;

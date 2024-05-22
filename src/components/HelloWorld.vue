@@ -17,7 +17,8 @@
     <input v-model="totalPages" type="text"/>
     <pagination :totalPages="totalPages"></pagination>
   </div>
-  
+
+  <pencanvas></pencanvas>
   
 </template>
 
@@ -26,13 +27,15 @@ import TheLatex2Math from './TheLatex2Math'
 import JsonModel from './Model/JsonModel.vue'
 import pagination from './Model/Pagination.vue'
 import {login, getanswercard} from "@/assets/js/xueceapi.js"
+import pencanvas from "./Model/PenCanvas.vue"
 
 export default {
   name: 'HelloWorld',
   components: {
     TheLatex2Math,
     JsonModel,
-    pagination
+    pagination,
+    pencanvas
   },
   data(){
     return {
