@@ -26,7 +26,8 @@ export default {
       multiLastPt:{},
       offsetTop:0,
       offsetLeft:0,
-      erasing:false
+      erasing:false,
+      el:null
     }
   },
   mounted() {
@@ -43,6 +44,7 @@ export default {
       // const grandpa = parent.parentElement
       canvas.width = parent.clientWidth;
       canvas.height = parent.clientHeight;
+      this.el = parent
       this.offsetLeft = parent.offsetLeft
       this.offsetTop = parent.offsetTop
       this.context = canvas.getContext('2d');
@@ -72,8 +74,9 @@ export default {
       var id = event.pointerId
       if(this.isDrawing && this.multiLastPt[id]){
         if (this.mode == "only pen" && this.currentPointerType === 'pen' || this.mode === "all touch") {
-          this.context.moveTo(this.multiLastPt[id].x - this.offsetLeft, this.multiLastPt[id].y - this.offsetTop);
-          this.context.lineTo(event.pageX - this.offsetLeft, event.pageY - this.offsetTop);
+          var scrolltop = this.el.parentElement.scrollTop;
+          this.context.moveTo(this.multiLastPt[id].x - this.offsetLeft, this.multiLastPt[id].y - this.offsetTop + scrolltop);
+          this.context.lineTo(event.pageX - this.offsetLeft, event.pageY - this.offsetTop + scrolltop);
           this.context.stroke();
           this.multiLastPt[id] = {x:event.pageX,y:event.pageY}
         }

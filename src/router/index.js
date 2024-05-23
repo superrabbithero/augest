@@ -11,6 +11,7 @@ import Pct2Fct from "@/components/Pct2Fct"
 import Ziliaofx from "@/components/ziliaofx"
 import GifEdit from "@/components/page/GifEdit"
 import zhenti from "@/components/zhenti/zhenti"
+import examhome from "@/components/zhenti/ExamHome"
 
 
 
@@ -92,6 +93,14 @@ const routes = [
         component: zhenti,
         meta:{
             title: '真题'
+        }
+    },
+    {
+        path: '/examhome',
+        name: 'examhome',
+        component: examhome,
+        meta:{
+            title: '考试模拟器'
         }
     }
 

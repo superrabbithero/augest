@@ -31,6 +31,10 @@
             <IconWrapper iconName="GameThree" theme="outline" :strokeWidth='2' />
             小游戏
           </div>
+          <div class="menu-item" @click="goto('/examhome')">
+            <IconWrapper iconName="Pyramid" theme="outline" :strokeWidth='2' />
+            考试模拟器
+          </div>
           <div class="menu-item" >
             <IconWrapper iconName="RoadCone" theme="outline" :strokeWidth='2' />
             待定...
@@ -41,7 +45,7 @@
   </div>
   <div class="header-block"></div>
   <router-view></router-view>
-  <div class="footer">
+  <div v-if="$route.meta.title != '真题'" class="footer">
     <div class="footer-link">
     </div>
     <div class="footer-bar">
