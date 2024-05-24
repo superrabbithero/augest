@@ -3,7 +3,8 @@
   --content-bgc:#f7f9fe;
   /*  内容的背景颜色*/
   --box-bgc:#fff;
-  --box-hightlight:#ededed7a;
+  --box-hightlight:#f3f3f3;
+  --card-hightlight:rgb(238, 238, 238);
   /*  盒子的白*/
   --box-shadow:0.2vw 0.2vw 1vw rgba(0,0,0,0.2);
   /*  卡片的阴影样式*/
@@ -109,10 +110,11 @@
   /*  内容的背景颜色*/
   --box-bgc:#1b1c20;
   --box-hightlight:#252525;
+  --card-hightlight:#252525;
   --box-shadow: none;
   --boxHoverShadow: none;
   --settingColor:#fff;
-  --fontNormal:#fff;
+  --fontNormal:#ffffffab;
   --icon-color:#ffffffab;
   --box-border:1px solid #3d3d3f;
   --canvas-bgc:#1b1c20;

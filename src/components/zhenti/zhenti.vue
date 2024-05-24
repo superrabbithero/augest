@@ -6,7 +6,7 @@
 		<div class="head-item" v-show="pencanvas_show" @click="pencanvas_show=!pencanvas_show" style="pointer-events:auto">			
       <IconWrapper iconName="PauseOne" theme="outline" :strokeWidth='4' />
 		</div>
-		<div class="head-item" v-show="!pencanvas_show" @click="pencanvas_show=!pencanvas_show" style="pointer-events:auto">
+		<div class="head-item" v-show="!pencanvas_show"  style="pointer-events:auto">
 			<IconWrapper iconName="Play" theme="outline" :strokeWidth='4' />
 		</div>  
 		<div class="head-item" style="width:22px">
@@ -17,21 +17,25 @@
 	  <div class="exampaperbox-left">
 	  	<div class="answercard">
 		  	<div class="bottonbox">
+		  		<div class="button-item">
+		  			<IconWrapper iconName="Play" theme="outline" :strokeWidth='1' />
+		  		</div>
+		  		<div class="button-item" @click="pencanvas_show=!pencanvas_show">
+		  			<IconWrapper iconName="HandPaintedPlate" theme="outline" :strokeWidth='1' />
+		  		</div>
 		  	</div>
+		  	
 		  	<div class="fillcard">
-		  		<!-- <div v-for="index of 20" class="rect-groups">
-		  			<span>{{index}}.</span>
-		  			<div class="rect"></div>
-		  			<div class="rect"></div>
-		  			<div class="rect"></div>
-		  			<div class="rect"></div>
-		  		</div> -->
-		  		<div  v-for="index of 20" class="circle-groups">
-		  			<div :class="{'circle':true,'answered':stuAnswerList[index-1],'current':index-1 == currentNum}" @click="currentNum = index-1">{{index}}</div>
+		  		<ul class="fill-type" style="flex-basis: 100%;">
+		  			<li v-for="(type,index) in questionTypeList" :class="{'active':currQTypeIndex == index}" @click="currQTypeIndex=index">{{type}}</li>
+		  		</ul>
+		  		<div class="circle-groups">
+		  			<div v-for="index of 20" class="circle-groups-item">
+		  				<div :class="{'circle':true,'answered':stuAnswerList[index-1],'current':index-1 == currentNum}" @click="currentNum = index-1">{{index}}</div>
+		  			</div>
 		  		</div>
 		  		<div class="fill-option">
 		  			<div v-for="(item, index) in ['A','B','C','D']" :class="{'item':true,'selected':stuAnswerList[currentNum] && stuAnswerList[currentNum] == item}" @click="answer(item)">{{item}}</div>
-		  			{{currentNum}}
 		  		</div>
 		  	</div>
 		  </div>
@@ -185,7 +189,9 @@ export default {
 	  	pencanvas_show:false,
 	  	stuAnswerList:[],
 	  	currentNum:0,
-	  	questionCount:20
+	  	questionCount:20,
+	  	questionTypeList:['常识','言语','数学','判推','资料'],
+	  	currQTypeIndex:0
     }
   },
   mounted(){
@@ -193,27 +199,23 @@ export default {
   methods:{
       answer(item){
       	var count = this.questionCount
-      	if(this.currentNum <= 19){
-      		this.stuAnswerList[this.currentNum] = item
-      		while(this.stuAnswerList[this.currentNum]){
-      			if(this.currentNum >= 19){
-      					this.currentNum = 0
-      					while(this.stuAnswerList[this.currentNum]){
-      						// if(this.currentNum >= 19){
-      						// 	break
-      						// }else{
-      							this.currentNum++
-      						// }
-      					}
-      				
-      			}else{
-      				this.currentNum++
-      			}
+      	
+      	this.stuAnswerList[this.currentNum] = item
+
+      	let nextNum = (this.currentNum + 1) % count
+      	while( nextNum != this.currentNum){
+      		if(!this.stuAnswerList[nextNum]){
+      			this.currentNum = nextNum;
+      			break
       		}
-      	}else{
-      		this.currentNum = 19
+      		nextNum = (nextNum + 1) % count
       	}
-      	console.log(this.stuAnswerList)
+
+      	// if (this.stuAnswerList[this.currentNum]) {
+            // alert('所有题目都设置完了！');
+        //     return;
+        // }
+      	console.log(this.currentNum)
       }
   }
 
@@ -234,45 +236,52 @@ export default {
 		flex-basis: 80%;
 		border-left: var(--box-border);
 	}
-	.answercard-{
-		padding: 10px 30px;
+	.answercard{
+		padding: 10px 10px;
 	}
 
 	.fillcard {
 		display: flex;
 		flex-wrap: wrap
 	}
-	.rect-groups{
-	}
-	.rect-groups>span{
-		width: 20px;
-		display: inline-block;
-	}
-	.rect-groups .rect{
-		display: inline-block;
-		width: 20px;
-		height: 10px;
-		border: 1px solid #000;
-		margin-left: 5px;
-	}
+	
 	.circle-groups {
-			flex-basis: 20%;
+		flex-basis: 100%;
+		background-color: var(--box-hightlight);
+		border-radius:0 0 5px 5px;
+		padding: 5px 0;
+		border: 1px solid #8cb9c0;
 	}
-	.circle-groups .circle{
-		width: 30px;
-		height: 30px;
-		border-radius: 16px;
-		line-height: 30px;
-		text-align: center;
-		border: 1px solid #000;
-		margin: 5px;
-	}
-	.circle-groups .circle.answered{
-		background-color: green;
+	.circle-groups-item{
+		width: 20%;
+		display: inline-block;
+
 	}
 
-	.circle-groups .circle.current{
-		border:1px solid red;
+	.circle-groups-item .circle{
+		align-items: center;	
+		width: 20px;
+		height: 20px;
+		border-radius: 50%;
+		border: 1px solid #8cb9c0;
+		padding: 5px;
+		box-sizing: content-box;
+		line-height: 20px;
+		text-align: center;
+		margin: 5px auto;
+		color: #8cb9c0;
+	}
+	.circle-groups-item .circle.answered{
+		background-color: #91b5a9;
+		border: 1px solid #91b5a9;
+		color: #fff;
+	}
+
+	.circle-groups-item .circle.current{
+		background-color: #edca7f;
+		border: 1px solid #edca7f;
+		box-shadow: inset 0 0 0 1px white;
+		color: #fff;
 	}
 
 	.fill-option {
@@ -286,13 +295,29 @@ export default {
 	.fill-option .item {
 		flex: 1;
 		text-align: center;
-		background-color: #ddd;
+		background-color: var(--card-hightlight);
+		border: 2px solid var(--card-hightlight);
+		border-radius: 5px;
 		padding: 3px;
 		margin:5px 5px;
 	}
 
 	.fill-option .item.selected {
-		background-color: red;
+		background-color: #7892b5;
+		border: 2px solid #7892b5;
+		color: #fff;
+	}
+
+	.fill-option .item:focus {
+		background-color: #7892b5;
+		border: 2px solid #7892b5;
+		color: #fff;
+	}
+
+	.fill-option .item:hover {
+		background-color: #7892b5;
+		border: 2px solid #7892b5;
+		color: #fff;
 	}
 
 	.exampaper{
@@ -326,7 +351,30 @@ export default {
 	}
 	.option {
 		flex-grow: 1;
-/*		flex-shrink: 0;*/
-/*		flex-basis: 55%;*/
+	}
+
+	.fill-type{
+		display: flex;
+		justify-content: space-between;
+		padding: 0;
+		margin-bottom: -1px;
+		z-index: 888;
+	}
+
+	.fill-type li{
+		flex:1;
+		text-align: center;
+		font-size: 15px;
+		overflow: hidden;
+		height: 18px;
+		display: block;
+		padding: 5px 0;
+	}
+
+	.fill-type li.active{
+		background-color: var(--box-hightlight);
+		border-radius:5px 5px 0 0;
+		border: 1px solid #8cb9c0;
+		border-bottom: none;
 	}
 </style>

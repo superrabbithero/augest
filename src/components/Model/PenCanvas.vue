@@ -21,11 +21,14 @@ export default {
       log:"",
       mode:"all touch",
       isDrawing: false,
+      isScroll:false,
       context: null,
       currentPointerType: null,
       multiLastPt:{},
       offsetTop:0,
       offsetLeft:0,
+      startY:0,
+      scrolltop:0,
       erasing:false,
       el:null
     }
@@ -50,6 +53,7 @@ export default {
       this.context = canvas.getContext('2d');
       this.context.strokeStyle = "red"
       document.body.classList.add('none-select')
+
     },
     switchmode() {
       if(this.mode == "only pen"){
@@ -63,10 +67,13 @@ export default {
       var id = event.pointerId
       this.multiLastPt[id] = {x:event.pageX,y:event.pageY}
       if(this.mode == "only pen" && this.currentPointerType === 'pen' || this.mode === "all touch"){
-        
+        this.scrolltop = this.el.parentElement.scrollTop;
         this.isDrawing = true;
         this.context.beginPath();
         
+      }else if(this.mode == "only pen" && this.currentPointerType === 'touch'){
+        this.isScroll = true
+        this.startY = event.pageY - this.el.parentElement.scrollTop;;
       }
     
     },
@@ -80,6 +87,11 @@ export default {
           this.context.stroke();
           this.multiLastPt[id] = {x:event.pageX,y:event.pageY}
         }
+      }else if(this.isScroll){
+        let scrolltop1 = this.el.parentElement.scrollTop;
+        const y = event.pageY - this.el.parentElement.scrollTop;
+        const walkY = (y - this.startY) * 3;
+        this.el.parentElement.scrollTop = scrolltop1 - walkY
       }
     },
     handlePointerUp(event){
@@ -89,6 +101,9 @@ export default {
       }
       if(this.multiLastPt[id]){
         delete this.multiLastPt[id];
+      }
+      if (this.isScroll){
+        this.isScroll = false
       }
       
     },
