@@ -22,11 +22,8 @@ export default {
       log:"",
       mode:"all touch",
       isDrawing: false,
-<<<<<<< HEAD
-      
-=======
-      isScroll:0,
->>>>>>> 47c191fb1d5315fa6760950f3dd6222ba6a06fb6
+      drawData: null,
+      isScroll: 0,
       context: null,
       currentPointerType: null,
       multiLastPt:{},
@@ -42,7 +39,9 @@ export default {
       animationFrameId: null,
       erasing:false,
       el:null,
-      touchcount:0
+      touchcount:0,
+      points:[],
+      beginPoint:{x:0,y:0},
     }
   },
   mounted() {
@@ -89,18 +88,17 @@ export default {
         this.context.beginPath();
         
       }else if(this.mode == "only pen" && this.currentPointerType === 'touch'){
-<<<<<<< HEAD
-        if (this.animationFrameId) {
-          cancelAnimationFrame(this.animationFrameId);
-        }
-        this.isScroll = true
-        this.startY = event.clientY;
-        this.scrolltop = this.el.parentElement.scrollTop;
+        // if (this.animationFrameId) {
+        //   cancelAnimationFrame(this.animationFrameId);
+        // }
+        // this.isScroll = true
+        // this.startY = event.clientY;
+        // this.scrolltop = this.el.parentElement.scrollTop;
         //实现触摸滚动
-        this.lastMoveTime = Date.now();
-        this.lastY = event.clientY;
-        //实现惯性滚动
-=======
+        // this.lastMoveTime = Date.now();
+        // this.lastY = event.clientY;
+        // 实现惯性滚动
+        
         this.isScroll = id
         this.startY = event.pageY;
         this.scrolltop = this.el.parentElement.scrollTop;
@@ -113,11 +111,25 @@ export default {
           this.startY = event.pageY;
         }else{
           this.isDrawing = true;
+          this.points = []
+          this.points.push({x:event.pageX,y:event.pageY});
+          this.beginPoint = this.points[0]
+          console.log(this.points)
           this.context.beginPath();
         }
->>>>>>> 47c191fb1d5315fa6760950f3dd6222ba6a06fb6
       }
     
+    },
+    drawLine(startp,ctrlp,endp,cl,ct) {
+      // this.context.beginPath();
+      console.log(startp)
+      this.context.moveTo((startp.x-cl),(startp.y-ct))
+      this.context.quadraticCurveTo((ctrlp.x-cl),(ctrlp.y-ct),(endp.x-cl),(endp.y-ct))
+      // this.context.strokeStyle = this.penColor;//设置颜色
+      // this.context.lineWidth = this.penWidth;//设置大小
+      this.context.lineCap = "round";//设置两端的形状
+      this.context.stroke();// stroke() 方法来绘制线条
+      // this.context.closePath();
     },
     handlePointerMove(event){
       var id = event.pointerId
@@ -125,31 +137,46 @@ export default {
         if (this.mode == "only pen" && this.currentPointerType === 'pen' || this.mode === "all touch") {
           //触控笔模式，手指滑动页面
           var scrolltop = this.el.parentElement.scrollTop;
-          this.context.moveTo(this.multiLastPt[id].x - this.offsetLeft, this.multiLastPt[id].y - this.offsetTop + scrolltop);
-          this.context.lineTo(event.pageX - this.offsetLeft, event.pageY - this.offsetTop + scrolltop);
-          this.context.stroke();
-          this.multiLastPt[id] = {x:event.pageX,y:event.pageY}
-        }
-<<<<<<< HEAD
-      }else if(this.isScroll){
-        const currentY = event.clientY;
-        const deltaY = currentY - this.startY
-        this.el.parentElement.scrollTop = this.scrolltop - deltaY
-        //实现触摸滚动
-        const currentTime = Date.now();
-        const timeElapsed = currentTime - this.lastMoveTime;
+          // this.context.moveTo(this.multiLastPt[id].x - this.offsetLeft, this.multiLastPt[id].y - this.offsetTop + scrolltop);
+          // this.context.lineTo(event.pageX - this.offsetLeft, event.pageY - this.offsetTop + scrolltop);
+          // this.context.stroke();
+          // this.multiLastPt[id] = {x:event.pageX,y:event.pageY}
 
-        if (timeElapsed > 0.1) {
-          this.velocity = (currentY - this.lastY) / timeElapsed;
+          //圆滑曲线
+          var endp = {x:event.pageX, y:event.pageY}
+          this.points.push(endp)
 
-          this.lastMoveTime = currentTime;
-          this.lastY = currentY;
+
+          if(this.points.length > 2){
+            const lastTwoPoints = this.points.slice(-2);
+            const controlPoint = lastTwoPoints[0];
+            const endPoint = {
+                x: (lastTwoPoints[0].x + lastTwoPoints[1].x) / 2,
+                y: (lastTwoPoints[0].y + lastTwoPoints[1].y) / 2,
+            }
+            var ct = this.offsetTop - scrolltop
+            this.drawLine(this.beginPoint, controlPoint, endPoint, this.offsetLeft, ct);
+            this.beginPoint = endPoint;
+          }
         }
-=======
+        
+      // }else if(this.isScroll){
+      //   const currentY = event.clientY;
+      //   const deltaY = currentY - this.startY
+      //   this.el.parentElement.scrollTop = this.scrolltop - deltaY
+      //   //实现触摸滚动
+      //   const currentTime = Date.now();
+      //   const timeElapsed = currentTime - this.lastMoveTime;
+
+      //   if (timeElapsed > 0.1) {
+      //     this.velocity = (currentY - this.lastY) / timeElapsed;
+
+      //     this.lastMoveTime = currentTime;
+      //     this.lastY = currentY;
+      //   }
       }else if(this.isScroll == id){
         const y = event.pageY - this.startY;
         this.el.parentElement.scrollTop = this.scrolltop - y
->>>>>>> 47c191fb1d5315fa6760950f3dd6222ba6a06fb6
       }
     },
     handlePointerUp(event){
@@ -161,21 +188,18 @@ export default {
         delete this.multiLastPt[id];
       }
       if (this.isScroll){
-<<<<<<< HEAD
-        const currentY = event.clientY;
-        const currentTime = Date.now();
-        const timeElapsed = currentTime - this.lastMoveTime;
+        // const currentY = event.clientY;
+        // const currentTime = Date.now();
+        // const timeElapsed = currentTime - this.lastMoveTime;
 
-        if (timeElapsed > 0.1) {
-          this.velocity = (currentY - this.lastY) / timeElapsed;
+        // if (timeElapsed > 0.1) {
+        //   this.velocity = (currentY - this.lastY) / timeElapsed;
 
-          this.lastMoveTime = currentTime;
-          this.lastY = currentY;
-        }
-        this.stopScroll()
-=======
+        //   this.lastMoveTime = currentTime;
+        //   this.lastY = currentY;
+        // }
+        // this.stopScroll()
         this.isScroll = null
->>>>>>> 47c191fb1d5315fa6760950f3dd6222ba6a06fb6
       }
     },
     stopScroll() {
