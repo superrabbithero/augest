@@ -17,8 +17,11 @@
     <input v-model="totalPages" type="text"/>
     <pagination :totalPages="totalPages"></pagination>
   </div>
+  <button @click="helloworldtimer.startTimer">start</button>
+  <button @click="helloworldtimer.resetTimer">reset</button>
+  <timer ref="helloworldtimer"></timer>
 
-  <pencanvas></pencanvas>
+  <!-- <pencanvas></pencanvas> -->
   
 </template>
 
@@ -28,6 +31,7 @@ import JsonModel from './Model/JsonModel.vue'
 import pagination from './Model/Pagination.vue'
 import {login, getanswercard} from "@/assets/js/xueceapi.js"
 import pencanvas from "./Model/PenCanvas.vue"
+import timer from "./Model/Time.vue"
 
 export default {
   name: 'HelloWorld',
@@ -35,7 +39,8 @@ export default {
     TheLatex2Math,
     JsonModel,
     pagination,
-    pencanvas
+    pencanvas,
+    timer
   },
   data(){
     return {
@@ -45,8 +50,12 @@ export default {
       md_show:false,
       latx_show:false,
       json_show:false,
-      totalPages:6
+      totalPages:6,
+      helloworldtimer: null
     }
+  },
+  mounted(){
+    this.helloworldtimer = this.$refs.helloworldtimer
   },
 
   methods:{

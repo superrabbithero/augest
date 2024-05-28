@@ -1,28 +1,25 @@
 <template>	
-	<div class="header" style="background: none;justify-content: flex-end;pointer-events: none;border:none">
-		<div class="head-item" v-show="pencanvas_show">			
-        	00:00
-		</div>
-		<div class="head-item" v-show="pencanvas_show" @click="pencanvas_show=!pencanvas_show" style="pointer-events:auto">			
-      <IconWrapper iconName="PauseOne" theme="outline" :strokeWidth='4' />
-		</div>
-		<div class="head-item" v-show="!pencanvas_show"  style="pointer-events:auto">
-			<IconWrapper iconName="Play" theme="outline" :strokeWidth='4' />
-		</div>  
-		<div class="head-item" style="width:22px">
-			
-		</div>  
-  </div>
   <div class="exampaperbox">
-	  <div class="exampaperbox-left">
-	  	<div class="answercard">
-		  	<div class="bottonbox">
-		  		<div class="button-item">
-		  			<IconWrapper iconName="Play" theme="outline" :strokeWidth='1' />
-		  		</div>
-		  		<div class="button-item" @click="pencanvas_show=!pencanvas_show">
-		  			<IconWrapper iconName="HandPaintedPlate" theme="outline" :strokeWidth='1' />
-		  		</div>
+	  <div class="exampaperbox-left" ref="left">
+	  	<div class="answercard" style="flex: 1;">
+	  		<div class="buttonbox">
+	  			<timer ref="examtimer" class="examtimer"></timer>
+	  		</div>
+		  	<div class="buttonbox">
+		  		<div class="button-items">
+			  		<div class="button-item" v-show="examstatus!=1" @click="examstart()">
+			  			<IconWrapper iconName="PlayOne" theme="outline" :strokeWidth='1' />
+			  		</div>
+			  		<div class="button-item" v-show="examstatus==1" @click="exampause()">
+			  			<IconWrapper iconName="Pause" theme="outline" :strokeWidth='1' />
+			  		</div>
+			  		<div class="button-item" v-show="examstatus!=0" @click="examstop()">
+			  			<IconWrapper iconName="SquareSmall" theme="outline" :strokeWidth='1' />
+			  		</div>
+			  		<div class="button-item" @click="pencanvas_show=!pencanvas_show">
+			  			<IconWrapper iconName="HandPaintedPlate" theme="outline" :strokeWidth='1' />
+			  		</div>
+			  	</div>
 		  	</div>
 		  	
 		  	<div class="fillcard">
@@ -40,7 +37,8 @@
 		  	</div>
 		  </div>
 	  </div>
-	  <div class="exampaperbox-right">
+	  <div class="exampaperbox-expand" style="width: 10px; background-color: grey;" @click="exampaperboxExpand()"></div>
+	  <div class="exampaperbox-right" ref="right">
 			<div class="exampaper" style="position:relative;">
 				<pencanvas v-if="pencanvas_show"></pencanvas>
 				<h3>一、常识判断</h3>
@@ -177,10 +175,12 @@
 // import TheLatex2Math from './TheLatex2Math'
 import jsonData from "@/assets/json/2022_js_C_test.json"
 import pencanvas from "../Model/PenCanvas.vue"
+import timer from "../Model/Time.vue"
 
 export default {
   components: {
-  	pencanvas
+  	pencanvas,
+  	timer
   },
   data(){
     return {
@@ -191,10 +191,14 @@ export default {
 	  	currentNum:0,
 	  	questionCount:20,
 	  	questionTypeList:['常识','言语','数学','判推','资料'],
-	  	currQTypeIndex:0
+	  	currQTypeIndex:0,
+	  	exampaperbox_expand:false,
+	  	examtimer:null,
+	  	examstatus:0
     }
   },
   mounted(){
+  	this.examtimer = this.$refs.examtimer
   },
   methods:{
       answer(item){
@@ -216,6 +220,35 @@ export default {
         //     return;
         // }
       	console.log(this.currentNum)
+      },
+      exampaperboxExpand(){
+      	if(this.exampaperbox_expand){
+      		this.exampaperbox_expand=false
+      		this.$refs.left.style.flexBasis = '0'
+      		this.$refs.right.style.flexBasis = '100%'
+      	}else{
+      		this.exampaperbox_expand=true
+      		this.$refs.left.style.flexBasis = '20%'
+      		this.$refs.right.style.flexBasis = '80%'
+      	}
+      },
+      examstart(){
+      	if(this.examstatus != 1){
+      		this.examstatus = 1
+      		this.examtimer.startTimer()
+      	}    	
+      },
+      examstop(){
+      	if(this.examstatus != 0){
+      		this.examstatus = 0
+      		this.examtimer.resetTimer()
+      	} 
+      },
+      exampause(){
+      	if(this.examstatus == 1){
+      		this.examstatus = 2
+      		this.examtimer.pause()
+      	} 
       }
   }
 
@@ -230,17 +263,20 @@ export default {
 		flex-basis: 20%;
 		display: flex;
 		overflow: hidden;
+		transition: flex-basis 0.3s ease
 	}
 	.exampaperbox-right{
 		overflow: auto;
 		flex-basis: 80%;
 		border-left: var(--box-border);
+		transition: flex-basis 0.3s ease
 	}
 	.answercard{
 		padding: 10px 10px;
 	}
 
 	.fillcard {
+		min-width: 150px;
 		display: flex;
 		flex-wrap: wrap
 	}
@@ -249,27 +285,38 @@ export default {
 		flex-basis: 100%;
 		background-color: var(--box-hightlight);
 		border-radius:0 0 5px 5px;
-		padding: 5px 0;
+		padding: 5px;
 		border: 1px solid #8cb9c0;
+		display: flex;
+		flex-wrap: wrap;
 	}
 	.circle-groups-item{
-		width: 20%;
-		display: inline-block;
+		width: calc(20% - 10px);
+		padding-top: calc(20% - 10px);
+		margin: 5px;
+		box-sizing: border-box;
+		position: relative;
+/*		display: inline-block;*/
 
 	}
 
 	.circle-groups-item .circle{
+		position: absolute;
+		top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
 		align-items: center;	
-		width: 20px;
-		height: 20px;
-		border-radius: 50%;
+		width: 100%;
+		height: 100%;
+/*		border-radius: 50%;*/
 		border: 1px solid #8cb9c0;
-		padding: 5px;
-		box-sizing: content-box;
-		line-height: 20px;
-		text-align: center;
-		margin: 5px auto;
+/*		line-height: 100%;*/
 		color: #8cb9c0;
+		display: flex;
+		align-items: center;
+    justify-content: center;
 	}
 	.circle-groups-item .circle.answered{
 		background-color: #91b5a9;
@@ -376,5 +423,28 @@ export default {
 		border-radius:5px 5px 0 0;
 		border: 1px solid #8cb9c0;
 		border-bottom: none;
+
+	}
+
+	.buttonbox {
+		display: flex;
+		justify-content: center;
+    align-items: center;
+    
+	}
+	.buttonbox .button-items{
+		border: var(--box-border);
+    border-radius: 5px;
+	}
+	.button-items .button-item {
+		display: inline-block;
+		padding: 2px 10px;
+		border-left: var(--box-border);
+	}
+	.button-items .button-item:first-child {
+		border: none;
+	}
+	.examtimer {
+		padding: 5px ;
 	}
 </style>

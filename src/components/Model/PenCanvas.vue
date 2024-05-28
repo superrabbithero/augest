@@ -3,6 +3,7 @@
     <div class="buttonbox">
       <button   @click="switchmode">模式：{{mode}}</button>
       <button   @click="inverPathColor">反色</button>
+      <h5>{{touchcount}}</h5>
     </div>
     <canvas ref="canvas" 
                @pointerdown="handlePointerDown"
@@ -21,7 +22,7 @@ export default {
       log:"",
       mode:"all touch",
       isDrawing: false,
-      isScroll:false,
+      isScroll:0,
       context: null,
       currentPointerType: null,
       multiLastPt:{},
@@ -30,7 +31,8 @@ export default {
       startY:0,
       scrolltop:0,
       erasing:false,
-      el:null
+      el:null,
+      touchcount:0
     }
   },
   mounted() {
@@ -66,14 +68,26 @@ export default {
       this.currentPointerType = event.pointerType;
       var id = event.pointerId
       this.multiLastPt[id] = {x:event.pageX,y:event.pageY}
-      if(this.mode == "only pen" && this.currentPointerType === 'pen' || this.mode === "all touch"){
+      if(this.mode == "only pen" && this.currentPointerType === 'pen'){
         this.scrolltop = this.el.parentElement.scrollTop;
         this.isDrawing = true;
         this.context.beginPath();
         
       }else if(this.mode == "only pen" && this.currentPointerType === 'touch'){
-        this.isScroll = true
-        this.startY = event.pageY - this.el.parentElement.scrollTop;;
+        this.isScroll = id
+        this.startY = event.pageY;
+        this.scrolltop = this.el.parentElement.scrollTop;
+      }else if(this.mode === "all touch"){
+        this.scrolltop = this.el.parentElement.scrollTop;
+        this.touchcount = Object.keys(this.multiLastPt).length
+        if(Object.keys(this.multiLastPt).length == 2){
+          this.isDrawing = false;
+          this.isScroll = id
+          this.startY = event.pageY;
+        }else{
+          this.isDrawing = true;
+          this.context.beginPath();
+        }
       }
     
     },
@@ -81,17 +95,16 @@ export default {
       var id = event.pointerId
       if(this.isDrawing && this.multiLastPt[id]){
         if (this.mode == "only pen" && this.currentPointerType === 'pen' || this.mode === "all touch") {
+          //触控笔模式，手指滑动页面
           var scrolltop = this.el.parentElement.scrollTop;
           this.context.moveTo(this.multiLastPt[id].x - this.offsetLeft, this.multiLastPt[id].y - this.offsetTop + scrolltop);
           this.context.lineTo(event.pageX - this.offsetLeft, event.pageY - this.offsetTop + scrolltop);
           this.context.stroke();
           this.multiLastPt[id] = {x:event.pageX,y:event.pageY}
         }
-      }else if(this.isScroll){
-        let scrolltop1 = this.el.parentElement.scrollTop;
-        const y = event.pageY - this.el.parentElement.scrollTop;
-        const walkY = (y - this.startY) * 3;
-        this.el.parentElement.scrollTop = scrolltop1 - walkY
+      }else if(this.isScroll == id){
+        const y = event.pageY - this.startY;
+        this.el.parentElement.scrollTop = this.scrolltop - y
       }
     },
     handlePointerUp(event){
@@ -103,7 +116,7 @@ export default {
         delete this.multiLastPt[id];
       }
       if (this.isScroll){
-        this.isScroll = false
+        this.isScroll = null
       }
       
     },
@@ -149,7 +162,7 @@ export default {
   }
 
   .buttonbox{
-    position: absolute;
+    position: fixed;
     right: 0;
     z-index: 988;
   }
