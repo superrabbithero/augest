@@ -215,7 +215,7 @@ export default {
             // alert('所有题目都设置完了！');
         //     return;
         // }
-      	console.log(this.currentNum)
+      	// console.log(this.currentNum)
       }
   }
 

@@ -21,20 +21,31 @@ export default {
       log:"",
       mode:"all touch",
       isDrawing: false,
-      isScroll:false,
+      
       context: null,
       currentPointerType: null,
       multiLastPt:{},
       offsetTop:0,
       offsetLeft:0,
+      isScroll:false,
       startY:0,
       scrolltop:0,
+      // 用于实现触碰惯性滚动
+      velocity: 0,
+      lastMoveTime: 0,
+      lastY: 0,
+      animationFrameId: null,
       erasing:false,
       el:null
     }
   },
   mounted() {
     this.init()
+  },
+  beforeUnmount() {
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId);
+    }
   },
   methods: {
     init() {
@@ -72,8 +83,16 @@ export default {
         this.context.beginPath();
         
       }else if(this.mode == "only pen" && this.currentPointerType === 'touch'){
+        if (this.animationFrameId) {
+          cancelAnimationFrame(this.animationFrameId);
+        }
         this.isScroll = true
-        this.startY = event.pageY - this.el.parentElement.scrollTop;;
+        this.startY = event.clientY;
+        this.scrolltop = this.el.parentElement.scrollTop;
+        //实现触摸滚动
+        this.lastMoveTime = Date.now();
+        this.lastY = event.clientY;
+        //实现惯性滚动
       }
     
     },
@@ -88,10 +107,19 @@ export default {
           this.multiLastPt[id] = {x:event.pageX,y:event.pageY}
         }
       }else if(this.isScroll){
-        let scrolltop1 = this.el.parentElement.scrollTop;
-        const y = event.pageY - this.el.parentElement.scrollTop;
-        const walkY = (y - this.startY) * 3;
-        this.el.parentElement.scrollTop = scrolltop1 - walkY
+        const currentY = event.clientY;
+        const deltaY = currentY - this.startY
+        this.el.parentElement.scrollTop = this.scrolltop - deltaY
+        //实现触摸滚动
+        const currentTime = Date.now();
+        const timeElapsed = currentTime - this.lastMoveTime;
+
+        if (timeElapsed > 0.1) {
+          this.velocity = (currentY - this.lastY) / timeElapsed;
+
+          this.lastMoveTime = currentTime;
+          this.lastY = currentY;
+        }
       }
     },
     handlePointerUp(event){
@@ -103,9 +131,39 @@ export default {
         delete this.multiLastPt[id];
       }
       if (this.isScroll){
-        this.isScroll = false
+        const currentY = event.clientY;
+        const currentTime = Date.now();
+        const timeElapsed = currentTime - this.lastMoveTime;
+
+        if (timeElapsed > 0.1) {
+          this.velocity = (currentY - this.lastY) / timeElapsed;
+
+          this.lastMoveTime = currentTime;
+          this.lastY = currentY;
+        }
+        this.stopScroll()
       }
+    },
+    stopScroll() {
+      this.isScroll = false;
+      // 开始惯性滚动
       
+      this.startInertiaScroll();
+    },
+    startInertiaScroll() {
+      const deceleration = 0.03; // 滑动的减速度，可以根据需要调整
+      let that = this
+      const step = () => {
+        if (Math.abs(this.velocity) > 0.01) {
+          that.el.parentElement.scrollTop -= that.velocity * 16;
+          that.velocity *= (1 - deceleration);
+          that.animationFrameId = requestAnimationFrame(step);
+        } else {
+          cancelAnimationFrame(that.animationFrameId);
+          that.animationFrameId = null;
+        }
+      };
+      this.animationFrameId = requestAnimationFrame(step);
     },
     inverPathColor(){
       // Get the current canvas image data
