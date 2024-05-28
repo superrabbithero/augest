@@ -3,6 +3,7 @@
     <div class="buttonbox">
       <button   @click="switchmode">模式：{{mode}}</button>
       <button   @click="inverPathColor">反色</button>
+      <h5>{{touchcount}}</h5>
     </div>
     <canvas ref="canvas" 
                @pointerdown="handlePointerDown"
@@ -21,7 +22,11 @@ export default {
       log:"",
       mode:"all touch",
       isDrawing: false,
+<<<<<<< HEAD
       
+=======
+      isScroll:0,
+>>>>>>> 47c191fb1d5315fa6760950f3dd6222ba6a06fb6
       context: null,
       currentPointerType: null,
       multiLastPt:{},
@@ -36,7 +41,8 @@ export default {
       lastY: 0,
       animationFrameId: null,
       erasing:false,
-      el:null
+      el:null,
+      touchcount:0
     }
   },
   mounted() {
@@ -77,12 +83,13 @@ export default {
       this.currentPointerType = event.pointerType;
       var id = event.pointerId
       this.multiLastPt[id] = {x:event.pageX,y:event.pageY}
-      if(this.mode == "only pen" && this.currentPointerType === 'pen' || this.mode === "all touch"){
+      if(this.mode == "only pen" && this.currentPointerType === 'pen'){
         this.scrolltop = this.el.parentElement.scrollTop;
         this.isDrawing = true;
         this.context.beginPath();
         
       }else if(this.mode == "only pen" && this.currentPointerType === 'touch'){
+<<<<<<< HEAD
         if (this.animationFrameId) {
           cancelAnimationFrame(this.animationFrameId);
         }
@@ -93,6 +100,22 @@ export default {
         this.lastMoveTime = Date.now();
         this.lastY = event.clientY;
         //实现惯性滚动
+=======
+        this.isScroll = id
+        this.startY = event.pageY;
+        this.scrolltop = this.el.parentElement.scrollTop;
+      }else if(this.mode === "all touch"){
+        this.scrolltop = this.el.parentElement.scrollTop;
+        this.touchcount = Object.keys(this.multiLastPt).length
+        if(Object.keys(this.multiLastPt).length == 2){
+          this.isDrawing = false;
+          this.isScroll = id
+          this.startY = event.pageY;
+        }else{
+          this.isDrawing = true;
+          this.context.beginPath();
+        }
+>>>>>>> 47c191fb1d5315fa6760950f3dd6222ba6a06fb6
       }
     
     },
@@ -100,12 +123,14 @@ export default {
       var id = event.pointerId
       if(this.isDrawing && this.multiLastPt[id]){
         if (this.mode == "only pen" && this.currentPointerType === 'pen' || this.mode === "all touch") {
+          //触控笔模式，手指滑动页面
           var scrolltop = this.el.parentElement.scrollTop;
           this.context.moveTo(this.multiLastPt[id].x - this.offsetLeft, this.multiLastPt[id].y - this.offsetTop + scrolltop);
           this.context.lineTo(event.pageX - this.offsetLeft, event.pageY - this.offsetTop + scrolltop);
           this.context.stroke();
           this.multiLastPt[id] = {x:event.pageX,y:event.pageY}
         }
+<<<<<<< HEAD
       }else if(this.isScroll){
         const currentY = event.clientY;
         const deltaY = currentY - this.startY
@@ -120,6 +145,11 @@ export default {
           this.lastMoveTime = currentTime;
           this.lastY = currentY;
         }
+=======
+      }else if(this.isScroll == id){
+        const y = event.pageY - this.startY;
+        this.el.parentElement.scrollTop = this.scrolltop - y
+>>>>>>> 47c191fb1d5315fa6760950f3dd6222ba6a06fb6
       }
     },
     handlePointerUp(event){
@@ -131,6 +161,7 @@ export default {
         delete this.multiLastPt[id];
       }
       if (this.isScroll){
+<<<<<<< HEAD
         const currentY = event.clientY;
         const currentTime = Date.now();
         const timeElapsed = currentTime - this.lastMoveTime;
@@ -142,6 +173,9 @@ export default {
           this.lastY = currentY;
         }
         this.stopScroll()
+=======
+        this.isScroll = null
+>>>>>>> 47c191fb1d5315fa6760950f3dd6222ba6a06fb6
       }
     },
     stopScroll() {
@@ -207,7 +241,7 @@ export default {
   }
 
   .buttonbox{
-    position: absolute;
+    position: fixed;
     right: 0;
     z-index: 988;
   }
