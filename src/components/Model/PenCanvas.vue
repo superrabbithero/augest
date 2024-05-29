@@ -2,15 +2,15 @@
   
     <div class="buttonbox">
       <button   @click="switchmode">模式：{{mode}}</button>
-      <button   @click="inverPathColor">反色</button>
-      <h5>{{touchcount}}</h5>
     </div>
     <canvas ref="canvas" 
                @pointerdown="handlePointerDown"
                @pointermove="handlePointerMove"
                @pointerup="handlePointerUp"></canvas>
-    <div :class="{'edit-tools':true,'active':erasing}" >
-      <IconWrapper @click="erase()" iconName="ClearFormat" theme="outline" :strokeWidth='4' fill="#ffc848" size="30" />
+    <div class="edit-tools" >
+      <div :class="{'edit-tools-item':true,'active':erasing}" >
+        <IconWrapper @click="erase()" iconName="ClearFormat" theme="outline" :strokeWidth='4' fill="#ffc848" size="30" />
+      </div>
     </div>
 </template>
 
@@ -32,16 +32,13 @@ export default {
       isScroll:false,
       startY:0,
       scrolltop:0,
-      // 用于实现触碰惯性滚动
-      velocity: 0,
-      lastMoveTime: 0,
-      lastY: 0,
-      animationFrameId: null,
+     
       erasing:false,
       el:null,
-      touchcount:0,
       points:[],
       beginPoint:{x:0,y:0},
+
+      penWidth: 5
     }
   },
   mounted() {
@@ -85,51 +82,40 @@ export default {
       if(this.mode == "only pen" && this.currentPointerType === 'pen'){
         this.scrolltop = this.el.parentElement.scrollTop;
         this.isDrawing = true;
-        this.context.beginPath();
+        this.points = []
+        this.points.push({x:event.pageX,y:event.pageY});
+        this.beginPoint = this.points[0]
         
       }else if(this.mode == "only pen" && this.currentPointerType === 'touch'){
-        // if (this.animationFrameId) {
-        //   cancelAnimationFrame(this.animationFrameId);
-        // }
-        // this.isScroll = true
-        // this.startY = event.clientY;
-        // this.scrolltop = this.el.parentElement.scrollTop;
-        //实现触摸滚动
-        // this.lastMoveTime = Date.now();
-        // this.lastY = event.clientY;
-        // 实现惯性滚动
-        
+   
         this.isScroll = id
         this.startY = event.pageY;
         this.scrolltop = this.el.parentElement.scrollTop;
       }else if(this.mode === "all touch"){
         this.scrolltop = this.el.parentElement.scrollTop;
-        this.touchcount = Object.keys(this.multiLastPt).length
         if(Object.keys(this.multiLastPt).length == 2){
           this.isDrawing = false;
           this.isScroll = id
           this.startY = event.pageY;
-        }else{
+        }else if(Object.keys(this.multiLastPt).length == 1){
           this.isDrawing = true;
           this.points = []
           this.points.push({x:event.pageX,y:event.pageY});
           this.beginPoint = this.points[0]
           console.log(this.points)
-          this.context.beginPath();
         }
       }
     
     },
     drawLine(startp,ctrlp,endp,cl,ct) {
-      // this.context.beginPath();
-      console.log(startp)
+      this.context.beginPath();
       this.context.moveTo((startp.x-cl),(startp.y-ct))
       this.context.quadraticCurveTo((ctrlp.x-cl),(ctrlp.y-ct),(endp.x-cl),(endp.y-ct))
       // this.context.strokeStyle = this.penColor;//设置颜色
       // this.context.lineWidth = this.penWidth;//设置大小
       this.context.lineCap = "round";//设置两端的形状
       this.context.stroke();// stroke() 方法来绘制线条
-      // this.context.closePath();
+      this.context.closePath();
     },
     handlePointerMove(event){
       var id = event.pointerId
@@ -137,10 +123,16 @@ export default {
         if (this.mode == "only pen" && this.currentPointerType === 'pen' || this.mode === "all touch") {
           //触控笔模式，手指滑动页面
           var scrolltop = this.el.parentElement.scrollTop;
-          // this.context.moveTo(this.multiLastPt[id].x - this.offsetLeft, this.multiLastPt[id].y - this.offsetTop + scrolltop);
-          // this.context.lineTo(event.pageX - this.offsetLeft, event.pageY - this.offsetTop + scrolltop);
-          // this.context.stroke();
-          // this.multiLastPt[id] = {x:event.pageX,y:event.pageY}
+          if(!this.erasing){
+            if(this.currentPointerType == 'pen'){
+              this.context.lineWidth = event.pressure*this.penWidth;//设置大小
+            }else{
+              this.context.lineWidth = this.penWidth/5;//设置大小
+            }
+          }
+          
+          
+          
 
           //圆滑曲线
           var endp = {x:event.pageX, y:event.pageY}
@@ -160,20 +152,7 @@ export default {
           }
         }
         
-      // }else if(this.isScroll){
-      //   const currentY = event.clientY;
-      //   const deltaY = currentY - this.startY
-      //   this.el.parentElement.scrollTop = this.scrolltop - deltaY
-      //   //实现触摸滚动
-      //   const currentTime = Date.now();
-      //   const timeElapsed = currentTime - this.lastMoveTime;
-
-      //   if (timeElapsed > 0.1) {
-      //     this.velocity = (currentY - this.lastY) / timeElapsed;
-
-      //     this.lastMoveTime = currentTime;
-      //     this.lastY = currentY;
-      //   }
+     
       }else if(this.isScroll == id){
         const y = event.pageY - this.startY;
         this.el.parentElement.scrollTop = this.scrolltop - y
@@ -188,57 +167,13 @@ export default {
         delete this.multiLastPt[id];
       }
       if (this.isScroll){
-        // const currentY = event.clientY;
-        // const currentTime = Date.now();
-        // const timeElapsed = currentTime - this.lastMoveTime;
-
-        // if (timeElapsed > 0.1) {
-        //   this.velocity = (currentY - this.lastY) / timeElapsed;
-
-        //   this.lastMoveTime = currentTime;
-        //   this.lastY = currentY;
-        // }
-        // this.stopScroll()
+       
         this.isScroll = null
       }
     },
-    stopScroll() {
-      this.isScroll = false;
-      // 开始惯性滚动
-      
-      this.startInertiaScroll();
-    },
-    startInertiaScroll() {
-      const deceleration = 0.03; // 滑动的减速度，可以根据需要调整
-      let that = this
-      const step = () => {
-        if (Math.abs(this.velocity) > 0.01) {
-          that.el.parentElement.scrollTop -= that.velocity * 16;
-          that.velocity *= (1 - deceleration);
-          that.animationFrameId = requestAnimationFrame(step);
-        } else {
-          cancelAnimationFrame(that.animationFrameId);
-          that.animationFrameId = null;
-        }
-      };
-      this.animationFrameId = requestAnimationFrame(step);
-    },
-    inverPathColor(){
-      // Get the current canvas image data
-      const imageData = this.context.getImageData(0, 0, this.$refs.canvas.width, this.$refs.canvas.height);
-      const data = imageData.data;
-
-      // Invert colors
-      for (let i = 0; i < data.length; i += 4) {
-        // If the pixel is black (0,0,0), change it to white (255,255,255)
-        if (data[i] === 0 && data[i + 1] === 0 && data[i + 2] === 0) {
-          data[i] = 255;
-          data[i + 1] = 255;
-          data[i + 2] = 255;
-        }
-      }
-      this.context.putImageData(imageData, 0, 0);
-    },
+    
+    
+    
     erase(){
       var ctx = this.context
       if (this.erasing) {
@@ -269,20 +204,34 @@ export default {
     right: 0;
     z-index: 988;
   }
+  .edit-tools{
+    position: fixed;
+    background-color: var(--box-bgc);
+    border-radius: 20px 0 0 20px;
+    padding-right: 50px;
+    top: 150px;
+    right:-75px;
+    transition: right 0.3s ease;
+    box-shadow: var(--box-shadow)
+  }
 
-  .edit-tools {
+  .edit-tools:hover{
+    position: fixed;
+    
+    top: 150px;
+    right:0px;
+  }
+
+  .edit-tools-item {
     width: 40px;
     height: 40px;
-    border: 3px solid #ffc848;
+/*    border: 3px solid #ffc848;*/
     border-radius: 23px;
     display: flex;
-    position: fixed;
-    top: 150px;
-    right:40px;
     justify-content: center;
     align-items: center;
   }
-  .edit-tools.active{
+  .edit-tools-item.active{
     background-color: #123456;
   }
   

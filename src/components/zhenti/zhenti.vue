@@ -37,7 +37,7 @@
 		  	</div>
 		  </div>
 	  </div>
-	  <div class="exampaperbox-expand" style="width: 10px; background-color: grey;" @click="exampaperboxExpand()"></div>
+	  <div class="exampaperbox-expand" @click="exampaperboxExpand()"></div>
 	  <div class="exampaperbox-right" ref="right">
 			<div class="exampaper" style="position:relative;">
 				<pencanvas v-if="pencanvas_show"></pencanvas>
@@ -255,6 +255,13 @@ export default {
 }
 </script>
 <style scoped>
+	.exampaperbox-expand{
+		width: 5px;
+	}
+	.exampaperbox-expand:hover{
+		width: 5px;
+	}
+
 	.exampaperbox{
 		display: flex;
 		height: calc(100vh - 61px);
@@ -446,5 +453,6 @@ export default {
 	}
 	.examtimer {
 		padding: 5px ;
+		
 	}
 </style>

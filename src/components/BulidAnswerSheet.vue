@@ -403,20 +403,56 @@ export default {
       if (file) {
         this.filename = file.name
         this.historys = []
-        const reader = new FileReader();
-        this.canvasVisible = true
-        reader.onload = async (e) => {
-          const loadingTask = pdfjsLib.getDocument({ data: e.target.result });
-          loadingTask.promise.then((pdf) => {
-            this.pdfDoc = pdf
-            this.pdfPages = this.pdfDoc.numPages
-            this.$nextTick(() => {
-              // this.initPages()
-              this.renderPage(this.pageNum)
+        if(this.filename.split('.').slice(-1)[0].toLowerCase()=='pdf'){
+          const reader = new FileReader();
+          this.canvasVisible = true
+          reader.onload = async (e) => {
+            const loadingTask = pdfjsLib.getDocument({ data: e.target.result });
+            loadingTask.promise.then((pdf) => {
+              this.pdfDoc = pdf
+              this.pdfPages = this.pdfDoc.numPages
+              this.$nextTick(() => {
+                // this.initPages()
+                this.renderPage(this.pageNum)
+              })
             })
-          })
-        };
-        reader.readAsArrayBuffer(file);
+          };
+          reader.readAsArrayBuffer(file);
+        }else{
+          
+          this.canvasVisible = true
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            this.pdfPages = 1
+            const img = new Image();
+            this.$nextTick(() => {
+              this.historys.push([])
+              const canvas = document.getElementById('canvas1');
+              console.log(canvas)
+              this.canvas = canvas;
+              const ctx = canvas.getContext("2d");
+              // 设置canvas宽高为图片宽高
+              this.widthTemp = img.width
+              this.canvas.width = img.width;
+              this.canvas.style.width = img.width * this.scaleCount + 'px'
+              this.heightTemp = img.height
+              this.canvas.height = img.height;
+              this.canvas.style.height = img.height * this.scaleCount + 'px'
+              this.ctx = ctx
+              img.onload = () => {
+                // 清除之前的内容
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                // 绘制图像到画布
+                this.ctx.drawImage(img, 0, 0, this.canvas.width, this.canvas.height);
+              };
+            })
+            
+            img.src = e.target.result;
+          };
+
+          reader.readAsDataURL(file);
+        }
+        
       }
     },
 
