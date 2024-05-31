@@ -41,8 +41,8 @@
 	  <div class="exampaperbox-right" ref="right">
 			<div class="exampaper" style="position:relative;">
 				<pencanvas v-if="pencanvas_show"></pencanvas>
-				<h3>一、常识判断</h3>
-				<div class="question" v-for="(question,index) in jsonData.questions_1">
+				<h3 v-show="currQTypeIndex == 0">一、常识判断</h3>
+				<div v-show="currQTypeIndex == 0" class="question" v-for="(question,index) in jsonData.questions_1">
 					<div class="question_content" v-html="question.content"></div>
 					<div v-if="question.options" class="question_options">
 						<div class="question_options_group">
@@ -66,8 +66,8 @@
 						</div>
 					</div>
 				</div>
-				<h3>二、言语理解</h3>
-				<div class="question" v-for="(question,index) in jsonData.questions_2">
+				<h3 v-show="currQTypeIndex == 1">二、言语理解</h3>
+				<div v-show="currQTypeIndex == 1" class="question" v-for="(question,index) in jsonData.questions_2">
 					<div class="question_content" v-html="question.content"></div>
 					<div v-if="question.options" class="question_options">
 						<div class="question_options_group">
@@ -91,8 +91,8 @@
 						</div>
 					</div>
 				</div>
-				<h3>三、数量关系</h3>
-				<div class="question" v-for="(question,index) in jsonData.questions_3">
+				<h3 v-show="currQTypeIndex == 2">三、数量关系</h3>
+				<div v-show="currQTypeIndex == 2" class="question" v-for="(question,index) in jsonData.questions_3">
 					<div class="question_content" v-html="question.content"></div>
 					<div v-if="question.options" class="question_options">
 						<div class="question_options_group">
@@ -116,8 +116,8 @@
 						</div>
 					</div>
 				</div>
-				<h3>四、推理判断</h3>
-				<div class="question" v-for="(question,index) in jsonData.questions_4">
+				<h3 v-show="currQTypeIndex == 3">四、推理判断</h3>
+				<div v-show="currQTypeIndex == 3" class="question" v-for="(question,index) in jsonData.questions_4">
 					<div class="question_content" v-html="question.content"></div>
 					<div v-if="question.options" class="question_options">
 						<div class="question_options_group">
@@ -141,8 +141,8 @@
 						</div>
 					</div>
 				</div>
-				<h3>五、资料分析</h3>
-				<div class="question" v-for="(question,index) in jsonData.questions_5">
+				<h3 v-show="currQTypeIndex == 4">五、资料分析</h3>
+				<div v-show="currQTypeIndex == 4" class="question" v-for="(question,index) in jsonData.questions_5">
 					<div class="question_content" v-html="question.content"></div>
 					<div v-if="question.options" class="question_options">
 						<div class="question_options_group">
@@ -173,7 +173,7 @@
 
 <script>
 // import TheLatex2Math from './TheLatex2Math'
-import jsonData from "@/assets/json/2022_js_C_test.json"
+import jsonData from "@/assets/json/2022_js_C.json"
 import pencanvas from "../Model/PenCanvas.vue"
 import timer from "../Model/Time.vue"
 
@@ -257,6 +257,7 @@ export default {
 <style scoped>
 	.exampaperbox-expand{
 		width: 5px;
+		cursor: col-resize;
 	}
 	.exampaperbox-expand:hover{
 		width: 5px;

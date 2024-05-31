@@ -2,6 +2,8 @@
   
     <div class="buttonbox">
       <button   @click="switchmode">模式：{{mode}}</button>
+      <button   @click="resize()">resize</button>
+      <h4>{{canvasWidth}} x {{canvasHeight}}</h4>
     </div>
     <canvas ref="canvas" 
                @pointerdown="handlePointerDown"
@@ -38,7 +40,9 @@ export default {
       points:[],
       beginPoint:{x:0,y:0},
 
-      penWidth: 5
+      penWidth: 5,
+      canvasWidth:0,
+      canvasHeight:0
     }
   },
   mounted() {
@@ -50,6 +54,22 @@ export default {
     }
   },
   methods: {
+    resize(Imgdata){
+        
+        const canvas = this.$refs.canvas;
+        const imageData = this.context.getImageData(0, 0, canvas.width, canvas.height);
+        canvas.width = this.el.clientWidth;
+        canvas.height = this.el.clientHeight;
+        this.canvasWidth = canvas.width;
+        this.canvasHeight = canvas.height;
+         // 清空并重置画布
+        this.context.clearRect(0, 0, canvas.width, canvas.height);
+        // this.context.scale(scaleFactor, scaleFactor);
+
+        // 恢复画布内容
+        this.context.putImageData(imageData, 0, 0);
+
+    },
     init() {
       if (window.PointerEvent) { 
         // Pointer events are supported. 
@@ -60,6 +80,8 @@ export default {
       // const grandpa = parent.parentElement
       canvas.width = parent.clientWidth;
       canvas.height = parent.clientHeight;
+      this.canvasWidth = canvas.width
+      this.canvasHeight = canvas.height
       this.el = parent
       this.offsetLeft = parent.offsetLeft
       this.offsetTop = parent.offsetTop
