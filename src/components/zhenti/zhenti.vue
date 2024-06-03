@@ -201,55 +201,56 @@ export default {
   	this.examtimer = this.$refs.examtimer
   },
   methods:{
-      answer(item){
-      	var count = this.questionCount
-      	
-      	this.stuAnswerList[this.currentNum] = item
+    answer(item){
+    	var count = this.questionCount
+    	
+    	this.stuAnswerList[this.currentNum] = item
 
-      	let nextNum = (this.currentNum + 1) % count
-      	while( nextNum != this.currentNum){
-      		if(!this.stuAnswerList[nextNum]){
-      			this.currentNum = nextNum;
-      			break
-      		}
-      		nextNum = (nextNum + 1) % count
-      	}
+    	let nextNum = (this.currentNum + 1) % count
+    	while( nextNum != this.currentNum){
+    		if(!this.stuAnswerList[nextNum]){
+    			this.currentNum = nextNum;
+    			break
+    		}
+    		nextNum = (nextNum + 1) % count
+    	}
 
-      	// if (this.stuAnswerList[this.currentNum]) {
-            // alert('所有题目都设置完了！');
-        //     return;
-        // }
-      	console.log(this.currentNum)
-      },
-      exampaperboxExpand(){
-      	if(this.exampaperbox_expand){
-      		this.exampaperbox_expand=false
-      		this.$refs.left.style.flexBasis = '0'
-      		this.$refs.right.style.flexBasis = '100%'
-      	}else{
-      		this.exampaperbox_expand=true
-      		this.$refs.left.style.flexBasis = '20%'
-      		this.$refs.right.style.flexBasis = '80%'
-      	}
-      },
-      examstart(){
-      	if(this.examstatus != 1){
-      		this.examstatus = 1
-      		this.examtimer.startTimer()
-      	}    	
-      },
-      examstop(){
-      	if(this.examstatus != 0){
-      		this.examstatus = 0
-      		this.examtimer.resetTimer()
-      	} 
-      },
-      exampause(){
-      	if(this.examstatus == 1){
-      		this.examstatus = 2
-      		this.examtimer.pause()
-      	} 
-      }
+    	// if (this.stuAnswerList[this.currentNum]) {
+          // alert('所有题目都设置完了！');
+      //     return;
+      // }
+    	console.log(this.currentNum)
+    },
+    exampaperboxExpand(){
+    	if(this.exampaperbox_expand){
+    		this.exampaperbox_expand=false
+    		this.$refs.left.style.flexBasis = '0'
+    		this.$refs.right.style.flexBasis = '100%'
+    	}else{
+    		this.exampaperbox_expand=true
+    		this.$refs.left.style.flexBasis = '20%'
+    		this.$refs.right.style.flexBasis = '80%'
+    	}
+    },
+    examstart(){
+    	if(this.examstatus != 1){
+    		this.examstatus = 1
+    		this.examtimer.startTimer()
+    	}    	
+    },
+    examstop(){
+    	if(this.examstatus != 0){
+    		this.examstatus = 0
+    		this.examtimer.resetTimer()
+    	} 
+    },
+    exampause(){
+    	if(this.examstatus == 1){
+    		this.examstatus = 2
+    		this.examtimer.pause()
+    	} 
+    },
+
   }
 
 }
