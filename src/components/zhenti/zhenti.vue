@@ -24,145 +24,63 @@
 		  	
 		  	<div class="fillcard">
 		  		<ul class="fill-type" style="flex-basis: 100%;">
-		  			<li v-for="(type,index) in questionTypeList" :class="{'active':currQTypeIndex == index}" @click="currQTypeIndex=index">{{type}}</li>
+		  			<li v-for="(type,index) in questionTypeList" :class="{'active':currQTypeIndex == index}" @click="switchType(index)">{{type}}</li>
 		  		</ul>
-		  		<div class="circle-groups">
-		  			<div v-for="index of 20" class="circle-groups-item">
-		  				<div :class="{'circle':true,'answered':stuAnswerList[index-1],'current':index-1 == currentNum}" @click="currentNum = index-1">{{index}}</div>
+	  			<div v-for="(answerGroup,index) in answers" class="circle-groups" v-show="currQTypeIndex == index">
+		  			<div v-for="(key,index) in Object.keys(answerGroup)" class="circle-groups-item">
+		  				<div :class="{'circle':true,'answered':answerGroup[key].mine,'current':key == currentNum}" @click="rollTo(key)">{{key}}</div>
 		  			</div>
 		  		</div>
 		  		<div class="fill-option">
-		  			<div v-for="(item, index) in ['A','B','C','D']" :class="{'item':true,'selected':stuAnswerList[currentNum] && stuAnswerList[currentNum] == item}" @click="answer(item)">{{item}}</div>
+		  			<div v-for="(item, index) in ['A','B','C','D']" :class="{'item':true,'selected':stuAnswerList[currentNum] == item}" @click="answer(item)">{{item}}</div>
 		  		</div>
 		  	</div>
 		  </div>
 	  </div>
 	  <div class="exampaperbox-expand" @click="exampaperboxExpand()"></div>
 	  <div class="exampaperbox-right" ref="right">
-			<div class="exampaper" style="position:relative;">
+			<div class="exampaper" style="position:relative;" >
 				<pencanvas v-if="pencanvas_show"></pencanvas>
 				<h3 v-show="currQTypeIndex == 0">一、常识判断</h3>
-				<div v-show="currQTypeIndex == 0" class="question" v-for="(question,index) in jsonData.questions_1">
-					<div class="question_content" v-html="question.content"></div>
-					<div v-if="question.options" class="question_options">
-						<div class="question_options_group">
-							<div class="option" v-html="'A.' + question.options[0]"></div>
-							<div class="option" v-html="'B.' + question.options[1]"></div>
-						</div>
-						<div class="question_options_group">
-							<div class="option" v-html="'C.' + question.options[2]"></div>
-							<div class="option" v-html="'D.' + question.options[3]"></div>
-						</div>
-					</div>
-					<div v-for="question in question.sub_questions" class="question">
-						<div class="question_content" v-html="question.content"></div>
-						<div class="question_options_group">
-							<div class="option" v-html="'A.' + question.options[0]"></div>
-							<div class="option" v-html="'B.' + question.options[1]"></div>
-						</div>
-						<div class="question_options_group">
-							<div class="option" v-html="'C.' + question.options[2]"></div>
-							<div class="option" v-html="'D.' + question.options[3]"></div>
-						</div>
-					</div>
-				</div>
+				
 				<h3 v-show="currQTypeIndex == 1">二、言语理解</h3>
-				<div v-show="currQTypeIndex == 1" class="question" v-for="(question,index) in jsonData.questions_2">
-					<div class="question_content" v-html="question.content"></div>
-					<div v-if="question.options" class="question_options">
-						<div class="question_options_group">
-							<div class="option" v-html="'A.' + question.options[0]"></div>
-							<div class="option" v-html="'B.' + question.options[1]"></div>
-						</div>
-						<div class="question_options_group">
-							<div class="option" v-html="'C.' + question.options[2]"></div>
-							<div class="option" v-html="'D.' + question.options[3]"></div>
-						</div>
-					</div>
-					<div v-for="question in question.sub_questions" class="question">
-						<div class="question_content" v-html="question.content"></div>
-						<div class="question_options_group">
-							<div class="option" v-html="'A.' + question.options[0]"></div>
-							<div class="option" v-html="'B.' + question.options[1]"></div>
-						</div>
-						<div class="question_options_group">
-							<div class="option" v-html="'C.' + question.options[2]"></div>
-							<div class="option" v-html="'D.' + question.options[3]"></div>
-						</div>
-					</div>
-				</div>
+				
 				<h3 v-show="currQTypeIndex == 2">三、数量关系</h3>
-				<div v-show="currQTypeIndex == 2" class="question" v-for="(question,index) in jsonData.questions_3">
-					<div class="question_content" v-html="question.content"></div>
-					<div v-if="question.options" class="question_options">
-						<div class="question_options_group">
-							<div class="option" v-html="'A.' + question.options[0]"></div>
-							<div class="option" v-html="'B.' + question.options[1]"></div>
-						</div>
-						<div class="question_options_group">
-							<div class="option" v-html="'C.' + question.options[2]"></div>
-							<div class="option" v-html="'D.' + question.options[3]"></div>
-						</div>
-					</div>
-					<div v-for="question in question.sub_questions" class="question">
-						<div class="question_content" v-html="question.content"></div>
-						<div class="question_options_group">
-							<div class="option" v-html="'A.' + question.options[0]"></div>
-							<div class="option" v-html="'B.' + question.options[1]"></div>
-						</div>
-						<div class="question_options_group">
-							<div class="option" v-html="'C.' + question.options[2]"></div>
-							<div class="option" v-html="'D.' + question.options[3]"></div>
-						</div>
-					</div>
-				</div>
+				
 				<h3 v-show="currQTypeIndex == 3">四、推理判断</h3>
-				<div v-show="currQTypeIndex == 3" class="question" v-for="(question,index) in jsonData.questions_4">
-					<div class="question_content" v-html="question.content"></div>
-					<div v-if="question.options" class="question_options">
-						<div class="question_options_group">
-							<div class="option" v-html="'A.' + question.options[0]"></div>
-							<div class="option" v-html="'B.' + question.options[1]"></div>
-						</div>
-						<div class="question_options_group">
-							<div class="option" v-html="'C.' + question.options[2]"></div>
-							<div class="option" v-html="'D.' + question.options[3]"></div>
-						</div>
-					</div>
-					<div v-for="question in question.sub_questions" class="question">
-						<div class="question_content" v-html="question.content"></div>
-						<div class="question_options_group">
-							<div class="option" v-html="'A.' + question.options[0]"></div>
-							<div class="option" v-html="'B.' + question.options[1]"></div>
-						</div>
-						<div class="question_options_group">
-							<div class="option" v-html="'C.' + question.options[2]"></div>
-							<div class="option" v-html="'D.' + question.options[3]"></div>
-						</div>
-					</div>
-				</div>
+				
 				<h3 v-show="currQTypeIndex == 4">五、资料分析</h3>
-				<div v-show="currQTypeIndex == 4" class="question" v-for="(question,index) in jsonData.questions_5">
-					<div class="question_content" v-html="question.content"></div>
-					<div v-if="question.options" class="question_options">
-						<div class="question_options_group">
-							<div class="option" v-html="'A.' + question.options[0]"></div>
-							<div class="option" v-html="'B.' + question.options[1]"></div>
+				<div v-for="(questionsgroup,index) in questions" v-show="currQTypeIndex == index">
+					<div  class="question" v-for="(question,index) in questionsgroup">
+						<div class="question_content">
+							<span v-if="!question.sub_questions" :id="'ques_'+question.no">{{question.no}}.</span>
+							<div v-html="' '+question.content"></div>
 						</div>
-						<div class="question_options_group">
-							<div class="option" v-html="'C.' + question.options[2]"></div>
-							<div class="option" v-html="'D.' + question.options[3]"></div>
+						<div v-if="question.options" class="question_options">
+							<div class="question_options_group">
+								<div class="option" v-html="'A.' + question.options[0]"></div>
+								<div class="option" v-html="'B.' + question.options[1]"></div>
+							</div>
+							<div class="question_options_group">
+								<div class="option" v-html="'C.' + question.options[2]"></div>
+								<div class="option" v-html="'D.' + question.options[3]"></div>
+							</div>
 						</div>
-					</div>
-					<div v-for="question in question.sub_questions" class="question">
-						<div class="question_content" v-html="question.content"></div>
-						<div class="question_options_group">
-							<div class="option" v-html="'A.' + question.options[0]"></div>
-							<div class="option" v-html="'B.' + question.options[1]"></div>
-						</div>
-						<div class="question_options_group">
-							<div class="option" v-html="'C.' + question.options[2]"></div>
-							<div class="option" v-html="'D.' + question.options[3]"></div>
+						<div v-for="question in question.sub_questions" class="question">
+							<div class="question_content">
+								<span :id="'ques_'+question.no">{{question.no}}. </span>
+								<div v-html="' '+question.content"></div>
+							</div>
+							<div class="question_options">
+								<div class="question_options_group">
+									<div class="option" v-html="'A.' + question.options[0]"></div>
+									<div class="option" v-html="'B.' + question.options[1]"></div>
+								</div>
+								<div class="question_options_group">
+									<div class="option" v-html="'C.' + question.options[2]"></div>
+									<div class="option" v-html="'D.' + question.options[3]"></div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -185,41 +103,81 @@ export default {
   data(){
     return {
       jsonData,
+      questions:[],
       letters:['A.','B.','C.','D.'],
 	  	pencanvas_show:false,
 	  	stuAnswerList:[],
-	  	currentNum:0,
+	  	currentNum:1,
 	  	questionCount:20,
 	  	questionTypeList:['常识','言语','数学','判推','资料'],
 	  	currQTypeIndex:0,
 	  	exampaperbox_expand:false,
 	  	examtimer:null,
-	  	examstatus:0
+	  	examstatus:0,
+	  	answers:[{},{},{},{},{}]
     }
   },
   mounted(){
-  	this.examtimer = this.$refs.examtimer
+  	this.init()
+    this.TypeSet([document.getElementsByClassName("output")])
   },
   methods:{
+  	init(){
+  		this.examtimer = this.$refs.examtimer
+  		this.questions = [
+      	this.jsonData.questions_1,
+        this.jsonData.questions_2,
+        this.jsonData.questions_3,
+        this.jsonData.questions_4,
+        this.jsonData.questions_5
+        ]
+  		var questionNum = 1
+	  	for (let i = 1; i <= 5; i++) {
+			  jsonData[`questions_${i}`].forEach(question => {
+			    if (question.answer) {
+			      this.answers[i - 1][questionNum] = {answer:question.answer,mine:''};
+			      questionNum++;
+			    }
+			    if (question.sub_questions){
+			    	question.sub_questions.forEach(subQ => {
+			    		if (subQ.answer) {
+					      this.answers[i - 1][questionNum] = {answer:subQ.answer,mine:''};
+					      questionNum++;
+					    }
+			    	})
+			    }
+			  });
+			}
+	  	// console.log(this.answers)
+  	},
     answer(item){
-    	var count = this.questionCount
-    	
+    	var count = Object.keys(this.answers[this.currQTypeIndex]).length
+    	const answers = this.answers[this.currQTypeIndex]
+    	answers[this.currentNum].mine = item
     	this.stuAnswerList[this.currentNum] = item
-
-    	let nextNum = (this.currentNum + 1) % count
-    	while( nextNum != this.currentNum){
-    		if(!this.stuAnswerList[nextNum]){
-    			this.currentNum = nextNum;
-    			break
-    		}
-    		nextNum = (nextNum + 1) % count
+    	if(answers[this.currentNum + 1]){
+    		this.currentNum++
+    	}else if(this.answers[this.currQTypeIndex+1]){
+    		this.switchType(this.currQTypeIndex+1)
+    	}else{
+    		alert('最后一道题了');
     	}
+    	
+    	// this.stuAnswerList[this.currentNum] = item
+
+    	// let nextNum = (this.currentNum + 1) % count
+    	// while( nextNum != this.currentNum){
+    	// 	if(!this.stuAnswerList[nextNum]){
+    	// 		this.currentNum = nextNum;
+    	// 		break
+    	// 	}
+    	// 	nextNum = (nextNum + 1) % count
+    	// }
 
     	// if (this.stuAnswerList[this.currentNum]) {
           // alert('所有题目都设置完了！');
       //     return;
       // }
-    	console.log(this.currentNum)
     },
     exampaperboxExpand(){
     	if(this.exampaperbox_expand){
@@ -250,9 +208,36 @@ export default {
     		this.examtimer.pause()
     	} 
     },
-
+    rollTo(num){
+    	this.currentNum = parseInt(num)
+    	const el = document.getElementById('ques_'+num)
+    	var offsetTop = el.offsetTop - this.$refs.right.scrollTop
+    	// this.$refs.right.scrollTop = offsetTop
+    	this.$refs.right.scrollBy({
+        top: offsetTop, // 偏移量
+        behavior: 'smooth' // 平滑滚动
+        });
+    },
+    switchType(index){
+    	this.currQTypeIndex = index;
+    	this.currentNum = parseInt(Object.keys(this.answers[index])[0])
+    	this.$refs.right.scrollTop = 0
+    },
+    TypeSet(elements){
+      if (!window.MathJax) {
+        console.log('no window.MathJax')
+        return
+      }
+      // window.MathJax.startup.promise = 
+      window.MathJax.startup.promise
+      .then(() => {
+        return window.MathJax.typesetPromise(elements)
+      })
+      .catch((err) => console.log('Typeset failed: ' + err.message))
+      
+      return window.MathJax.startup.promise
+    }
   }
-
 }
 </script>
 <style scoped>
@@ -386,10 +371,15 @@ export default {
 		display: flex;
 		flex-direction: column;
 		width: 100%;
+		line-height: 1.5rem;
 
 	}
 	.question_content{
 		white-space: pre-wrap;
+		display: flex;
+	}
+	.question_content img{
+		width: 100%;
 	}
 	.question_options{
 		display: flex;
@@ -397,6 +387,7 @@ export default {
     justify-content: space-between;
 		margin-top: 10px;
 		white-space: pre-wrap;
+		padding-left: 1rem;
 	}
 	.question_options_group{
 		flex-grow: 1;
@@ -407,6 +398,7 @@ export default {
 	}
 	.option {
 		flex-grow: 1;
+		padding-right: 3rem;
 	}
 
 	.fill-type{
@@ -455,6 +447,5 @@ export default {
 	}
 	.examtimer {
 		padding: 5px ;
-		
 	}
 </style>

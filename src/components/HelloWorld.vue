@@ -20,7 +20,7 @@
   <button @click="helloworldtimer.startTimer">start</button>
   <button @click="helloworldtimer.resetTimer">reset</button>
   <timer ref="helloworldtimer"></timer>
-
+  <div v-html="htmlcontent"></div>
   <!-- <pencanvas></pencanvas> -->
   
 </template>
@@ -51,11 +51,13 @@ export default {
       latx_show:false,
       json_show:false,
       totalPages:6,
-      helloworldtimer: null
+      helloworldtimer: null,
+      htmlcontent:"<span class=\"output\">$$\\frac{1}{2}$$</span><span class=\"output\">$$\\sqrt{3}$$</span>"
     }
   },
   mounted(){
     this.helloworldtimer = this.$refs.helloworldtimer
+    this.TypeSet([document.getElementsByClassName("output")])
   },
 
   methods:{
@@ -75,6 +77,21 @@ export default {
         that.$toast.show(error,'error');
       })
       
+    },
+
+    TypeSet(elements){
+      if (!window.MathJax) {
+        console.log('no window.MathJax')
+        return
+      }
+      // window.MathJax.startup.promise = 
+      window.MathJax.startup.promise
+      .then(() => {
+        return window.MathJax.typesetPromise(elements)
+      })
+      .catch((err) => console.log('Typeset failed: ' + err.message))
+      
+      return window.MathJax.startup.promise
     }
       
   }

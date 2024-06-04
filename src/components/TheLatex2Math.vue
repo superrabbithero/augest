@@ -15,7 +15,7 @@ export default {
     }
   },
   setup(props) {
-    const myFormula = ref("$$"+props.latex+"$$") //自己指定公式，也可以动态输入
+    // const myFormula = ref("$$"+props.latex+"$$") //自己指定公式，也可以动态输入
     
     //渲染函数，调用时会渲染指定节点elements，如果没有指定节点，渲染页面上所有公式
     //elements可以是一个DOM节点的数组(注意getXXXsByYYY的结果是collection，必须手动转为数组才行)
@@ -49,7 +49,7 @@ export default {
     })
     
     return {
-      myFormula,
+      // myFormula,
     }
   }
 }

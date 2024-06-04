@@ -10,8 +10,11 @@
                @pointermove="handlePointerMove"
                @pointerup="handlePointerUp"></canvas>
     <div class="edit-tools" >
-      <div :class="{'edit-tools-item':true,'active':erasing}" >
-        <IconWrapper @click="erase()" iconName="ClearFormat" theme="outline" :strokeWidth='4' fill="#ffc848" size="30" />
+      <div :class="{'edit-tools-item':true,'active':!erasing}" @click="getcanvastool('pencil')">
+        <img src="@/assets/imgs/canvastools/pen.png"/>
+      </div>
+      <div :class="{'edit-tools-item':true,'active':erasing}" @click="getcanvastool('eraser')">
+        <img src="@/assets/imgs/canvastools/eraser.png"/>
       </div>
     </div>
 </template>
@@ -196,17 +199,17 @@ export default {
     
     
     
-    erase(){
+    getcanvastool(tool){
       var ctx = this.context
-      if (this.erasing) {
+      if (tool == 'pencil') {
         this.context.globalCompositeOperation = 'source-over';
         this.context.lineWidth = 1;
-        // this.context.strokeStyle = 'red'; // Set the drawing color
-      } else {
+        this.erasing = false
+      } else if(tool == "eraser"){
         this.context.globalCompositeOperation = 'destination-out';
         this.context.lineWidth = 20; // Set the eraser size
+        this.erasing = true
       }
-      this.erasing = !this.erasing
     }
   },
 };
@@ -227,34 +230,44 @@ export default {
     z-index: 988;
   }
   .edit-tools{
+    padding: 0 10px;
     position: fixed;
-    background-color: var(--box-bgc);
+    display: flex;
+    height: 80px;
+    background-color: #fff4ca;
     border-radius: 20px 0 0 20px;
     padding-right: 50px;
     top: 150px;
-    right:-75px;
+    right:-160px;
     transition: right 0.3s ease;
-    box-shadow: var(--box-shadow)
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
   }
 
-  .edit-tools:hover{
-    position: fixed;
-    
+  .edit-tools:hover{   
     top: 150px;
-    right:0px;
+    right:-50px;
   }
 
   .edit-tools-item {
+    margin: 0 10px;
     width: 40px;
-    height: 40px;
+    overflow: hidden;
+    transform: translateY(25px);
+    transition: transform 0.3s ease;
+    
+/*    height: 40px;*/
 /*    border: 3px solid #ffc848;*/
-    border-radius: 23px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+
   }
+
+  .edit-tools-item img{
+    width: 40px;
+  }
+
   .edit-tools-item.active{
-    background-color: #123456;
+    transform: translateY(10px);
   }
+
   
 </style>

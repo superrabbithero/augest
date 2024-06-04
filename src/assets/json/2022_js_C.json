@@ -542,12 +542,12 @@
             "no": 48
         },
         {
-            "content": "1，<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1640265344107/253933bcb8cf57a5afbfd4b3133a706a\">，<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1640265344107/0519e7a5ad5627c3e902f876070a4c33\">，<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1640265344107/72de17f69cb4de539c56cf01de091aec\">，<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1640265344107/c045c2b2b9cf274d611e02a14d5cbf65\">，（    ）",
+            "content": "1，<span class=\"output\">$$\\sqrt{3}$$</span>，<span class=\"output\">$$\\sqrt{6}$$</span>，<span class=\"output\">$$2\\sqrt{6}$$</span>，<span class=\"output\">$$2\\sqrt{30}$$</span>（    ）",
             "options": [
-                "<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1640265344107/1a8d6cb091782a459f2559e9c44a5e6a\">",
-                "<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1640265344107/b8f62bab0dfadff0ac37fcc6c2a9fb8a\">",
-                "<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1640265344107/242d1ecfe7d8a05dd65d6f5c197d2449\">",
-                "<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1640265344107/b5c5531f126c3db3b0871b986c6cb5c5\">"
+                "<span class=\"output\">$$3\\sqrt{6}$$</span>",
+                "<span class=\"output\">$$4\\sqrt{2}$$</span>",
+                "<span class=\"output\">$$5\\sqrt{3}$$</span>",
+                "<span class=\"output\">$$12\\sqrt{5}$$</span>"
             ],
             "answer": "D",
             "no": 49

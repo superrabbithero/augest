@@ -89,6 +89,10 @@
   
 }
 
+img {
+    max-width: 100%;
+}
+
 .container {
     margin: 20px 30px;
     padding: 10px 20px ;
@@ -446,4 +450,8 @@ margin-left: -10px;
 .box-fixed{
     position: fixed; 
     width: -webkit-fill-available;
+}
+
+.output {
+    display: inline-block;
 }
