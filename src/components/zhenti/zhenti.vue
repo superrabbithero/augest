@@ -37,7 +37,13 @@
 		  	</div>
 		  </div>
 	  </div>
-	  <div class="exampaperbox-expand" @click="exampaperboxExpand()"></div>
+	  <div :class="{'exampaperbox-expand':true,'off':!exampaperbox_expand}" @click="exampaperboxExpand()">
+		<div v-show="!exampaperbox_expand" class="typeprocess" style="height: 100%;display: flex;flex-direction: column;">
+			<div v-for="(type,index) in questionTypeList" style="flex:20%" @click="switchType(index)">
+				{{type}}
+			</div>
+		</div>
+	  </div>
 	  <div class="exampaperbox-right" ref="right">
 			<div class="exampaper" style="position:relative;" >
 				<pencanvas v-if="pencanvas_show"></pencanvas>
@@ -111,7 +117,7 @@ export default {
 	  	questionCount:20,
 	  	questionTypeList:['常识','言语','数学','判推','资料'],
 	  	currQTypeIndex:0,
-	  	exampaperbox_expand:false,
+	  	exampaperbox_expand:true,
 	  	examtimer:null,
 	  	examstatus:0,
 	  	answers:[{},{},{},{},{}]
@@ -255,6 +261,7 @@ export default {
 	}
 	.exampaperbox-left{
 		flex-basis: 20%;
+		max-width: 240px;
 		display: flex;
 		overflow: hidden;
 		transition: flex-basis 0.3s ease
@@ -262,6 +269,7 @@ export default {
 	.exampaperbox-right{
 		overflow: auto;
 		flex-basis: 80%;
+		flex-grow: 1;
 		border-left: var(--box-border);
 		transition: flex-basis 0.3s ease
 	}
@@ -448,4 +456,6 @@ export default {
 	.examtimer {
 		padding: 5px ;
 	}
+
+	
 </style>
