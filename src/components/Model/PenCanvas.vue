@@ -9,12 +9,25 @@
                @pointerdown="handlePointerDown"
                @pointermove="handlePointerMove"
                @pointerup="handlePointerUp"></canvas>
-    <div class="edit-tools" >
-      <div :class="{'edit-tools-item':true,'active':!erasing}" @click="getcanvastool('pencil')">
-        <img src="@/assets/imgs/canvastools/pen.png"/>
+    <div :class="{'edit-tools-fixedbox':true,'show':editTools_show}">
+      <div :class="{'edit-tools-handle':true,'show':!editTools_show}" 
+               @pointerdown="handleStart"
+               @pointermove="handleMove"
+               @pointerup="handleEnd"
+               @pointerleave="handleCancel">
+        <img v-show="!erasing" src="@/assets/imgs/canvastools/pen.png"/>
+        <img v-show="erasing" src="@/assets/imgs/canvastools/eraser.png"/>
       </div>
-      <div :class="{'edit-tools-item':true,'active':erasing}" @click="getcanvastool('eraser')">
-        <img src="@/assets/imgs/canvastools/eraser.png"/>
+      <div class="edit-tools">
+        <div style="height: 100%;font-size: 18px;line-height: 50px;padding: 0 2px 0 2px;color:#252525" @click="editTools_show = false">&times;</div>
+        <div class="edit-tools-group">
+          <div :class="{'edit-tools-item':true,'active':!erasing}" @click="getcanvastool('pencil')">
+            <img src="@/assets/imgs/canvastools/pen.png"/>
+          </div>
+          <div :class="{'edit-tools-item':true,'active':erasing}" @click="getcanvastool('eraser')">
+            <img src="@/assets/imgs/canvastools/eraser.png"/>
+          </div>
+        </div>
       </div>
     </div>
 </template>
@@ -38,6 +51,8 @@ export default {
       startY:0,
       scrolltop:0,
      
+      editTools_show:false,
+
       erasing:false,
       el:null,
       points:[],
@@ -45,7 +60,9 @@ export default {
 
       penWidth: 5,
       canvasWidth:0,
-      canvasHeight:0
+      canvasHeight:0,
+
+      pressTimer:null
     }
   },
   mounted() {
@@ -205,10 +222,40 @@ export default {
         this.context.globalCompositeOperation = 'source-over';
         this.context.lineWidth = 1;
         this.erasing = false
+
       } else if(tool == "eraser"){
         this.context.globalCompositeOperation = 'destination-out';
         this.context.lineWidth = 20; // Set the eraser size
         this.erasing = true
+      }
+    },
+
+    //处理工具栏按钮事件
+    handleStart(){
+      this.pressTimer = setTimeout(() => {
+        this.editTools_show = true
+        clearTimeout(this.pressTimer)
+        this.pressTimer = null
+      }, 500);
+    },
+    handleMove(event){
+      if (this.pressTimer) {
+        clearTimeout(this.pressTimer);
+        this.pressTimer = null;
+      }
+    },
+    handleEnd(){
+      // 如果定时器还在，说明是点击事件
+      if (this.pressTimer) {
+        clearTimeout(this.pressTimer);
+        this.pressTimer = null;
+        this.getcanvastool(this.erasing ? "pencil":"eraser")
+      }
+    },
+    handleCancel(){
+      if (this.pressTimer) {
+        clearTimeout(this.pressTimer);
+        this.pressTimer = null;
       }
     }
   },
@@ -229,31 +276,69 @@ export default {
     right: 0;
     z-index: 988;
   }
-  .edit-tools{
-    padding: 0 10px;
+
+  .edit-tools-fixedbox{
     position: fixed;
-    display: flex;
-    height: 80px;
-    background-color: #fff4ca;
-    border-radius: 20px 0 0 20px;
-    padding-right: 50px;
     top: 150px;
-    right:-160px;
+    right:-185px;
     transition: right 0.3s ease;
-    box-shadow: var(--box-shadow);
-    overflow: hidden;
   }
 
-  .edit-tools:hover{   
-    top: 150px;
-    right:-50px;
+  .edit-tools-fixedbox.show{
+    right:-40px;
+  }
+
+  .edit-tools{
+/*    padding: 0 10px;*/
+    display: flex;
+    
+    height: 50px;
+    background-color: #fff4ca;
+    border-radius: 10px 0 0 10px;
+    padding-right: 50px;
+   
+    box-shadow: var(--box-shadow);
+  }
+
+
+  .edit-tools-handle{
+    position: absolute;
+    background-color: #fff4ca;
+    width: 40px;
+    height: 40px;
+    border-radius: 23px;
+    overflow: hidden;
+    left: -110px;
+    top: 4px;
+    border:3px solid black;
+    transition: opacity 0.3s ease,transform 0.3s ease;
+    opacity: 0;
+    transform: scale(0);
+  }
+
+  .edit-tools-handle.show{
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .edit-tools-handle img{
+    margin-top: 7px;
+    margin-left: 8px;
+    width: 25px;
+    -webkit-user-drag: none;
+  }
+
+  .edit-tools-group{
+    height: 100%;
+    display: flex;
+    overflow: hidden;
   }
 
   .edit-tools-item {
-    margin: 0 10px;
-    width: 40px;
+    margin: 0 5px;
+    width: 25px;
     overflow: hidden;
-    transform: translateY(25px);
+    transform: translateY(18px);
     transition: transform 0.3s ease;
     
 /*    height: 40px;*/
@@ -262,7 +347,8 @@ export default {
   }
 
   .edit-tools-item img{
-    width: 40px;
+    width: 25px;
+    -webkit-user-drag: none;
   }
 
   .edit-tools-item.active{
