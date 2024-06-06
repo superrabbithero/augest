@@ -289,14 +289,11 @@ export default {
   }
 
   .edit-tools{
-/*    padding: 0 10px;*/
     display: flex;
-    
     height: 50px;
     background-color: #fff4ca;
     border-radius: 10px 0 0 10px;
     padding-right: 50px;
-   
     box-shadow: var(--box-shadow);
   }
 
@@ -316,9 +313,14 @@ export default {
     transform: scale(0);
   }
 
+
   .edit-tools-handle.show{
-    opacity: 1;
+    opacity: 0.5;
     transform: scale(1);
+  }
+
+  .edit-tools-handle.show:hover{
+    opacity: 1;
   }
 
   .edit-tools-handle img{
