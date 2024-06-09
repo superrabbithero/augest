@@ -37,13 +37,8 @@
 		  	</div>
 		  </div>
 	  </div>
-	  <div :class="{'exampaperbox-expand':true,'off':!exampaperbox_expand}" @click="exampaperboxExpand()">
-		<div v-show="!exampaperbox_expand" class="typeprocess" style="height: 100%;display: flex;flex-direction: column;">
-			<div v-for="(type,index) in questionTypeList" style="flex:20%" @click="switchType(index)">
-				{{type}}
-			</div>
-		</div>
-	  </div>
+	  <div :class="{'exampaperbox-expand':true,'off':!exampaperbox_expand}" @click="exampaperboxExpand()"></div>
+
 	  <div class="exampaperbox-right" ref="right">
 			<div class="exampaper" style="position:relative;" >
 				<pencanvas v-if="pencanvas_show"></pencanvas>
@@ -57,7 +52,7 @@
 				
 				<h3 v-show="currQTypeIndex == 4">五、资料分析</h3>
 				<div v-for="(questionsgroup,index) in questions" v-show="currQTypeIndex == index">
-					<div  class="question" v-for="(question,index) in questionsgroup">
+					<div :class="{'question':true,'active':!question.sub_questions && question.no==currentNum}" v-for="(question,index) in questionsgroup" @click="currentNum = !question.sub_questions?parseInt(question.no):currentNum">
 						<div class="question_content">
 							<span v-if="!question.sub_questions" :id="'ques_'+question.no">{{question.no}}.</span>
 							<div v-html="' '+question.content"></div>
@@ -72,7 +67,7 @@
 								<div class="option" v-html="'D.' + question.options[3]"></div>
 							</div>
 						</div>
-						<div v-for="question in question.sub_questions" class="question">
+						<div v-for="question in question.sub_questions" :class="{'question':true,'active':question.no==currentNum}" @click="currentNum = parseInt(question.no)">
 							<div class="question_content">
 								<span :id="'ques_'+question.no">{{question.no}}. </span>
 								<div v-html="' '+question.content"></div>
@@ -91,6 +86,24 @@
 					</div>
 				</div>
 			</div>
+		</div>
+		<div class="exampaperbox-bottom" ref="bottom">
+			<div class="fill-option">
+  			<div v-for="(item, index) in ['A','B','C','D']" :class="{'item':true,'selected':stuAnswerList[currentNum] == item}" @click="answer(item)">{{item}}</div>
+  			<div :style="{lineHeight: '38px', padding: '0 10px',fontSize: '30px',transform: 'rotate(90deg)'+(exampaperbox_expand?'':' scaleX(-1)')}" @click="exampaperbox_expand=!exampaperbox_expand">
+  				&rsaquo;
+  			</div>
+  		</div>
+			<div class="fillcard" v-show="exampaperbox_expand">
+	  		<ul class="fill-type" style="flex-basis: 100%;">
+	  			<li v-for="(type,index) in questionTypeList" :class="{'active':currQTypeIndex == index}" @click="switchType(index)">{{type}}</li>
+	  		</ul>
+  			<div v-for="(answerGroup,index) in answers" class="circle-groups" v-show="currQTypeIndex == index">
+	  			<div v-for="(key,index) in Object.keys(answerGroup)" class="circle-groups-item">
+	  				<div :class="{'circle':true,'answered':answerGroup[key].mine,'current':key == currentNum}" @click="rollTo(key)">{{key}}</div>
+	  			</div>
+	  		</div>
+		  </div>
 		</div>
 	</div>
 </template>
@@ -163,6 +176,7 @@ export default {
     	this.stuAnswerList[this.currentNum] = item
     	if(answers[this.currentNum + 1]){
     		this.currentNum++
+    		this.rollTo(this.currentNum)
     	}else if(this.answers[this.currQTypeIndex+1]){
     		this.switchType(this.currQTypeIndex+1)
     	}else{
@@ -256,7 +270,9 @@ export default {
 	}
 
 	.exampaperbox{
+		width: 100%;
 		display: flex;
+		overflow: hidden;
 		height: calc(100vh - 61px);
 	}
 	.exampaperbox-left{
@@ -272,7 +288,27 @@ export default {
 		flex-grow: 1;
 		border-left: var(--box-border);
 		transition: flex-basis 0.3s ease
+
 	}
+
+	.exampaperbox-bottom{
+		background-color: var(--content-bgc);
+		width: 100%;
+		bottom: 0;
+	}
+	.exampaperbox-bottom .fillcard{
+		width: 100%;
+		top: 0;
+	}
+
+	.exampaperbox-bottom .fillcard .circle-groups-item{
+		width: calc(10% - 10px);
+		padding-top: calc(10% - 10px);
+		margin: 5px;
+		box-sizing: border-box;
+		position: relative;
+	}
+
 	.answercard{
 		padding: 10px 10px;
 	}
@@ -370,18 +406,22 @@ export default {
 	}
 
 	.exampaper{
-		
-		padding: 0 1rem;
+		padding: 0 10px;
+	}
+
+	.exampaper h3{
+		padding: 0 8px;
 	}
 	.question{
 		margin-bottom: 30px;
 		text-align: left;
 		display: flex;
 		flex-direction: column;
-		width: 100%;
 		line-height: 1.5rem;
-
+		padding: 8px;
+		border-radius: 10px;
 	}
+	
 	.question_content{
 		white-space: pre-wrap;
 		display: flex;
@@ -457,5 +497,37 @@ export default {
 		padding: 5px ;
 	}
 
+	@media (max-width:460px){
+		.exampaperbox{
+			flex-direction: column;
+			height: calc(100svh - 61px);
+		}
+		.exampaperbox-left , .exampaperbox-expand{
+			display: none;
+		}
+		.exampaperbox-right{
+			overflow: auto;
+/*			flex-basis: 100%;*/
+			flex-grow: 1;
+
+		}
+		.question {
+/*			filter:blur(2px);*/
+		}
+		.question.active{
+			background-color: var(--card-hightlight);
+/*			filter:blur(0);*/
+		}
+		.circle-groups{
+			height: 100px;
+			overflow: auto;
+			align-content: flex-start;
+		}
+	}
+	@media (min-width:461px){
+		.exampaperbox-bottom{
+			display: none;
+		}
+	}
 	
 </style>
