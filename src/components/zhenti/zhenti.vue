@@ -42,15 +42,8 @@
 	  <div class="exampaperbox-right" ref="right">
 			<div class="exampaper" style="position:relative;" >
 				<pencanvas v-if="pencanvas_show"></pencanvas>
-				<h3 v-show="currQTypeIndex == 0">一、常识判断</h3>
-				
-				<h3 v-show="currQTypeIndex == 1">二、言语理解</h3>
-				
-				<h3 v-show="currQTypeIndex == 2">三、数量关系</h3>
-				
-				<h3 v-show="currQTypeIndex == 3">四、推理判断</h3>
-				
-				<h3 v-show="currQTypeIndex == 4">五、资料分析</h3>
+				<h3 v-for="(title, index) in ['一、常识判断', '二、言语理解', '三、数量关系', '四、推理判断', '五、资料分析']" 
+      v-show="currQTypeIndex == index">{{ title }}</h3>
 				<div v-for="(questionsgroup,index) in questions" v-show="currQTypeIndex == index">
 					<div :class="{'question':true,'active':!question.sub_questions && question.no==currentNum}" v-for="(question,index) in questionsgroup" @click="currentNum = !question.sub_questions?parseInt(question.no):currentNum">
 						<div class="question_content">
@@ -59,12 +52,13 @@
 						</div>
 						<div v-if="question.options" class="question_options">
 							<div class="question_options_group">
-								<div class="option" v-html="'A.' + question.options[0]"></div>
-								<div class="option" v-html="'B.' + question.options[1]"></div>
+								<div :class="{ 'option':true, 'answered': stuAnswerList[parseInt(question.no)] == 'A'}" @click="answerthis(parseInt(question.no),'A')" v-html="'A.' + question.options[0]">
+								</div>
+								<div :class="{ 'option':true, 'answered': stuAnswerList[parseInt(question.no)] == 'B'}" @click="answerthis(parseInt(question.no),'B')" v-html="'B.' + question.options[1]"></div>
 							</div>
 							<div class="question_options_group">
-								<div class="option" v-html="'C.' + question.options[2]"></div>
-								<div class="option" v-html="'D.' + question.options[3]"></div>
+								<div :class="{ 'option':true, 'answered': stuAnswerList[parseInt(question.no)] == 'C'}" @click="answerthis(parseInt(question.no),'C')" v-html="'C.' + question.options[2]"></div>
+								<div :class="{ 'option':true, 'answered': stuAnswerList[parseInt(question.no)] == 'D'}" @click="answerthis(parseInt(question.no),'D')" v-html="'D.' + question.options[3]"></div>
 							</div>
 						</div>
 						<div v-for="question in question.sub_questions" :class="{'question':true,'active':question.no==currentNum}" @click="currentNum = parseInt(question.no)">
@@ -74,12 +68,12 @@
 							</div>
 							<div class="question_options">
 								<div class="question_options_group">
-									<div class="option" v-html="'A.' + question.options[0]"></div>
-									<div class="option" v-html="'B.' + question.options[1]"></div>
+									<div :class="{ 'option':true, 'answered': stuAnswerList[parseInt(question.no)] == 'A'}" @click="answerthis(parseInt(question.no),'A')" v-html="'A.' + question.options[0]"></div>
+									<div :class="{ 'option':true, 'answered': stuAnswerList[parseInt(question.no)] == 'B'}" @click="answerthis(parseInt(question.no),'B')" v-html="'B.' + question.options[1]"></div>
 								</div>
 								<div class="question_options_group">
-									<div class="option" v-html="'C.' + question.options[2]"></div>
-									<div class="option" v-html="'D.' + question.options[3]"></div>
+									<div :class="{ 'option':true, 'answered': stuAnswerList[parseInt(question.no)] == 'C'}" @click="answerthis(parseInt(question.no),'C')" v-html="'C.' + question.options[2]"></div>
+									<div :class="{ 'option':true, 'answered': stuAnswerList[parseInt(question.no)] == 'D'}" @click="answerthis(parseInt(question.no),'D')" v-html="'D.' + question.options[3]"></div>
 								</div>
 							</div>
 						</div>
@@ -88,17 +82,14 @@
 			</div>
 		</div>
 		<div class="exampaperbox-bottom" ref="bottom">
-			<div class="fill-option">
-  			<div v-for="(item, index) in ['A','B','C','D']" :class="{'item':true,'selected':stuAnswerList[currentNum] == item}" @click="answer(item)">{{item}}</div>
-  			<div :style="{lineHeight: '38px', padding: '0 10px',fontSize: '30px',transform: 'rotate(90deg)'+(exampaperbox_expand?'':' scaleX(-1)')}" @click="exampaperbox_expand=!exampaperbox_expand">
-  				&rsaquo;
-  			</div>
-  		</div>
-			<div class="fillcard" v-show="exampaperbox_expand">
+			<div :style="{lineHeight: '10px', padding: '0 10px',fontSize: '30px',transform: 'rotate(90deg)'+(exampaperbox_expand?'':' scaleX(-1)'), position: 'absolute',top:'-10px'}" @click="exampaperbox_expand=!exampaperbox_expand">
+				&rsaquo;
+			</div>
+			<div class="fillcard" >
 	  		<ul class="fill-type" style="flex-basis: 100%;">
 	  			<li v-for="(type,index) in questionTypeList" :class="{'active':currQTypeIndex == index}" @click="switchType(index)">{{type}}</li>
 	  		</ul>
-  			<div v-for="(answerGroup,index) in answers" class="circle-groups" v-show="currQTypeIndex == index">
+  			<div v-for="(answerGroup,index) in answers" class="circle-groups" v-show="exampaperbox_expand && currQTypeIndex == index">
 	  			<div v-for="(key,index) in Object.keys(answerGroup)" class="circle-groups-item">
 	  				<div :class="{'circle':true,'answered':answerGroup[key].mine,'current':key == currentNum}" @click="rollTo(key)">{{key}}</div>
 	  			</div>
@@ -133,7 +124,7 @@ export default {
 	  	exampaperbox_expand:true,
 	  	examtimer:null,
 	  	examstatus:0,
-	  	answers:[{},{},{},{},{}]
+	  	answers:[{},{},{},{},{}],
     }
   },
   mounted(){
@@ -172,6 +163,7 @@ export default {
     answer(item){
     	var count = Object.keys(this.answers[this.currQTypeIndex]).length
     	const answers = this.answers[this.currQTypeIndex]
+
     	answers[this.currentNum].mine = item
     	this.stuAnswerList[this.currentNum] = item
     	if(answers[this.currentNum + 1]){
@@ -243,6 +235,16 @@ export default {
     	this.currentNum = parseInt(Object.keys(this.answers[index])[0])
     	this.$refs.right.scrollTop = 0
     },
+
+    answerthis(no,item){
+    	if(this.currentNum == no){
+    		const answers = this.answers[this.currQTypeIndex]
+	    	answers[no].mine = item
+	    	this.stuAnswerList[no] = item
+    	}
+    	
+    },
+
     TypeSet(elements){
       if (!window.MathJax) {
         console.log('no window.MathJax')
@@ -292,9 +294,10 @@ export default {
 	}
 
 	.exampaperbox-bottom{
-		background-color: var(--content-bgc);
+/*		background-color: var(--content-bgc);*/
 		width: 100%;
 		bottom: 0;
+		position: relative;
 	}
 	.exampaperbox-bottom .fillcard{
 		width: 100%;
@@ -414,12 +417,18 @@ export default {
 	}
 	.question{
 		margin-bottom: 30px;
+		border: 1px solid var(--content-bgc);
 		text-align: left;
 		display: flex;
 		flex-direction: column;
 		line-height: 1.5rem;
 		padding: 8px;
 		border-radius: 10px;
+	}
+
+	.question.active{
+/*		background-color: var(--card-hightlight);*/
+		border: 1px solid #edca7f;
 	}
 	
 	.question_content{
@@ -439,15 +448,30 @@ export default {
 	}
 	.question_options_group{
 		flex-grow: 1;
-/*		flex-shrink: 0;*/
-/*		flex-basis: 50%;*/
+		min-width: 50%;
+		box-sizing: border-box;
 		display: flex;
 		flex-wrap: wrap;
 	}
+
 	.option {
-		flex-grow: 1;
-		padding-right: 3rem;
+		min-width: 50%;
+		box-sizing: border-box;
+		padding: 0.5rem 10px;
+		border-radius: 10px;
+		cursor: pointer;
 	}
+
+	.option:hover {
+
+	}
+
+	.option.answered{
+/*		background-color: #7892b5*/
+		color: #f67280;
+/*		color: #91b5a9;*/
+	}
+
 
 	.fill-type{
 		display: flex;
