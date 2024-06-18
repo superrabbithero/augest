@@ -75,9 +75,23 @@ export default {
   },
   methods: {
     resize(Imgdata){
-        
         const canvas = this.$refs.canvas;
-        const imageData = this.context.getImageData(0, 0, canvas.width, canvas.height);
+        let imageData = null
+        if(Imgdata){
+          imageData = Imgdata
+        }else{
+          imageData = this.context.getImageData(0, 0, canvas.width, canvas.height);
+        }
+
+        // 保存当前的绘图状态
+        const strokeStyle = this.context.strokeStyle;
+        const fillStyle = this.context.fillStyle;
+        const lineWidth = this.context.lineWidth;
+        const font = this.context.font;
+        const textAlign = this.context.textAlign;
+        const textBaseline = this.context.textBaseline;
+        const globalCompositeOperation = this.context.globalCompositeOperation;
+        
         canvas.width = this.el.clientWidth;
         canvas.height = this.el.clientHeight;
         this.canvasWidth = canvas.width;
@@ -88,6 +102,14 @@ export default {
 
         // 恢复画布内容
         this.context.putImageData(imageData, 0, 0);
+        // 恢复绘图状态
+        this.context.strokeStyle = strokeStyle;
+        this.context.fillStyle = fillStyle;
+        this.context.lineWidth = lineWidth;
+        this.context.font = font;
+        this.context.textAlign = textAlign;
+        this.context.textBaseline = textBaseline;
+        this.context.globalCompositeOperation = globalCompositeOperation
 
     },
     init() {
@@ -273,7 +295,7 @@ export default {
 
   .buttonbox{
     position: fixed;
-    right: 0;
+    left: 0;
     z-index: 988;
   }
 

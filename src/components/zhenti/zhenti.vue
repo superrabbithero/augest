@@ -1,6 +1,27 @@
-<template>	
-  <div class="exampaperbox">
-	  <div class="exampaperbox-left" ref="left">
+<template>
+	<div :class="{'pause-screen':true,'show':examstatus==2}">
+		<IconWrapper class="pause" iconName="Play" @click="examstart()" theme="filled" :size='100'/>
+	</div>	
+  <div class="exampaperbox" >
+		<div v-show="exampaperbox_expand" class="buttonbox top" style="position:absolute;top: 71px;right: 10px;z-index: 1;">
+  		<div class="button-items">
+	  		<div class="button-item" v-show="examstatus!=1" @click="examstart()">
+	  			<IconWrapper iconName="PlayOne" theme="outline" :strokeWidth='1' />
+	  		</div>
+	  		<div class="button-item" v-show="examstatus==1" @click="exampause()">
+	  			<IconWrapper iconName="Pause" theme="outline" :strokeWidth='1' />
+	  		</div>
+	  		<div class="button-item" v-show="examstatus!=0" @click="examstop()">
+	  			<IconWrapper iconName="SquareSmall" theme="outline" :strokeWidth='1' />
+	  		</div>
+	  		<div class="button-item" @click="pencanvas_show=!pencanvas_show">
+	  			<IconWrapper iconName="HandPaintedPlate" theme="outline" :strokeWidth='1' />
+	  		</div>
+	  	</div>
+	  	<div class="examtimer">{{timer}}</div>
+  	</div>
+	  <div :class="{'exampaperbox-left':true,'expand':exampaperbox_expand}" ref="left">
+	  	
 	  	<div class="answercard" style="flex: 1;">
 	  		<div class="buttonbox">
 	  			<timer ref="examtimer" class="examtimer"></timer>
@@ -40,12 +61,12 @@
 	  <div :class="{'exampaperbox-expand':true,'off':!exampaperbox_expand}" @click="exampaperboxExpand()"></div>
 
 	  <div class="exampaperbox-right" ref="right">
-			<div class="exampaper" style="position:relative;" >
+			<div class="exampaper">
 				<pencanvas v-if="pencanvas_show"></pencanvas>
 				<h3 v-for="(title, index) in ['一、常识判断', '二、言语理解', '三、数量关系', '四、推理判断', '五、资料分析']" 
       v-show="currQTypeIndex == index">{{ title }}</h3>
 				<div v-for="(questionsgroup,index) in questions" v-show="currQTypeIndex == index">
-					<div :class="{'question':true,'active':!question.sub_questions && question.no==currentNum}" v-for="(question,index) in questionsgroup" @click="currentNum = !question.sub_questions?parseInt(question.no):currentNum">
+					<div :class="{'question':true,'active':!pencanvas_show && !question.sub_questions && question.no==currentNum}" v-for="(question,index) in questionsgroup" @click="currentNum = !question.sub_questions?parseInt(question.no):currentNum">
 						<div class="question_content">
 							<span v-if="!question.sub_questions" :id="'ques_'+question.no">{{question.no}}.</span>
 							<div v-html="' '+question.content"></div>
@@ -61,7 +82,7 @@
 								<div :class="{ 'option':true, 'answered': stuAnswerList[parseInt(question.no)] == 'D'}" @click="answerthis(parseInt(question.no),'D')" v-html="'D.' + question.options[3]"></div>
 							</div>
 						</div>
-						<div v-for="question in question.sub_questions" :class="{'question':true,'active':question.no==currentNum}" @click="currentNum = parseInt(question.no)">
+						<div v-for="question in question.sub_questions" :class="{'question':true,'active':!pencanvas_show && question.no==currentNum}" @click="currentNum = parseInt(question.no)">
 							<div class="question_content">
 								<span :id="'ques_'+question.no">{{question.no}}. </span>
 								<div v-html="' '+question.content"></div>
@@ -123,6 +144,7 @@ export default {
 	  	currQTypeIndex:0,
 	  	exampaperbox_expand:true,
 	  	examtimer:null,
+	  	timer:"00:00:00",
 	  	examstatus:0,
 	  	answers:[{},{},{},{},{}],
     }
@@ -175,32 +197,9 @@ export default {
     		alert('最后一道题了');
     	}
     	
-    	// this.stuAnswerList[this.currentNum] = item
-
-    	// let nextNum = (this.currentNum + 1) % count
-    	// while( nextNum != this.currentNum){
-    	// 	if(!this.stuAnswerList[nextNum]){
-    	// 		this.currentNum = nextNum;
-    	// 		break
-    	// 	}
-    	// 	nextNum = (nextNum + 1) % count
-    	// }
-
-    	// if (this.stuAnswerList[this.currentNum]) {
-          // alert('所有题目都设置完了！');
-      //     return;
-      // }
     },
     exampaperboxExpand(){
-    	if(this.exampaperbox_expand){
-    		this.exampaperbox_expand=false
-    		this.$refs.left.style.flexBasis = '0'
-    		this.$refs.right.style.flexBasis = '100%'
-    	}else{
-    		this.exampaperbox_expand=true
-    		this.$refs.left.style.flexBasis = '20%'
-    		this.$refs.right.style.flexBasis = '80%'
-    	}
+    	this.exampaperbox_expand = !this.exampaperbox_expand
     },
     examstart(){
     	if(this.examstatus != 1){
@@ -278,19 +277,29 @@ export default {
 		height: calc(100vh - 61px);
 	}
 	.exampaperbox-left{
-		flex-basis: 20%;
-		max-width: 240px;
+		background-color: var(--content-bgc);
+		border-radius: 0 0 14px 14px;
+		position: absolute;
+		right: 10px;
+		padding: 10px;
+		width: 280px;
 		display: flex;
-		overflow: hidden;
-		transition: flex-basis 0.3s ease
+		transition: transform 0.3s ease;
+		z-index: 2;
+		border: var(--box-border);
+
 	}
+
+	.exampaperbox-left.expand {
+		transform: translateY(-100%);
+	}
+
 	.exampaperbox-right{
 		overflow: auto;
-		flex-basis: 80%;
+		flex-basis: 100%;
 		flex-grow: 1;
 		border-left: var(--box-border);
 		transition: flex-basis 0.3s ease
-
 	}
 
 	.exampaperbox-bottom{
@@ -409,6 +418,7 @@ export default {
 	}
 
 	.exampaper{
+		position:relative;
 		padding: 0 10px;
 	}
 
@@ -503,8 +513,18 @@ export default {
 		display: flex;
 		justify-content: center;
     align-items: center;
-    
 	}
+
+	.buttonbox.top .button-items {
+		background-color: var(--content-bgc);
+		transition: opacity 0.3s ease;
+		opacity: 0.5;
+	}
+
+	.buttonbox.top:hover .button-items {
+		opacity: 1;
+	}
+
 	.buttonbox .button-items{
 		border: var(--box-border);
     border-radius: 5px;
@@ -553,5 +573,26 @@ export default {
 			display: none;
 		}
 	}
+
+.pause-screen {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 999;
+    backdrop-filter: blur(5px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+	.pause-screen .pause {
+	filter: drop-shadow(var(--box-shadow));
+
+}
+
+.pause-screen.show {
+    display: flex;
+}
 	
 </style>
