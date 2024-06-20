@@ -6,17 +6,21 @@
 		<div v-show="exampaperbox_expand" class="buttonbox top" style="position:absolute;top: 71px;right: 10px;z-index: 1;">
   		<div class="button-items">
 	  		<div class="button-item" v-show="examstatus!=1" @click="examstart()">
-	  			<IconWrapper iconName="PlayOne" theme="outline" :strokeWidth='1' />
+	  			<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="M10 20H8V4h2v2h2v3h2v2h2v2h-2v2h-2v3h-2v2z" fill="currentColor"/> </svg>
 	  		</div>
 	  		<div class="button-item" v-show="examstatus==1" @click="exampause()">
-	  			<IconWrapper iconName="Pause" theme="outline" :strokeWidth='1' />
+	  			<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="M10 4H5v16h5V4zm9 0h-5v16h5V4z" fill="currentColor"/> </svg>
 	  		</div>
 	  		<div class="button-item" v-show="examstatus!=0" @click="examstop()">
-	  			<IconWrapper iconName="SquareSmall" theme="outline" :strokeWidth='1' />
+	  			<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="M3 3h18v18H3V3zm16 16V5H5v14h14z" fill="currentColor"/> </svg>
 	  		</div>
 	  		<div class="button-item" @click="pencanvas_show=!pencanvas_show">
-	  			<IconWrapper iconName="HandPaintedPlate" theme="outline" :strokeWidth='1' />
+	  			<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="M18 2h-2v2h2V2zM4 4h6v2H4v14h14v-6h2v8H2V4h2zm4 8H6v6h6v-2h2v-2h-2v2H8v-4zm4-2h-2v2H8v-2h2V8h2V6h2v2h-2v2zm2-6h2v2h-2V4zm4 0h2v2h2v2h-2v2h-2v2h-2v-2h2V8h2V6h-2V4zm-4 8h2v2h-2v-2z" fill="currentColor"/> </svg>
 	  		</div>
+	  		<div class="button-item" @click="exampaperboxExpand()">
+	  			<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="M3 3h18v18H3V3zm2 2v14h14V5H5zm2 2h4v4H7V7zm6 0h4v4h-4V7zm-6 6h4v4H7v-4zm6 0h4v4h-4v-4z" fill="currentColor"/> </svg>
+	  		</div>
+	  		
 	  	</div>
 	  	<div class="examtimer">{{timer}}</div>
   	</div>
@@ -29,16 +33,19 @@
 		  	<div class="buttonbox">
 		  		<div class="button-items">
 			  		<div class="button-item" v-show="examstatus!=1" @click="examstart()">
-			  			<IconWrapper iconName="PlayOne" theme="outline" :strokeWidth='1' />
+			  			<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="M10 20H8V4h2v2h2v3h2v2h2v2h-2v2h-2v3h-2v2z" fill="currentColor"/> </svg>
 			  		</div>
 			  		<div class="button-item" v-show="examstatus==1" @click="exampause()">
-			  			<IconWrapper iconName="Pause" theme="outline" :strokeWidth='1' />
+			  			<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="M10 4H5v16h5V4zm9 0h-5v16h5V4z" fill="currentColor"/> </svg>
 			  		</div>
 			  		<div class="button-item" v-show="examstatus!=0" @click="examstop()">
-			  			<IconWrapper iconName="SquareSmall" theme="outline" :strokeWidth='1' />
+			  			<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="M3 3h18v18H3V3zm16 16V5H5v14h14z" fill="currentColor"/> </svg>
 			  		</div>
 			  		<div class="button-item" @click="pencanvas_show=!pencanvas_show">
-			  			<IconWrapper iconName="HandPaintedPlate" theme="outline" :strokeWidth='1' />
+			  			<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="M18 2h-2v2h2V2zM4 4h6v2H4v14h14v-6h2v8H2V4h2zm4 8H6v6h6v-2h2v-2h-2v2H8v-4zm4-2h-2v2H8v-2h2V8h2V6h2v2h-2v2zm2-6h2v2h-2V4zm4 0h2v2h2v2h-2v2h-2v2h-2v-2h2V8h2V6h-2V4zm-4 8h2v2h-2v-2z" fill="currentColor"/> </svg>
+			  		</div>
+			  		<div class="button-item" @click="exampaperboxExpand()">
+			  			<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path fill="currentColor" d="M4 11h16v2H4z"/> </svg>
 			  		</div>
 			  	</div>
 		  	</div>
@@ -526,19 +533,28 @@ export default {
 	}
 
 	.buttonbox .button-items{
+		display: flex;
 		border: var(--box-border);
     border-radius: 5px;
 	}
 	.button-items .button-item {
-		display: inline-block;
-		padding: 2px 10px;
+		display: flex;
+		padding: 5px 10px;
 		border-left: var(--box-border);
+	}
+
+	.button-items .button-item svg{
+		width: 18px;
 	}
 	.button-items .button-item:first-child {
 		border: none;
 	}
 	.examtimer {
+		text-align: center;
+		width:95px;
 		padding: 5px ;
+		font-size: 1.5rem;
+		font-family: 'GoodfonT-NET-XS03';
 	}
 
 	@media (max-width:460px){

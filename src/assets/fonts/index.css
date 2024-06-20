@@ -2,3 +2,15 @@
     font-family: 'SmileySans-Oblique';
     src: url('SmileySans-Oblique.ttf') format('truetype');
 }
+@font-face {
+    font-family: 'GoodfonT-NET-XS03';
+    src: url('GoodfonT-NET-XS03-2.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'GoodfonT-NET-XS04';
+    src: url('GoodfonT-NET-XS04-2.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'ScreenMatrix';
+    src: url('ScreenMatrix-1.ttf') format('truetype');
+}

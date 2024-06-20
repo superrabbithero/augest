@@ -10,7 +10,6 @@ import Post from "@/components/Post"
 import Pct2Fct from "@/components/Pct2Fct"
 import Ziliaofx from "@/components/ziliaofx"
 import GifEdit from "@/components/page/GifEdit"
-import zhenti from "@/components/zhenti/zhenti"
 import examhome from "@/components/zhenti/ExamHome"
 
 
@@ -90,7 +89,7 @@ const routes = [
     {
         path: '/zhenti',
         name: 'zhenti',
-        component: zhenti,
+        component: () => import("@/components/zhenti/zhenti"),
         meta:{
             title: '真题'
         }
