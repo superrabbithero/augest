@@ -1,15 +1,9 @@
 <template>
-  
-    <div class="buttonbox">
-      <button   @click="switchmode">模式：{{mode}}</button>
-      <button   @click="resize()">resize</button>
-      <h4>{{canvasWidth}} x {{canvasHeight}}</h4>
-    </div>
-    <canvas ref="canvas" 
+    <canvas v-show="show" ref="canvas" 
                @pointerdown="handlePointerDown"
                @pointermove="handlePointerMove"
                @pointerup="handlePointerUp"></canvas>
-    <div :class="{'edit-tools-fixedbox':true,'show':editTools_show}">
+    <div v-show="show" :class="{'edit-tools-fixedbox':true,'show':editTools_show}">
       <div :class="{'edit-tools-handle':true,'show':!editTools_show}" 
                @pointerdown="handleStart"
                @pointermove="handleMove"
@@ -17,6 +11,7 @@
                @pointerleave="handleCancel">
         <img v-show="!erasing" src="@/assets/imgs/canvastools/pen.png"/>
         <img v-show="erasing" src="@/assets/imgs/canvastools/eraser.png"/>
+
       </div>
       <div class="edit-tools">
         <div style="height: 100%;font-size: 18px;line-height: 50px;padding: 0 2px 0 2px;color:#252525" @click="editTools_show = false">&times;</div>
@@ -28,6 +23,33 @@
             <img src="@/assets/imgs/canvastools/eraser.png"/>
           </div>
         </div>
+        <div style="width:25px;display:flex;color:#252525;margin-left:15px" @click="setting_show = true">
+          <svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="M15 1v6H9V1h6zm-2 2h-2v2h2V3zm2 6v6H9V9h6zm-2 2h-2v2h2v-2zm2 6v6H9v-6h6zm-2 2h-2v2h2v-2z" fill="currentColor"/> </svg>
+        </div>
+      </div>
+    </div>
+
+    <div v-show="show && setting_show" class="canvas-setting">
+      <div style="position: absolute;top: 5px;right: 5px;width: 20px;color: #ff5252;" @click="setting_show = false">
+        <svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="M5 3H3v18h18V3H5zm14 2v14H5V5h14zm-8 4H9V7H7v2h2v2h2v2H9v2H7v2h2v-2h2v-2h2v2h2v2h2v-2h-2v-2h-2v-2h2V9h2V7h-2v2h-2v2h-2V9z" fill="currentColor"/> </svg>
+      </div>
+      
+      <div class="content-items">
+        画笔大小：
+        <input type="range" class="custom-range" v-model="penWidth" min="2" max="15">  {{penWidth}}
+      </div>
+      <div class="content-items">
+        橡皮大小：
+        <input type="range" class="custom-range" v-model="eraserWidth" min="5" max="30">   {{eraserWidth}}
+      </div>
+      <div class="content-items">
+        画笔颜色：
+        <div v-for="color in colorList" @click="penColor = color" class="color-item" :style="{backgroundColor:color,height: color==penColor ? '20px':'15px'}"></div>
+      </div>
+      <div class="content-items">
+        仅触控笔：
+        <div @click="switchmode()" :class="{'switch-botton':true, 'close':mode=='all touch'}"></div>
+        {{mode=='only pen' ? '开' : '关' }}
       </div>
     </div>
 </template>
@@ -35,6 +57,27 @@
 <script>
 
 export default {
+  props:{
+    show:{
+      type: Boolean,
+      required: true,
+      default: false
+    },
+    width: Number,
+    height: Number,
+    switch: Number,
+  },
+  watch: {
+    switch(newval, oldval){
+      this.changeCanvas(newval, oldval)
+      console.log(newval, oldval)
+    },
+    show(newval, oldval){
+      if(newval){
+        this.resize()
+      }
+    }
+  },
   data(){
     return{
       log:"",
@@ -59,14 +102,23 @@ export default {
       beginPoint:{x:0,y:0},
 
       penWidth: 5,
+      eraserWidth: 10,
+      penColor: '#f00',
       canvasWidth:0,
       canvasHeight:0,
 
-      pressTimer:null
+      pressTimer:null,
+
+      imgDataList:[],
+
+      setting_show:false,
+
+      colorList:['#000','#f00','#ffa500','#ff0','#90ee90','#87ceeb','#fff'],
     }
   },
   mounted() {
     this.init()
+    console.log(this.width,this.height)
   },
   beforeUnmount() {
     if (this.animationFrameId) {
@@ -74,43 +126,47 @@ export default {
     }
   },
   methods: {
-    resize(Imgdata){
-        const canvas = this.$refs.canvas;
-        let imageData = null
-        if(Imgdata){
-          imageData = Imgdata
-        }else{
-          imageData = this.context.getImageData(0, 0, canvas.width, canvas.height);
-        }
+    changePenWidth() {
+      const range = document.getElementById('penWidth-range')
+      this.penWidth = parseInt(range.value)
+    },
+    resize(Imgdata=null){
+      const canvas = this.$refs.canvas;
+      let imageData = null
+      if(Imgdata == null){
+        imageData = this.context.getImageData(0, 0, canvas.width, canvas.height);
+      }else{
+        imageData = Imgdata
+      }
 
-        // 保存当前的绘图状态
-        const strokeStyle = this.context.strokeStyle;
-        const fillStyle = this.context.fillStyle;
-        const lineWidth = this.context.lineWidth;
-        const font = this.context.font;
-        const textAlign = this.context.textAlign;
-        const textBaseline = this.context.textBaseline;
-        const globalCompositeOperation = this.context.globalCompositeOperation;
-        
-        canvas.width = this.el.clientWidth;
-        canvas.height = this.el.clientHeight;
-        this.canvasWidth = canvas.width;
-        this.canvasHeight = canvas.height;
-         // 清空并重置画布
-        this.context.clearRect(0, 0, canvas.width, canvas.height);
-        // this.context.scale(scaleFactor, scaleFactor);
-
+      // 保存当前的绘图状态
+      const strokeStyle = this.context.strokeStyle;
+      const fillStyle = this.context.fillStyle;
+      const lineWidth = this.context.lineWidth;
+      const font = this.context.font;
+      const textAlign = this.context.textAlign;
+      const textBaseline = this.context.textBaseline;
+      const globalCompositeOperation = this.context.globalCompositeOperation;
+      
+      canvas.width = this.el.clientWidth;
+      canvas.height = this.el.clientHeight;
+      this.canvasWidth = canvas.width;
+      this.canvasHeight = canvas.height;
+       // 清空并重置画布
+      this.context.clearRect(0, 0, canvas.width, canvas.height);
+      // 恢复绘图状态
+      this.context.strokeStyle = strokeStyle;
+      this.context.fillStyle = fillStyle;
+      this.context.lineWidth = lineWidth;
+      this.context.font = font;
+      this.context.textAlign = textAlign;
+      this.context.textBaseline = textBaseline;
+      this.context.globalCompositeOperation = globalCompositeOperation
+      if(imageData != ""){
         // 恢复画布内容
         this.context.putImageData(imageData, 0, 0);
-        // 恢复绘图状态
-        this.context.strokeStyle = strokeStyle;
-        this.context.fillStyle = fillStyle;
-        this.context.lineWidth = lineWidth;
-        this.context.font = font;
-        this.context.textAlign = textAlign;
-        this.context.textBaseline = textBaseline;
-        this.context.globalCompositeOperation = globalCompositeOperation
-
+        
+      }
     },
     init() {
       if (window.PointerEvent) { 
@@ -128,7 +184,7 @@ export default {
       this.offsetLeft = parent.offsetLeft
       this.offsetTop = parent.offsetTop
       this.context = canvas.getContext('2d');
-      this.context.strokeStyle = "red"
+      this.context.strokeStyle = this.penColor
       document.body.classList.add('none-select')
 
     },
@@ -166,7 +222,6 @@ export default {
           this.points = []
           this.points.push({x:event.pageX,y:event.pageY});
           this.beginPoint = this.points[0]
-          console.log(this.points)
         }
       }
     
@@ -175,8 +230,7 @@ export default {
       this.context.beginPath();
       this.context.moveTo((startp.x-cl),(startp.y-ct))
       this.context.quadraticCurveTo((ctrlp.x-cl),(ctrlp.y-ct),(endp.x-cl),(endp.y-ct))
-      // this.context.strokeStyle = this.penColor;//设置颜色
-      // this.context.lineWidth = this.penWidth;//设置大小
+      this.context.strokeStyle = this.penColor;//设置颜色
       this.context.lineCap = "round";//设置两端的形状
       this.context.stroke();// stroke() 方法来绘制线条
       this.context.closePath();
@@ -189,15 +243,14 @@ export default {
           var scrolltop = this.el.parentElement.scrollTop;
           if(!this.erasing){
             if(this.currentPointerType == 'pen'){
-              this.context.lineWidth = event.pressure*this.penWidth;//设置大小
+              this.context.lineWidth = event.pressure*(this.penWidth);//设置大小
             }else{
-              this.context.lineWidth = this.penWidth/5;//设置大小
+              this.context.lineWidth = this.penWidth;//设置大小
             }
+          }else{
+            this.context.lineWidth = this.eraserWidth
           }
           
-          
-          
-
           //圆滑曲线
           var endp = {x:event.pageX, y:event.pageY}
           this.points.push(endp)
@@ -242,12 +295,10 @@ export default {
       var ctx = this.context
       if (tool == 'pencil') {
         this.context.globalCompositeOperation = 'source-over';
-        this.context.lineWidth = 1;
         this.erasing = false
 
       } else if(tool == "eraser"){
         this.context.globalCompositeOperation = 'destination-out';
-        this.context.lineWidth = 20; // Set the eraser size
         this.erasing = true
       }
     },
@@ -255,7 +306,8 @@ export default {
     //处理工具栏按钮事件
     handleStart(){
       this.pressTimer = setTimeout(() => {
-        this.editTools_show = true
+        // this.editTools_show = true
+        this.setting_show = true
         clearTimeout(this.pressTimer)
         this.pressTimer = null
       }, 500);
@@ -279,6 +331,17 @@ export default {
         clearTimeout(this.pressTimer);
         this.pressTimer = null;
       }
+    },
+    changeCanvas(newval,oldval){
+      const canvas = this.$refs.canvas;
+      let imageData = this.context.getImageData(0, 0, canvas.width, canvas.height);
+      this.imgDataList[oldval] = imageData
+      imageData = this.imgDataList[newval] ? this.imgDataList[newval] : ""
+      var that = this
+      this.$parent.$nextTick(() => {
+        that.resize(imageData)
+      })
+      
     }
   },
 };
@@ -315,7 +378,7 @@ export default {
     height: 50px;
     background-color: #fff4ca;
     border-radius: 10px 0 0 10px;
-    padding-right: 50px;
+    padding-right: 40px;
     box-shadow: var(--box-shadow);
   }
 
@@ -327,7 +390,7 @@ export default {
     height: 40px;
     border-radius: 23px;
     overflow: hidden;
-    left: -110px;
+    left: -80px;
     top: 4px;
     border:3px solid black;
     transition: opacity 0.3s ease,transform 0.3s ease;
@@ -379,5 +442,89 @@ export default {
     transform: translateY(10px);
   }
 
+  .canvas-setting {
+    font-family: 'HYPixel';
+    font-size: 20px;
+    padding: 20px 10px;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    width: 300px;
+    top: 50%;
+    left: 50%;
+    background-color: var(--box-bgc);
+    transform: translate(-50%,-50%);
+/*    border-radius: 10px;*/
+    border: 3px solid;
+  }
+
+  .canvas-setting .content-items{
+    margin: 10px 0;
+    display: flex;
+    align-items: flex-end
+  }
+
+  .switch-botton{
+    margin: 0 10px;
+    position: relative;
+    width: 36px;
+    height: 18px;
+    border: 2px solid;
+    background-color: var(--card-hightlight);
+  }
+
+  .switch-botton:after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 14px;
+    height: 14px;
+    background-color: var(--fontNormal);
+    transition: left 0.1s ease;
+  }
+
+  .switch-botton.close:after {
+
+    left: 20px;
+  }
+
+  .color-item {
+    box-sizing: border-box;
+    margin: 0 2px;
+    border: 2px solid;
+    width: 20px;
+    transition: height 0.1s ease;
+  }
+
+  /*自定义滑动input样式*/
+  .custom-range {
+      -webkit-appearance: none; /* 去除默认样式 (适用于 Chrome, Safari, Opera) */
+      width: 120px;
+      height: 10px; /* 滑动条高度 */
+      background-color: var(--card-hightlight);
+      outline: none; /* 去除聚焦时的边框 */
+      border: 2px solid;
+      opacity: 1; /* 透明度 */
+  }
+
+  .custom-range:hover {
+      opacity: 1; /* 悬停时的不透明度 */
+  }
+
+  /* 滑块样式 */
+  .custom-range::-webkit-slider-thumb {
+      -webkit-appearance: none; /* 去除默认样式 (适用于 Chrome, Safari, Opera) */
+      appearance: none;
+      width: 18px; /* 滑块宽度 */
+      height: 18px; /* 滑块高度 */
+      background-color: var(--fontNormal); /* 滑块颜色 */
+      cursor: pointer; /* 指针样式 */
+      transition: background 0.2s; /* 滑块背景颜色过渡效果 */
+  }
+
+  .custom-range::-webkit-slider-thumb:hover {
+      background-color: var(--fontNormal); /* 滑块悬停时的颜色 */
+}
   
 </style>

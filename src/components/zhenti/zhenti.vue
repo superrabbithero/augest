@@ -65,11 +65,10 @@
 		  	</div>
 		  </div>
 	  </div>
-	  <div :class="{'exampaperbox-expand':true,'off':!exampaperbox_expand}" @click="exampaperboxExpand()"></div>
 
 	  <div class="exampaperbox-right" ref="right">
 			<div class="exampaper">
-				<pencanvas v-if="pencanvas_show"></pencanvas>
+				<pencanvas :show="pencanvas_show" :switch="currQTypeIndex"></pencanvas>
 				<h3 v-for="(title, index) in ['一、常识判断', '二、言语理解', '三、数量关系', '四、推理判断', '五、资料分析']" 
       v-show="currQTypeIndex == index">{{ title }}</h3>
 				<div v-for="(questionsgroup,index) in questions" v-show="currQTypeIndex == index">
@@ -154,6 +153,8 @@ export default {
 	  	timer:"00:00:00",
 	  	examstatus:0,
 	  	answers:[{},{},{},{},{}],
+	  	canvasWidth:0,
+	  	canvasHeight:0,
     }
   },
   mounted(){
@@ -269,13 +270,7 @@ export default {
 }
 </script>
 <style scoped>
-	.exampaperbox-expand{
-		width: 5px;
-		cursor: col-resize;
-	}
-	.exampaperbox-expand:hover{
-		width: 5px;
-	}
+	
 
 	.exampaperbox{
 		width: 100%;
@@ -541,6 +536,8 @@ export default {
 		display: flex;
 		padding: 5px 10px;
 		border-left: var(--box-border);
+		background-color: var(--card-hightlight);
+		
 	}
 
 	.button-items .button-item svg{
@@ -562,7 +559,7 @@ export default {
 			flex-direction: column;
 			height: calc(100svh - 61px);
 		}
-		.exampaperbox-left , .exampaperbox-expand{
+		.exampaperbox-left{
 			display: none;
 		}
 		.exampaperbox-right{
