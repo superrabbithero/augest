@@ -118,7 +118,6 @@ export default {
   },
   mounted() {
     this.init()
-    console.log(this.width,this.height)
   },
   beforeUnmount() {
     if (this.animationFrameId) {
@@ -197,6 +196,10 @@ export default {
     },
     handlePointerDown(event){
       this.currentPointerType = event.pointerType;
+      if(this.mode == "all touch" && this.currentPointerType == 'pen'){
+        this.mode = "only pen"
+        this.$toast.show("检测到正在使用触控笔，开启\"only pen\"模式，可在画板设置中关闭","info")
+      }
       var id = event.pointerId
       this.multiLastPt[id] = {x:event.pageX,y:event.pageY}
       if(this.mode == "only pen" && this.currentPointerType === 'pen'){

@@ -124,6 +124,34 @@
 		  </div>
 		</div>
 	</div>
+	<my-model :show="modal_show.report_show" :modalKey="'report_show'">
+    <!-- json-view -->
+    <div class="report">
+    	<div class="report-content">
+    		正确率：{{correctness}}%
+    	</div>
+    	<div class="report-content">
+    		交卷时间：{{reportDataJson.datetime}}
+    	</div>
+    	<div class="report-content">
+    		已完成？：{{isFinished}}
+    	</div>
+    	<div class="report-content">
+    		
+    	</div>
+    	<div class="fillcard">
+	  		<ul class="fill-type" style="flex-basis: 100%;">
+	  			<li v-for="(type,index) in questionTypeList" :class="{'active':currQTypeIndex == index}" @click="switchType(index)">{{type}}</li>
+	  		</ul>
+  			<div v-for="(answerGroup,index) in answers" class="circle-groups" v-show="currQTypeIndex == index">
+	  			<div v-for="(key,index) in Object.keys(answerGroup)" class="circle-groups-item">
+	  				<div :class="{'circle':true,'right':answerGroup[key].mine == answerGroup[key].answer,'wrong':answerGroup[key].mine && answerGroup[key].mine != answerGroup[key].answer,'current':key == currentNum}" @click="rollTo(key)">{{key}}</div>
+	  			</div>
+	  		</div>
+	  	</div>
+		</div>
+  </my-model>
+	
 </template>
 
 <script>
@@ -137,6 +165,25 @@ export default {
   	pencanvas,
   	timer
   },
+  computed:{
+  	correctness(){
+  		var correctCount = 0
+  		this.reportDataJson.correctCount.forEach(item => {
+  			correctCount += item
+  		})
+  		return (correctCount/this.questionCount*100).toFixed(2)
+  	},
+  	isFinished(){
+  		
+			for(let i=1;i < this.questionCount; i++){
+  			if(!this.stuAnswerList[i]){
+  				return false
+  			}
+  		}
+  		
+  		return true
+  	}
+  },
   data(){
     return {
       jsonData,
@@ -145,7 +192,7 @@ export default {
 	  	pencanvas_show:false,
 	  	stuAnswerList:[],
 	  	currentNum:1,
-	  	questionCount:20,
+	  	questionCount:null,
 	  	questionTypeList:['常识','言语','数学','判推','资料'],
 	  	currQTypeIndex:0,
 	  	exampaperbox_expand:true,
@@ -155,6 +202,10 @@ export default {
 	  	answers:[{},{},{},{},{}],
 	  	canvasWidth:0,
 	  	canvasHeight:0,
+	  	modal_show:{
+        report_show:false
+      },
+	  	reportDataJson:{"correctCount":[],"totalCount":[],"time":"00:00:00","datetime":null}
     }
   },
   mounted(){
@@ -188,6 +239,7 @@ export default {
 			    }
 			  });
 			}
+			this.questionCount = questionNum
 	  	// console.log(this.answers)
   	},
     answer(item){
@@ -219,7 +271,25 @@ export default {
     	if(this.examstatus != 0){
     		this.examstatus = 0
     		this.examtimer.resetTimer()
-    	} 
+    		this.reportDataJson.time = this.timer
+    		this.reportDataJson.datetime = new Date().toLocaleString()
+
+    		
+    		for (let i = 0; i < 5; i++) {
+    			var count = 0
+    			var keys = Object.keys(this.answers[i])
+    			keys.forEach(key => {
+    				if(this.answers[i][key].answer == this.answers[i][key].mine){
+			    		count++
+			    	}
+    			})
+    			this.reportDataJson.correctCount[i] = count
+    			this.reportDataJson.totalCount[i] = keys.length
+    		} 
+    		this.modal_show.report_show = true
+    		console.log(this.stuAnswerList)
+    	}
+    	
     },
     exampause(){
     	if(this.examstatus == 1){
@@ -315,7 +385,7 @@ export default {
 		top: 0;
 	}
 
-	.exampaperbox-bottom .fillcard .circle-groups-item{
+	.exampaperbox-bottom .fillcard .circle-groups-item,.report .fillcard .circle-groups-item{
 		width: calc(10% - 10px);
 		padding-top: calc(10% - 10px);
 		margin: 5px;
@@ -376,11 +446,28 @@ export default {
 		color: #fff;
 	}
 
-	.circle-groups-item .circle.current{
+	.circle-groups-item .circle.right{
+		background-color: #8cb9c0;
+		border: 1px solid #8cb9c0;
+		color: #fff;
+	}
+
+	.circle-groups-item .circle.wrong{
+		background-color: #E56E2E;
+		border: 1px solid #E56E2E;
+		color: #fff;
+	}
+
+	.exampaperbox-left .circle-groups-item .circle.current,.exampaperbox-bottom .circle-groups-item .circle.current{
 		background-color: #edca7f;
 		border: 1px solid #edca7f;
 		box-shadow: inset 0 0 0 1px white;
 		color: #fff;
+	}
+
+	.report .circle-groups-item .circle.current{
+		box-shadow: inset 0 0 0 1px white;
+/*		color: #fff;*/
 	}
 
 	.fill-option {

@@ -456,32 +456,3 @@ margin-left: -10px;
     display: inline-block;
 }
 
-/*自定义滑动input样式*/
-.custom-range {
-    -webkit-appearance: none; /* 去除默认样式 (适用于 Chrome, Safari, Opera) */
-    width: 120px;
-    height: 10px; /* 滑动条高度 */
-    background: #ddd; /* 滑动条背景 */
-    outline: none; /* 去除聚焦时的边框 */
-    opacity: 0.7; /* 透明度 */
-    transition: opacity 0.2s; /* 过渡效果 */
-}
-
-.custom-range:hover {
-    opacity: 1; /* 悬停时的不透明度 */
-}
-
-/* 滑块样式 */
-.custom-range::-webkit-slider-thumb {
-    -webkit-appearance: none; /* 去除默认样式 (适用于 Chrome, Safari, Opera) */
-    appearance: none;
-    width: 14px; /* 滑块宽度 */
-    height: 14px; /* 滑块高度 */
-    background: #4CAF50; /* 滑块颜色 */
-    cursor: pointer; /* 指针样式 */
-    transition: background 0.2s; /* 滑块背景颜色过渡效果 */
-}
-
-.custom-range::-webkit-slider-thumb:hover {
-    background: #000; /* 滑块悬停时的颜色 */
-}
