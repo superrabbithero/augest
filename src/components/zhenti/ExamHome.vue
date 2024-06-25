@@ -3,10 +3,10 @@
     <div class="home-left col">
       <div class="card-content">
         <div class="md-card-item">
-          <div class="title"  @click="goto('/zhenti')">zhenti</div>
+          <div class="title"  @click="goto('/zhenti')">2022年江苏省公务员录用考试《行测》题（C类）（网友回忆版）</div>
           <div class="md-card-info">
             <div class="date">
-              12312312
+              2026-6-25
             </div>
           </div>
         </div>

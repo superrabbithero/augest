@@ -3,7 +3,7 @@
 		<IconWrapper class="pause" iconName="Play" @click="examstart()" theme="filled" :size='100'/>
 	</div>	
   <div class="exampaperbox" >
-		<div v-show="exampaperbox_expand" class="buttonbox top" style="position:absolute;top: 71px;right: 10px;z-index: 1;">
+		<div class="buttonbox top" style="position:absolute;top: 71px;right: 10px;z-index: 1;">
   		<div class="button-items">
 	  		<div class="button-item" v-show="examstatus!=1" @click="examstart()">
 	  			<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="M10 20H8V4h2v2h2v3h2v2h2v2h-2v2h-2v3h-2v2z" fill="currentColor"/> </svg>
@@ -156,7 +156,7 @@
 
 <script>
 // import TheLatex2Math from './TheLatex2Math'
-import jsonData from "@/assets/json/2022_js_C.json"
+// import jsonData from "@/assets/json/2022_js_C.json"
 import pencanvas from "../Model/PenCanvas.vue"
 import timer from "../Model/Time.vue"
 
@@ -186,7 +186,7 @@ export default {
   },
   data(){
     return {
-      jsonData,
+      jsonData:null,
       questions:[],
       letters:['A.','B.','C.','D.'],
 	  	pencanvas_show:false,
@@ -209,11 +209,17 @@ export default {
     }
   },
   mounted(){
-  	this.init()
-    this.TypeSet([document.getElementsByClassName("output")])
+  	this.loadJsonData().then(data => {
+  			this.init()
+  			this.TypeSet([document.getElementsByClassName("output")])
+  	})
+  	
+    
+    
   },
   methods:{
   	init(){
+  		console.log(this.jsonData)
   		this.examtimer = this.$refs.examtimer
   		this.questions = [
       	this.jsonData.questions_1,
@@ -224,7 +230,7 @@ export default {
         ]
   		var questionNum = 1
 	  	for (let i = 1; i <= 5; i++) {
-			  jsonData[`questions_${i}`].forEach(question => {
+			  this.jsonData[`questions_${i}`].forEach(question => {
 			    if (question.answer) {
 			      this.answers[i - 1][questionNum] = {answer:question.answer,mine:''};
 			      questionNum++;
@@ -335,6 +341,15 @@ export default {
       .catch((err) => console.log('Typeset failed: ' + err.message))
       
       return window.MathJax.startup.promise
+    },
+
+    async loadJsonData() {
+    		try {
+	        const json = await import('@/assets/json/2022_js_C.json');
+	        this.jsonData = json.default;
+	      } catch (error) {
+	        console.error('Failed to load JSON data:', error);
+	      }
     }
   }
 }

@@ -36,7 +36,7 @@
       
       <div class="content-items">
         画笔大小：
-        <input type="range" class="custom-range" v-model="penWidth" min="2" max="15">  {{penWidth}}
+        <input type="range" class="custom-range" v-model="penWidth" min="1" max="15">  {{penWidth}}
       </div>
       <div class="content-items">
         橡皮大小：
@@ -75,6 +75,9 @@ export default {
     show(newval, oldval){
       if(newval){
         this.resize()
+        document.body.classList.add('none-select')
+      }else{
+        document.body.classList.remove('none-select')
       }
     }
   },
@@ -120,9 +123,11 @@ export default {
     this.init()
   },
   beforeUnmount() {
+
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
     }
+    document.body.classList.remove('none-select')
   },
   methods: {
     changePenWidth() {
@@ -170,7 +175,7 @@ export default {
     init() {
       if (window.PointerEvent) { 
         // Pointer events are supported. 
-        this.log="Pointer events are supported. "
+        this.log="Pointer events are supported."
       }
       const canvas = this.$refs.canvas;
       const parent = canvas.parentElement;
@@ -184,8 +189,6 @@ export default {
       this.offsetTop = parent.offsetTop
       this.context = canvas.getContext('2d');
       this.context.strokeStyle = this.penColor
-      document.body.classList.add('none-select')
-
     },
     switchmode() {
       if(this.mode == "only pen"){
