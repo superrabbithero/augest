@@ -27,14 +27,15 @@ export default {
   data() {
     return {
       tool:1,
-      rows:10,
-      cols:10,
+      rows:30,
+      cols:30,
       gridSize:20,
       currentColor:'#252525',
       isDrawing: false,
       pixels: [],
       endPoints:{x:0,y:0},
-      ctx:null
+      ctx:null,
+      historys:[]
     };
   },
   mounted() {
@@ -48,6 +49,7 @@ export default {
       }
       const canvas = this.$refs.canvas;
       this.ctx = canvas.getContext('2d');
+      this.addHistoy()
     },
     handlePointerDown(event){
       this.isDrawing = true
@@ -63,12 +65,15 @@ export default {
           this.drawPixel(end)
         }else if(this.tool == 2){
           this.clearPixel(end)
+        }else if(this.tool == 3){
+          this.showLastHistory()
+          this.drawLine(this.endPoints, end)
         }
-        
       }
     },
     handlePointerUp(){
       this.isDrawing = false
+      this.addHistoy()
     },
     drawPixel(point){
       this.ctx.fillRect(point.x,point.y,this.gridSize,this.gridSize)
@@ -103,6 +108,15 @@ export default {
       const x = Math.floor((point.x - rect.left) / this.gridSize)*this.gridSize
       const y = Math.floor((point.y - rect.top) / this.gridSize)*this.gridSize
       return {x,y}
+    },
+    showLastHistory() {
+      const history = this.historys
+      this.ctx.putImageData(history[history.length - 1]['data'], 0, 0)
+    },
+    addHistoy() {
+      this.historys.push({
+        data: this.ctx.getImageData(0, 0, this.width, this.height)
+      })
     }
   },
 };
