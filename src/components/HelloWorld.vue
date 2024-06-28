@@ -21,7 +21,7 @@
   <button @click="helloworldtimer.resetTimer">reset</button>
   <timer ref="helloworldtimer"></timer>
   <div v-html="htmlcontent"></div>
-  <!-- <pencanvas></pencanvas> -->
+  <pixelSvgEditor></pixelSvgEditor>
   
 </template>
 
@@ -32,6 +32,7 @@ import pagination from './Model/Pagination.vue'
 import {login, getanswercard} from "@/assets/js/xueceapi.js"
 import pencanvas from "./Model/PenCanvas.vue"
 import timer from "./Model/Time.vue"
+import pixelSvgEditor from "./pixelSvgEditor"
 
 export default {
   name: 'HelloWorld',
@@ -40,7 +41,8 @@ export default {
     JsonModel,
     pagination,
     pencanvas,
-    timer
+    timer,
+    pixelSvgEditor
   },
   data(){
     return {

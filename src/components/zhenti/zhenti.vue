@@ -11,7 +11,7 @@
 	  		<div class="button-item" v-show="examstatus==1" @click="exampause()">
 	  			<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="M10 4H5v16h5V4zm9 0h-5v16h5V4z" fill="currentColor"/> </svg>
 	  		</div>
-	  		<div class="button-item" v-show="examstatus!=0" @click="examstop()">
+	  		<div class="button-item" v-show="examstatus!=0" @click="openReport()">
 	  			<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="M3 3h18v18H3V3zm16 16V5H5v14h14z" fill="currentColor"/> </svg>
 	  		</div>
 	  		<div class="button-item" @click="pencanvas_show=!pencanvas_show">
@@ -38,7 +38,7 @@
 			  		<div class="button-item" v-show="examstatus==1" @click="exampause()">
 			  			<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="M10 4H5v16h5V4zm9 0h-5v16h5V4z" fill="currentColor"/> </svg>
 			  		</div>
-			  		<div class="button-item" v-show="examstatus!=0" @click="examstop()">
+			  		<div class="button-item" v-show="examstatus!=0" @click="openReport()">
 			  			<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="M3 3h18v18H3V3zm16 16V5H5v14h14z" fill="currentColor"/> </svg>
 			  		</div>
 			  		<div class="button-item" @click="pencanvas_show=!pencanvas_show">
@@ -124,9 +124,21 @@
 		  </div>
 		</div>
 	</div>
-	<my-model :show="modal_show.report_show" :modalKey="'report_show'">
+	<my-model :show="modal_show.report_show" :modeless="false" :modalKey="'report_show'">
     <!-- json-view -->
-    <div class="report">
+    <div class="report step1" v-show="report_step == 1">
+    	<div class="report-content center" v-if="isFinished">
+    		已完成所有题目，用时{{timer}}确认结束考试？
+    	</div>
+    	<div class="report-content center" v-else>
+    		还有题目未完成，是否确认结束考试？
+    	</div>
+    	<div class="report-content center">
+    		<div class="button" @click="modal_show.report_show = false">取消</div>
+    		<div class="button" @click="examstop()">确认</div>
+    	</div>
+		</div>
+    <div class="report step2" v-show="report_step == 2">
     	<div class="report-content">
     		正确率：{{correctness}}%
     	</div>
@@ -134,10 +146,7 @@
     		交卷时间：{{reportDataJson.datetime}}
     	</div>
     	<div class="report-content">
-    		已完成？：{{isFinished}}
-    	</div>
-    	<div class="report-content">
-    		
+    		用时:{{reportDataJson.time}}
     	</div>
     	<div class="fillcard">
 	  		<ul class="fill-type" style="flex-basis: 100%;">
@@ -150,6 +159,7 @@
 	  		</div>
 	  	</div>
 		</div>
+		
   </my-model>
 	
 </template>
@@ -186,6 +196,7 @@ export default {
   },
   data(){
     return {
+    	papername:this.$route.params.papername+'.json',
       jsonData:null,
       questions:[],
       letters:['A.','B.','C.','D.'],
@@ -205,6 +216,7 @@ export default {
 	  	modal_show:{
         report_show:false
       },
+      report_step:1,
 	  	reportDataJson:{"correctCount":[],"totalCount":[],"time":"00:00:00","datetime":null}
     }
   },
@@ -213,13 +225,10 @@ export default {
   			this.init()
   			this.TypeSet([document.getElementsByClassName("output")])
   	})
-  	
-    
-    
   },
+
   methods:{
   	init(){
-  		console.log(this.jsonData)
   		this.examtimer = this.$refs.examtimer
   		this.questions = [
       	this.jsonData.questions_1,
@@ -249,19 +258,24 @@ export default {
 	  	// console.log(this.answers)
   	},
     answer(item){
-    	var count = Object.keys(this.answers[this.currQTypeIndex]).length
-    	const answers = this.answers[this.currQTypeIndex]
+    	if(this.examstatus == 1){
+    		var count = Object.keys(this.answers[this.currQTypeIndex]).length
+	    	const answers = this.answers[this.currQTypeIndex]
 
-    	answers[this.currentNum].mine = item
-    	this.stuAnswerList[this.currentNum] = item
-    	if(answers[this.currentNum + 1]){
-    		this.currentNum++
-    		this.rollTo(this.currentNum)
-    	}else if(this.answers[this.currQTypeIndex+1]){
-    		this.switchType(this.currQTypeIndex+1)
+	    	answers[this.currentNum].mine = item
+	    	this.stuAnswerList[this.currentNum] = item
+	    	if(answers[this.currentNum + 1]){
+	    		this.currentNum++
+	    		this.rollTo(this.currentNum)
+	    	}else if(this.answers[this.currQTypeIndex+1]){
+	    		this.switchType(this.currQTypeIndex+1)
+	    	}else{
+	    		alert('最后一道题了');
+	    	}
     	}else{
-    		alert('最后一道题了');
+    		this.$toast.show('考试还没有开始','warn')
     	}
+    	
     	
     },
     exampaperboxExpand(){
@@ -276,8 +290,8 @@ export default {
     examstop(){
     	if(this.examstatus != 0){
     		this.examstatus = 0
-    		this.examtimer.resetTimer()
     		this.reportDataJson.time = this.timer
+    		this.examtimer.resetTimer()
     		this.reportDataJson.datetime = new Date().toLocaleString()
 
     		
@@ -292,8 +306,7 @@ export default {
     			this.reportDataJson.correctCount[i] = count
     			this.reportDataJson.totalCount[i] = keys.length
     		} 
-    		this.modal_show.report_show = true
-    		console.log(this.stuAnswerList)
+    		this.report_step = 2
     	}
     	
     },
@@ -321,11 +334,12 @@ export default {
 
     answerthis(no,item){
     	if(this.currentNum == no){
-    		const answers = this.answers[this.currQTypeIndex]
-	    	answers[no].mine = item
-	    	this.stuAnswerList[no] = item
+    		if(this.examstatus == 1){
+	    		const answers = this.answers[this.currQTypeIndex]
+		    	answers[no].mine = item
+		    	this.stuAnswerList[no] = item
+	    	}
     	}
-    	
     },
 
     TypeSet(elements){
@@ -345,12 +359,26 @@ export default {
 
     async loadJsonData() {
     		try {
-	        const json = await import('@/assets/json/2022_js_C.json');
-	        this.jsonData = json.default;
+    			const jsonPath = `/json/zhenti/${this.$route.params.papername}.json`;
+		      console.log(jsonPath);
+
+		      const response = await fetch(jsonPath);
+		      if (!response.ok) {
+		        throw new Error('Network response was not ok');
+		      }
+		      this.jsonData = await response.json();
 	      } catch (error) {
 	        console.error('Failed to load JSON data:', error);
 	      }
+    },
+
+    openReport(){
+    	if(!this.modal_show.report_show){
+				this.report_step = 1
+    		this.modal_show.report_show = true
+    	}
     }
+    
   }
 }
 </script>
@@ -454,6 +482,7 @@ export default {
 		display: flex;
 		align-items: center;
     justify-content: center;
+    cursor: pointer;
 	}
 	.circle-groups-item .circle.answered{
 		background-color: #91b5a9;
@@ -501,6 +530,7 @@ export default {
 		border-radius: 5px;
 		padding: 3px;
 		margin:5px 5px;
+		cursor: pointer;
 	}
 
 	.fill-option .item.selected {
@@ -639,6 +669,7 @@ export default {
 		padding: 5px 10px;
 		border-left: var(--box-border);
 		background-color: var(--card-hightlight);
+		cursor: pointer;
 		
 	}
 
@@ -701,13 +732,36 @@ export default {
     align-items: center;
 }
 
-	.pause-screen .pause {
+.pause-screen .pause {
 	filter: drop-shadow(var(--box-shadow));
 
 }
 
 .pause-screen.show {
     display: flex;
+}
+
+.report {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+.report-content {
+	display: flex;
+	width: 100%;
+	margin-bottom: 2rem;
+}
+
+.report-content.center{
+	justify-content: space-evenly
+}
+
+.report-content .button{
+	background-color: var(--card-hightlight);
+	padding: 5px 20px;
+	border-radius: 6px;
+	cursor: pointer;
 }
 	
 </style>

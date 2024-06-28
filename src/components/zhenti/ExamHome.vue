@@ -3,10 +3,20 @@
     <div class="home-left col">
       <div class="card-content">
         <div class="md-card-item">
-          <div class="title"  @click="goto('/zhenti')">2022年江苏省公务员录用考试《行测》题（C类）（网友回忆版）</div>
+          <div class="title"  @click="goto('/zhenti/2022_js_C')">2022年江苏省公务员录用考试《行测》题（C类）（网友回忆版）</div>
           <div class="md-card-info">
             <div class="date">
               2026-6-25
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-content">
+        <div class="md-card-item">
+          <div class="title"  @click="goto('/zhenti/2023_gk_fs')">2023年国家公务员录用考试《行测》题（副省级网友回忆版）</div>
+          <div class="md-card-info">
+            <div class="date">
+              2026-6-27
             </div>
           </div>
         </div>

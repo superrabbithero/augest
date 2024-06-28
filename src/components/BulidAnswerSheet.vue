@@ -1,7 +1,7 @@
 <template>
 
 
-  <my-model :show="modal_show.linkxuecemodal_show" :modalKey="'linkxuecemodal_show'">
+  <my-model :show="modal_show.linkxuecemodal_show" :dragable="true" :modalKey="'linkxuecemodal_show'">
     <!-- 自动填涂 -->
     <div class="modal-content">
       <div class="modal-line">
@@ -29,14 +29,14 @@
     </div>
   </my-model>
 
-  <my-model :show="modal_show.json_show" :modalKey="'json_show'">
+  <my-model :show="modal_show.json_show" :dragable="true" :modalKey="'json_show'">
     <!-- json-view -->
     <div class="modal-content" >
      <json-model :json-data="cutParamJsonStr"></json-model>
     </div>
   </my-model>
 
-  <my-model :show="modal_show.fill_show" :modalKey="'fill_show'">
+  <my-model :show="modal_show.fill_show" :dragable="true" :modalKey="'fill_show'">
     <div class="modal-content" >
       <input type="radio" name="fillError" id="noError" value="0" v-model="fillError">
       <label for="noError">自定义</label>

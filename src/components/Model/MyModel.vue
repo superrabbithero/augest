@@ -1,7 +1,8 @@
 <template>
+  <div class="overlay" v-show="show && !modeless"></div>
   <transition name="modal-slide">
-    <div class="modal" ref="modal" style="width:400px;min-height: 300px;" v-show="show">     
-      <div class="modal-bar" @mousedown="dragdown($event)"  @mouseup="dragup">
+    <div class="modal" ref="modal" v-show="show">     
+      <div :class="{'modal-bar':true,'draged':dragable}" @mousedown="dragdown($event)"  @mouseup="dragup">
         <div class="modal-close" @click="close()">
         </div>
       </div>
@@ -15,11 +16,21 @@ export default({
   props:{
     show: {
       type: Boolean,
-      required: true
+      required: true,
     },
     modalKey: {
       type: String,
       required: true
+    },
+    dragable: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+    modeless: {
+      type: Boolean,
+      required: false,
+      default: true
     }
   },
   data(){
@@ -33,10 +44,13 @@ export default({
 
   methods:{
     dragdown(e) {
-      this.dragedel = this.$refs.modal
-      document.addEventListener('mousemove', this.dragmove)
-      this.disx = e.pageX - this.dragedel.offsetLeft
-      this.disy = e.pageY - this.dragedel.offsetTop
+      console.log(this.draged,this.show)
+      if(this.dragable){
+        this.dragedel = this.$refs.modal
+        document.addEventListener('mousemove', this.dragmove)
+        this.disx = e.pageX - this.dragedel.offsetLeft
+        this.disy = e.pageY - this.dragedel.offsetTop
+      }
     },
     dragup() {
       this.dragedel = null
@@ -59,7 +73,19 @@ export default({
 
 </script>
 
-<style>
+<style scoped>
+.overlay {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+.modal {
+  width:400px;height: fit-content;
+}
+
 .modal-slide-enter-active, .modal-slide-leave-active {
   transition: opacity 0.5s, transform 0.5s;
 }

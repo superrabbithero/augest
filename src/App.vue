@@ -35,6 +35,10 @@
             <IconWrapper iconName="Pyramid" theme="outline" :strokeWidth='2' />
             考试模拟器
           </div>
+          <div class="menu-item" @click="goto('/pixelSvgEditor')">
+            <IconWrapper iconName="BlockFive" theme="outline" :strokeWidth='2' />
+            像素编辑器
+          </div>
           <div class="menu-item" >
             <IconWrapper iconName="RoadCone" theme="outline" :strokeWidth='2' />
             待定...

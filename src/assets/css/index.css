@@ -335,7 +335,7 @@ mjx-container[jax="CHTML"][display="true"] {
     justify-content: end;
 }
 
-.modal-bar:active {
+.modal-bar.draged:active {
     background-color: var(--modal-bgc-bar);
 }
 

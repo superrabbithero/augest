@@ -1,5 +1,5 @@
 <template>
-    <canvas v-show="show" ref="canvas" 
+    <canvas v-show="show" ref="canvas"
                @pointerdown="handlePointerDown"
                @pointermove="handlePointerMove"
                @pointerup="handlePointerUp"></canvas>
@@ -123,10 +123,6 @@ export default {
     this.init()
   },
   beforeUnmount() {
-
-    if (this.animationFrameId) {
-      cancelAnimationFrame(this.animationFrameId);
-    }
     document.body.classList.remove('none-select')
   },
   methods: {

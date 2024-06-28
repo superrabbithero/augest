@@ -11,6 +11,7 @@ import Pct2Fct from "@/components/Pct2Fct"
 import Ziliaofx from "@/components/ziliaofx"
 import GifEdit from "@/components/page/GifEdit"
 import examhome from "@/components/zhenti/ExamHome"
+import pixelSvgEditor from "@/components/pixelSvgEditor"
 
 
 
@@ -87,7 +88,7 @@ const routes = [
         }
     },
     {
-        path: '/zhenti',
+        path: '/zhenti/:papername',
         name: 'zhenti',
         component: () => import("@/components/zhenti/zhenti"),
         meta:{
@@ -100,6 +101,14 @@ const routes = [
         component: examhome,
         meta:{
             title: '考试模拟器'
+        }
+    },
+    {
+        path: '/pixelSvgEditor',
+        name: 'pixelSvgEditor',
+        component: pixelSvgEditor,
+        meta:{
+            title: '像素图标编辑器'
         }
     }
 
