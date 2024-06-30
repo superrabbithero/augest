@@ -78,7 +78,8 @@ export default {
       const currPoint = this.getPoint({x:event.clientX,y:event.clientY})
       if(this.isDrawing){
         if(this.tool == 1){
-          this.drawPixel(currPoint)
+          this.drawLine(this.endPoints, currPoint)
+          this.endPoints = currPoint
         }else if(this.tool == 2){
           this.clearPixel(currPoint)
         }else if(this.tool == 3){
