@@ -2,16 +2,15 @@
   <input type="text" v-model="rows">x
   <input type="text" v-model="cols">
   <div class="drawing-area">
+    <canvas class="canvas-grid" ref="canvas_grid" :width="width" :height="height"></canvas>
     <canvas :width="width" :height="height" ref="canvas"
               @pointerdown="handlePointerDown"
               @pointermove="handlePointerMove"
               @pointerup="handlePointerUp"
               @pointerleave="handlePointerLeave"
               ></canvas>
-    <div class="rect" v-for="x in rows*cols" :style="{top:((x-1)%rows)*gridSize+'px',left:(Math.floor((x-1)/rows)*gridSize+'px'),position:'absolute', width:gridSize+'px',height:gridSize+'px',backgroundColor:(((x-1)%rows)+Math.floor((x-1)/rows))%2==0 ? '#fff' : '#eee'}">
-    </div>
   </div>
- 
+  <div>{{shiftdown}}</div>
   <div class="tools-bar">
     <button @click="tool = 1">画笔</button>
     <button @click="tool = 2">橡皮</button>
@@ -20,11 +19,15 @@
     <button @click="tool = 5">圆形</button>
     <button @click="filled = !filled">{{filled ? "填充" : "不填充"}}</button>
     <button @click="tool = 6">填充</button>
+    <button @click="tool = 7">吸管</button>
+    <input type="color" v-model="currentColor">
     <button @click="clearAll">删除</button>
+
   </div>
 </template>
 
 <script>
+
 export default {
   computed: {
     width() {
@@ -40,19 +43,75 @@ export default {
       rows:30,
       cols:30,
       gridSize:10,
-      currentColor:'#252525',
+      currentColor:'#000',
+      colorIndex:0,
       isDrawing: false,
       pixels: [],
       endPoints:{x:0,y:0},
       ctx:null,
       historys:[],
       filled:false,
+      log:"",
+      shiftdown:false
     };
   },
   mounted() {
     this.init()
+    this.drawGrid()
+    window.addEventListener('keydown', this.handleKeyDown);
+    window.addEventListener('keyup', this.handleKeyUp);
+  },
+  beforeDestroy() {
+    window.removeEventListener('keydown', this.handleKeyDown);
+    window.removeEventListener('keyup', this.handleKeyUp);
   },
   methods: {
+    drawGrid() {
+      const canvas = this.$refs.canvas_grid
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, this.width, this.height);
+      if(true){
+        for (let i = 0; i <= this.rows; i++){
+          for (let j = 0; j <= this.cols; j++){
+            ctx.fillStyle = (i+j)%2 ? "#fff" : '#d9d9d9'
+            console.log(ctx.fillStyle)
+            ctx.fillRect(i * this.gridSize, j * this.gridSize,this.gridSize,this.gridSize)
+          }
+        }
+      }else{
+        ctx.strokeStyle = '#d9d9d9';
+        for (let i = 0; i <= this.rows; i++) {
+          ctx.beginPath();
+          ctx.moveTo(0, i * this.gridSize);
+          ctx.lineTo(this.width, i * this.gridSize);
+          ctx.stroke();
+        }
+        for (let i = 0; i <= this.cols; i++) {
+          ctx.beginPath();
+          ctx.moveTo(i * this.gridSize, 0);
+          ctx.lineTo(i * this.gridSize, this.height);
+          ctx.stroke();
+        }
+      }
+    },
+    switchColor(point){
+      const color = this.getColorAtPixel(point)
+      const currentColor = 'rgba('+color.r+','+color.g+','+color.b+','+color.a+')'
+      if(currentColor != 'rgba(0,0,0,0)'){
+        this.currentColor = currentColor
+      }
+      console.log(this.currentColor)
+    },
+    handleKeyDown(event) {
+      if (event.key === 'Shift') {
+        this.shiftdown = true;
+      }
+    },
+    handleKeyUp(event) {
+      if (event.key === 'Shift') {
+        this.shiftdown = false;
+      }
+    },
     init(){
       if (window.PointerEvent) { 
         // Pointer events are supported. 
@@ -68,13 +127,17 @@ export default {
       if(this.tool == 1) this.drawPixel(this.endPoints)
       else if(this.tool == 2) this.clearPixel(this.endPoints)
       else if(this.tool == 6){
-        this.isDrawing = false
-        console.log(this.tool)
-        this.ctx.fill()
+        this.ctx.fillStyle = this.currentColor
+        this.fillArea(this.endPoints);
+        this.addHistoy()
+      }else if(this.tool == 7){
+        this.switchColor(this.endPoints)
       }
       
     },
     handlePointerMove(event){
+      this.ctx.fillStyle = this.currentColor
+      this.ctx.strokeStyle = this.currentColor
       const currPoint = this.getPoint({x:event.clientX,y:event.clientY})
       if(this.isDrawing){
         if(this.tool == 1){
@@ -90,10 +153,10 @@ export default {
           this.drawRect(this.endPoints, currPoint)
         }else if(this.tool == 5){
           this.showLastHistory()
-          this.drawCircle(this.endPoints, currPoint);
+          this.drawPixelEllipse(this.endPoints, currPoint)
         }
       }else{
-        if(true){
+        if(this.tool != 6 && this.tool != 7){
           this.showLastHistory()
           this.drawPixel(currPoint)
         }
@@ -116,6 +179,7 @@ export default {
     clearPixel(point){
       this.ctx.clearRect(point.x,point.y,this.gridSize,this.gridSize)
     },
+    // 直线BH算法https://blog.csdn.net/myf_666/article/details/128164135
     drawLine(start,end){
       let x = start.x
       let y = start.y
@@ -139,43 +203,127 @@ export default {
       }
     },
     drawRect(start,end){
-      
       if(this.filled){
-        this.ctx.fillRect(start.x,start.y,end.x-start.x+this.gridSize,end.y-start.y+this.gridSize)
+        if(this.shiftdown){
+          this.ctx.fillRect(start.x,start.y,end.x-start.x+this.gridSize,end.x-start.x+this.gridSize)
+        }else{
+          this.ctx.fillRect(start.x,start.y,end.x-start.x+this.gridSize,end.y-start.y+this.gridSize)
+        }
       }else{
+        this.ctx.strokeStyle = this.currentColor
         this.ctx.lineWidth = this.gridSize
-        this.ctx.strokeRect(start.x+this.gridSize/2,start.y+this.gridSize/2,end.x-start.x,end.y-start.y)
-      }
-    },
-    drawCircle(start, end) {
-      const radius = Math.sqrt(Math.pow((end.x - start.x) / this.gridSize, 2) + Math.pow((end.y - start.y) / this.gridSize, 2));
-      const centerX = Math.floor(start.x / this.gridSize);
-      const centerY = Math.floor(start.y / this.gridSize);
-
-      let x = Math.floor(radius);
-      let y = 0;
-      let decisionOver2 = 1 - x;
-
-      while (x >= y) {
-        this.drawCirclePoints(centerX, centerY, x, y);
-        y++;
-        if (decisionOver2 <= 0) {
-          decisionOver2 += 2 * y + 1;
-        } else {
-          x--;
-          decisionOver2 += 2 * (y - x) + 1;
+        if(this.shiftdown){
+          this.ctx.strokeRect(start.x+this.gridSize/2,start.y+this.gridSize/2,end.x-start.x,end.x-start.x)
+        }else{
+          this.ctx.strokeRect(start.x+this.gridSize/2,start.y+this.gridSize/2,end.x-start.x,end.y-start.y)
         }
       }
     },
-    drawCirclePoints(cx, cy, x, y) {
-      this.drawPixel({ x: (cx + x) * this.gridSize, y: (cy + y) * this.gridSize });
-      this.drawPixel({ x: (cx - x) * this.gridSize, y: (cy + y) * this.gridSize });
-      this.drawPixel({ x: (cx + x) * this.gridSize, y: (cy - y) * this.gridSize });
-      this.drawPixel({ x: (cx - x) * this.gridSize, y: (cy - y) * this.gridSize });
-      this.drawPixel({ x: (cx + y) * this.gridSize, y: (cy + x) * this.gridSize });
-      this.drawPixel({ x: (cx - y) * this.gridSize, y: (cy + x) * this.gridSize });
-      this.drawPixel({ x: (cx + y) * this.gridSize, y: (cy - x) * this.gridSize });
-      this.drawPixel({ x: (cx - y) * this.gridSize, y: (cy - x) * this.gridSize });
+    //椭圆BH算法https://blog.csdn.net/myf_666/article/details/128167392
+     drawPixelEllipse(start, end) {
+      const rx = Math.abs((end.x - start.x) / this.gridSize);
+      const ry = this.shiftdown ? rx : Math.abs((end.y - start.y) / this.gridSize);
+      const xc = start.x/ this.gridSize
+      const yc = start.y/ this.gridSize
+
+      this.log = "xc:"+xc+"yc:"+yc+"rx:"+rx
+
+      let x = 0;
+      let y = ry;
+      let d1 = ry * ry - rx * rx * ry + 0.25 * rx * rx;
+      let dx = 2 * ry * ry * x;
+      let dy = 2 * rx * rx * y;
+
+      while (dx < dy) {
+        this.drawEllipsePoints(xc, yc, x, y);
+        if (d1 < 0) {
+          dx += 2 * ry * ry;
+          d1 += dx + ry * ry;
+        } else {
+          y--;
+          dx += 2 * ry * ry;
+          dy -= 2 * rx * rx;
+          d1 += dx - dy + ry * ry;
+        }
+        x++
+      }
+
+      let d2 = ry * ry * (x + 0.5) * (x + 0.5) + rx * rx * (y - 1) * (y - 1) - rx * rx * ry * ry;
+      while (y >= 0) {
+        this.drawEllipsePoints(xc, yc, x, y);
+        if (d2 < 0) {
+          d2+=ry*ry*(2*x+2)+rx*rx*(-2*y+3)
+          x++
+        } else {
+          d2+=rx*rx*(-2*y+3)
+        }
+        y--
+      }
+    },
+    // 在你的像素画板中实现一个填充功能（类似于“油漆桶”工具），你需要用到一种称为“洪水填充”（Flood Fill）算法。这个算法将会递归地或使用队列填充相同颜色的相邻像素。为了避免递归深度过深导致栈溢出，我们可以使用队列来实现非递归的广度优先搜索（BFS）填充算法。
+    fillArea(startPoint) {
+      const targetColor = this.getColorAtPixel(startPoint);
+      const fillColor = this.hexToArgb(this.ctx.fillStyle);
+
+      if (this.colorsMatch(targetColor, fillColor)) {
+        return; // 避免填充相同颜色的区域
+      }
+
+      const stack = [startPoint];
+      const { width, height } = this.$refs.canvas;
+      
+      while (stack.length) {
+        const { x, y } = stack.pop();
+        const currentColor = this.getColorAtPixel({ x, y });
+
+        if (this.colorsMatch(currentColor, targetColor)) {
+          this.drawPixel({x,y})
+
+          if (x > 0) stack.push({ x: x - this.gridSize, y });
+          if (x < width - this.gridSize) stack.push({ x: x + this.gridSize, y });
+          if (y > 0) stack.push({ x, y: y - this.gridSize });
+          if (y < height - this.gridSize) stack.push({ x, y: y + this.gridSize });
+        }
+      }
+    },
+    getColorAtPixel(point) {
+      const { data } = this.ctx.getImageData(point.x, point.y, 1, 1);
+      return { r: data[0], g: data[1], b: data[2], a: data[3] };
+    },
+    hexToArgb(hex) {
+      let a = 255, r = 0, g = 0, b = 0;
+      console.log(hex)
+      if (hex.length === 9) { // #AARRGGBB
+        a = parseInt(hex.slice(1, 3), 16);
+        r = parseInt(hex.slice(3, 5), 16);
+        g = parseInt(hex.slice(5, 7), 16);
+        b = parseInt(hex.slice(7, 9), 16);
+      } else if (hex.length === 7) { // #RRGGBB
+        r = parseInt(hex.slice(1, 3), 16);
+        g = parseInt(hex.slice(3, 5), 16);
+        b = parseInt(hex.slice(5, 7), 16);
+      } else if (hex.length === 5) { // #ARGB
+        a = parseInt(hex.slice(1, 2).repeat(2), 16);
+        r = parseInt(hex.slice(2, 3).repeat(2), 16);
+        g = parseInt(hex.slice(3, 4).repeat(2), 16);
+        b = parseInt(hex.slice(4, 5).repeat(2), 16);
+      } else if (hex.length === 4) { // #RGB
+        r = parseInt(hex.slice(1, 2).repeat(2), 16);
+        g = parseInt(hex.slice(2, 3).repeat(2), 16);
+        b = parseInt(hex.slice(3, 4).repeat(2), 16);
+      }
+      return { a, r, g, b };
+    },
+    colorsMatch(color1, color2) {
+      return color1.r === color2.r && color1.g === color2.g && color1.b === color2.b && color1.a === color2.a;
+    },
+
+
+    drawEllipsePoints(xc, yc, x, y) {
+      this.drawPixel({ x: (xc + x) * this.gridSize, y: (yc + y) * this.gridSize });
+      this.drawPixel({ x: (xc - x) * this.gridSize, y: (yc + y) * this.gridSize });
+      this.drawPixel({ x: (xc + x) * this.gridSize, y: (yc - y) * this.gridSize });
+      this.drawPixel({ x: (xc - x) * this.gridSize, y: (yc - y) * this.gridSize });
     },
     clearAll(){
       this.ctx.clearRect(0,0,this.width,this.height)
@@ -202,7 +350,7 @@ export default {
 
 <style>
 .drawing-area {
-  border: 0.5px solid #000;
+  border: 0.5px solid #d9d9d9;
   position: relative;
   width: fit-content;
   font-size: 0;
@@ -213,9 +361,10 @@ canvas {
   z-index: 1;
   touch-action: none;
 }
-.rect {
-  box-sizing: border-box;
-  pointer-events: none;
+.canvas-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 </style>
