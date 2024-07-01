@@ -10,18 +10,19 @@
               @pointerleave="handlePointerLeave"
               ></canvas>
   </div>
-  <div>{{shiftdown}}</div>
   <div class="tools-bar">
-    <button @click="tool = 1">画笔</button>
-    <button @click="tool = 2">橡皮</button>
-    <button @click="tool = 3">直线</button>
-    <button @click="tool = 4">矩形</button>
-    <button @click="tool = 5">圆形</button>
-    <button @click="filled = !filled">{{filled ? "填充" : "不填充"}}</button>
-    <button @click="tool = 6">填充</button>
-    <button @click="tool = 7">吸管</button>
-    <input type="color" v-model="currentColor">
-    <button @click="clearAll">删除</button>
+    <div class="tool-item" @click="tool = 1"><img src="@/assets/pixel-icon/pen.png"/></div>
+    <div class="tool-item" @click="tool = 2"><img src="@/assets/pixel-icon/erase.png"/></div>
+    <div class="tool-item" @click="tool = 3"><img src="@/assets/pixel-icon/line.png"/></div>
+    <div class="tool-item" @click="tool = 4"><img src="@/assets/pixel-icon/rect.png"/></div>
+    <div class="tool-item" @click="tool = 5"><img src="@/assets/pixel-icon/circle.png"/></div>
+    <!-- <div class="tool-item" @click="filled = !filled">{{filled ? "填充" : "不填充"}}</div> -->
+    <div class="tool-item" @click="tool = 6"><img src="@/assets/pixel-icon/filled.png"/></div>
+    <!-- <div class="tool-item" @click="tool = 7">吸管</div> -->
+    <div class="tool-item">
+      <input  type="color" v-model="currentColor">
+    </div>
+    <div class="tool-item" @click="clearAll"><img src="@/assets/pixel-icon/delete.png"/></div>
 
   </div>
 </template>
@@ -40,9 +41,9 @@ export default {
   data() {
     return {
       tool:1,
-      rows:30,
-      cols:30,
-      gridSize:10,
+      rows:20,
+      cols:20,
+      gridSize:20,
       currentColor:'#000',
       colorIndex:0,
       isDrawing: false,
@@ -365,6 +366,23 @@ canvas {
   position: absolute;
   top: 0;
   left: 0;
+}
+.tools-bar {
+  display: flex;
+  flex-wrap: wrap;
+  width: 80px;
+  
+}
+.tool-item{
+  display: flex;
+  padding: 5px
+}
+.tool-item:hover{
+  background-color: #eee
+}
+.tool-item img{
+  width: 30px;
+  height: 30px;
 }
 
 </style>
