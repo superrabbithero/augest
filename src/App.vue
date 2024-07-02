@@ -49,7 +49,7 @@
   </div>
   <div class="header-block"></div>
   <router-view></router-view>
-  <div v-if="$route.meta.title != '真题'" class="footer">
+  <div v-if="$route.meta.footerable" class="footer">
     <div class="footer-link">
     </div>
     <div class="footer-bar">

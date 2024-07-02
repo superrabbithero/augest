@@ -100,7 +100,8 @@ const routes = [
         name: 'examhome',
         component: examhome,
         meta:{
-            title: '考试模拟器'
+            title: '考试模拟器',
+            footerable: false
         }
     },
     {
@@ -108,7 +109,8 @@ const routes = [
         name: 'pixelSvgEditor',
         component: pixelSvgEditor,
         meta:{
-            title: '像素图标编辑器'
+            title: '像素图标编辑器',
+            footerable: false
         }
     }
 

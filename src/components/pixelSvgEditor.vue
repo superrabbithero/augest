@@ -1,29 +1,48 @@
 <template>
-  <input type="text" v-model="rows">x
-  <input type="text" v-model="cols">
-  <div class="drawing-area">
-    <canvas class="canvas-grid" ref="canvas_grid" :width="width" :height="height"></canvas>
-    <canvas :width="width" :height="height" ref="canvas"
-              @pointerdown="handlePointerDown"
-              @pointermove="handlePointerMove"
-              @pointerup="handlePointerUp"
-              @pointerleave="handlePointerLeave"
-              ></canvas>
-  </div>
-  <div class="tools-bar">
-    <div class="tool-item" @click="tool = 1"><img src="@/assets/pixel-icon/pen.png"/></div>
-    <div class="tool-item" @click="tool = 2"><img src="@/assets/pixel-icon/erase.png"/></div>
-    <div class="tool-item" @click="tool = 3"><img src="@/assets/pixel-icon/line.png"/></div>
-    <div class="tool-item" @click="tool = 4"><img src="@/assets/pixel-icon/rect.png"/></div>
-    <div class="tool-item" @click="tool = 5"><img src="@/assets/pixel-icon/circle.png"/></div>
-    <!-- <div class="tool-item" @click="filled = !filled">{{filled ? "填充" : "不填充"}}</div> -->
-    <div class="tool-item" @click="tool = 6"><img src="@/assets/pixel-icon/filled.png"/></div>
-    <!-- <div class="tool-item" @click="tool = 7">吸管</div> -->
-    <div class="tool-item">
-      <input  type="color" v-model="currentColor">
+  <div class="tool-setting-bar">
+    <div class="right"></div>
+    <div class="left">
+      <div class="icon-item" style="padding:2px;width:26px;height: 26px;">
+        <img src="@/assets/pixel-icon/size-setting.png"/>
+        <div class="size-setting">
+          画布大小：
+          <div class="size">
+            <input type="number" v-model="rows" @change="validateNumber">
+            <span>x</span>
+            <input type="number" v-model="cols" @change="validateNumber">
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="tool-item" @click="clearAll"><img src="@/assets/pixel-icon/delete.png"/></div>
-
+  </div>
+  <div class="work-area">
+    <div class="left">
+      <div class="tools-bar">
+      <div class="tool-item" @click="tool = 1"><img src="@/assets/pixel-icon/pen.png"/></div>
+      <div class="tool-item" @click="tool = 2"><img src="@/assets/pixel-icon/erase.png"/></div>
+      <div class="tool-item" @click="tool = 3"><img src="@/assets/pixel-icon/line.png"/></div>
+      <div class="tool-item" @click="tool = 4"><img src="@/assets/pixel-icon/rect.png"/></div>
+      <div class="tool-item" @click="tool = 5"><img src="@/assets/pixel-icon/circle.png"/></div>
+      <div class="tool-item" @click="tool = 6"><img src="@/assets/pixel-icon/filled.png"/></div>
+      <div class="tool-item" @click="clearAll"><img src="@/assets/pixel-icon/delete.png"/></div>
+      <!-- <div class="tool-item" @click="tool = 7">吸管</div> -->
+      <div class="tool-item">
+        <input type="color" v-model="currentColor">
+      </div>
+    </div>
+    </div>
+    <div class="right">
+      <div class="drawing-area">
+        <canvas class="canvas-grid" ref="canvas_grid" :width="width" :height="height"></canvas>
+        <canvas :width="width" :height="height" ref="canvas"
+                  @pointerdown="handlePointerDown"
+                  @pointermove="handlePointerMove"
+                  @pointerup="handlePointerUp"
+                  @pointerleave="handlePointerLeave"
+                  ></canvas>
+      </div>
+    </div>
+    
   </div>
 </template>
 
@@ -41,9 +60,9 @@ export default {
   data() {
     return {
       tool:1,
-      rows:20,
-      cols:20,
-      gridSize:20,
+      rows:10,
+      cols:12,
+      gridSize:30,
       currentColor:'#000',
       colorIndex:0,
       isDrawing: false,
@@ -51,7 +70,6 @@ export default {
       endPoints:{x:0,y:0},
       ctx:null,
       historys:[],
-      filled:false,
       log:"",
       shiftdown:false
     };
@@ -72,11 +90,10 @@ export default {
       const ctx = canvas.getContext('2d');
       ctx.clearRect(0, 0, this.width, this.height);
       if(true){
-        for (let i = 0; i <= this.rows; i++){
-          for (let j = 0; j <= this.cols; j++){
+        for (let i = 0; i < this.rows; i++){
+          for (let j = 0; j < this.cols; j++){
             ctx.fillStyle = (i+j)%2 ? "#fff" : '#d9d9d9'
-            console.log(ctx.fillStyle)
-            ctx.fillRect(i * this.gridSize, j * this.gridSize,this.gridSize,this.gridSize)
+            ctx.fillRect(j * this.gridSize, i * this.gridSize,this.gridSize,this.gridSize)
           }
         }
       }else{
@@ -204,20 +221,12 @@ export default {
       }
     },
     drawRect(start,end){
-      if(this.filled){
-        if(this.shiftdown){
-          this.ctx.fillRect(start.x,start.y,end.x-start.x+this.gridSize,end.x-start.x+this.gridSize)
-        }else{
-          this.ctx.fillRect(start.x,start.y,end.x-start.x+this.gridSize,end.y-start.y+this.gridSize)
-        }
+      this.ctx.strokeStyle = this.currentColor
+      this.ctx.lineWidth = this.gridSize
+      if(this.shiftdown){
+        this.ctx.strokeRect(start.x+this.gridSize/2,start.y+this.gridSize/2,end.x-start.x,end.x-start.x)
       }else{
-        this.ctx.strokeStyle = this.currentColor
-        this.ctx.lineWidth = this.gridSize
-        if(this.shiftdown){
-          this.ctx.strokeRect(start.x+this.gridSize/2,start.y+this.gridSize/2,end.x-start.x,end.x-start.x)
-        }else{
-          this.ctx.strokeRect(start.x+this.gridSize/2,start.y+this.gridSize/2,end.x-start.x,end.y-start.y)
-        }
+        this.ctx.strokeRect(start.x+this.gridSize/2,start.y+this.gridSize/2,end.x-start.x,end.y-start.y)
       }
     },
     //椭圆BH算法https://blog.csdn.net/myf_666/article/details/128167392
@@ -344,6 +353,13 @@ export default {
       this.historys.push({
         data: this.ctx.getImageData(0, 0, this.width, this.height)
       })
+    },
+    validateNumber(event){
+      var input = event.target
+      if(input.value % 1 !== 0 || input.value <= 0){
+        input.value = Math.max(Math.floor(input.value), 1)
+      }
+      this.drawGrid() 
     }
   },
 };
@@ -352,10 +368,14 @@ export default {
 <style>
 .drawing-area {
   border: 0.5px solid #d9d9d9;
-  position: relative;
+  position: absolute;
   width: fit-content;
   font-size: 0;
-  margin: 0 auto;
+/*  margin: 0 auto;*/
+  height: fit-content;
+    left: 50%;
+  transform: translateX(-50%);
+
 }
 canvas {
   position: relative;
@@ -371,6 +391,7 @@ canvas {
   display: flex;
   flex-wrap: wrap;
   width: 80px;
+  height: fit-content;
   
 }
 .tool-item{
@@ -385,4 +406,58 @@ canvas {
   height: 30px;
 }
 
+.tool-setting-bar {
+  height: 30px;
+  border-bottom: var(--box-border);
+  display: flex;
+  justify-content: space-between
+}
+.work-area{
+  display: flex;
+  width: 100%;
+  overflow: hidden;
+  height: calc(100vh - 91px);
+}
+
+.work-area .right{
+  flex: 1;
+  position: relative;
+  overflow: auto;
+  border-left: var(--box-border)
+}
+
+.work-area > div{
+  padding: 5px;
+}
+
+.icon-item {
+  position: relative;
+  padding:2px;
+  width:26px;
+  height: 26px;
+}
+
+.icon-item:hover {
+  background-color: #eee;
+}
+
+.size-setting {
+  position: absolute;
+  background-color: var(--box-bgc);
+  border: var(--box-border);
+  right: 0;
+  top: 30px;
+  border-radius: 8px;
+  padding: 8px;
+  z-index: 999;
+}
+
+.size-setting .size{
+  display: flex;
+  width: 140px;
+}
+
+.size-setting .size > input {
+  width: 40px;
+}
 </style>
