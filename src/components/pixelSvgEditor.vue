@@ -2,15 +2,25 @@
   <div class="tool-setting-bar">
     <div class="right"></div>
     <div class="left">
-      <div class="icon-item" style="padding:2px;width:26px;height: 26px;">
-        <img src="@/assets/pixel-icon/size-setting.png"/>
-        <div class="size-setting">
+      <div class="icon-item-box">
+        {{log}}
+      </div>
+      <div class="icon-item" @click="undo">
+        <img src="@/assets/pixel-icon/undo1.png"/>
+      </div>
+      <div class="icon-item-box">
+        <div class="icon-item" @click="sizeSettingShow=!sizeSettingShow">
+          <img src="@/assets/pixel-icon/size-setting.png"/>
+        </div>
+        <div :class="{'size-setting':true,'show':sizeSettingShow} " >
           画布大小：
           <div class="size">
-            <input type="number" v-model="rows" @change="validateNumber">
+            <input type="number" v-model="rows"  @input="drawGrid">
             <span>x</span>
-            <input type="number" v-model="cols" @change="validateNumber">
+            <input type="number" v-model="cols"   @input="drawGrid">
           </div>
+          像素大小：
+            <input type="number" v-model="gridSize"  @input="drawGrid">
         </div>
       </div>
     </div>
@@ -61,7 +71,7 @@ export default {
     return {
       tool:1,
       rows:10,
-      cols:12,
+      cols:10,
       gridSize:30,
       currentColor:'#000',
       colorIndex:0,
@@ -71,7 +81,8 @@ export default {
       ctx:null,
       historys:[],
       log:"",
-      shiftdown:false
+      shiftdown:false,
+      sizeSettingShow:false
     };
   },
   mounted() {
@@ -86,31 +97,35 @@ export default {
   },
   methods: {
     drawGrid() {
-      const canvas = this.$refs.canvas_grid
-      const ctx = canvas.getContext('2d');
-      ctx.clearRect(0, 0, this.width, this.height);
-      if(true){
-        for (let i = 0; i < this.rows; i++){
-          for (let j = 0; j < this.cols; j++){
-            ctx.fillStyle = (i+j)%2 ? "#fff" : '#d9d9d9'
-            ctx.fillRect(j * this.gridSize, i * this.gridSize,this.gridSize,this.gridSize)
+      const that = this
+      this.$nextTick(()=>{
+        const canvas = that.$refs.canvas_grid
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, that.width, that.height);
+        if(true){
+          for (let i = 0; i < that.rows; i++){
+            for (let j = 0; j < that.cols; j++){
+              ctx.fillStyle = (i+j)%2 ? "#fff" : '#d9d9d9'
+              ctx.fillRect(j * that.gridSize, i * that.gridSize,that.gridSize,that.gridSize)
+            }
+          }
+        }else{
+          ctx.strokeStyle = '#d9d9d9';
+          for (let i = 0; i <= that.rows; i++) {
+            ctx.beginPath();
+            ctx.moveTo(0, i * that.gridSize);
+            ctx.lineTo(that.width, i * that.gridSize);
+            ctx.stroke();
+          }
+          for (let i = 0; i <= that.cols; i++) {
+            ctx.beginPath();
+            ctx.moveTo(i * that.gridSize, 0);
+            ctx.lineTo(i * that.gridSize, that.height);
+            ctx.stroke();
           }
         }
-      }else{
-        ctx.strokeStyle = '#d9d9d9';
-        for (let i = 0; i <= this.rows; i++) {
-          ctx.beginPath();
-          ctx.moveTo(0, i * this.gridSize);
-          ctx.lineTo(this.width, i * this.gridSize);
-          ctx.stroke();
-        }
-        for (let i = 0; i <= this.cols; i++) {
-          ctx.beginPath();
-          ctx.moveTo(i * this.gridSize, 0);
-          ctx.lineTo(i * this.gridSize, this.height);
-          ctx.stroke();
-        }
-      }
+      })
+      
     },
     switchColor(point){
       const color = this.getColorAtPixel(point)
@@ -229,46 +244,61 @@ export default {
         this.ctx.strokeRect(start.x+this.gridSize/2,start.y+this.gridSize/2,end.x-start.x,end.y-start.y)
       }
     },
-    //椭圆BH算法https://blog.csdn.net/myf_666/article/details/128167392
+    //椭圆BH算法https://www.cnblogs.com/fortunely/p/17681502.html
      drawPixelEllipse(start, end) {
-      const rx = Math.abs((end.x - start.x) / this.gridSize);
-      const ry = this.shiftdown ? rx : Math.abs((end.y - start.y) / this.gridSize);
-      const xc = start.x/ this.gridSize
-      const yc = start.y/ this.gridSize
+      const xc = (start.x + end.x) / 2 / this.gridSize + 0.5
+      const rx = Math.abs((end.x - start.x) / this.gridSize / 2);
+      const drx = end.y>start.y ? rx : -rx
+      const yc = this.shiftdown ? start.y/this.gridSize + drx + 0.5 : (start.y + end.y) / 2 / this.gridSize + 0.5
+      const ry = this.shiftdown ? rx : Math.abs((end.y - start.y) / this.gridSize / 2);
 
-      this.log = "xc:"+xc+"yc:"+yc+"rx:"+rx
+      // this.drawPixel({x:(xc-0.5)*this.gridSize,y:(yc-0.5)*this.gridSize}) 显示圆心
 
-      let x = 0;
+      this.log = "xc:"+xc+",yc:"+yc+",rx:"+rx +",ry:"+ry
+
+      let x = rx%1 ? 0.5 : 0;
       let y = ry;
-      let d1 = ry * ry - rx * rx * ry + 0.25 * rx * rx;
+      let d1 = Math.ceil(ry * ry - rx * rx * ry + 0.25 * rx * rx);
       let dx = 2 * ry * ry * x;
       let dy = 2 * rx * rx * y;
+      this.drawEllipsePoints(xc, yc, x, y)
 
       while (dx < dy) {
-        this.drawEllipsePoints(xc, yc, x, y);
-        if (d1 < 0) {
-          dx += 2 * ry * ry;
+        x++
+        dx += 2 * ry * ry;
+        if (d1 <= 0) {
           d1 += dx + ry * ry;
         } else {
           y--;
-          dx += 2 * ry * ry;
           dy -= 2 * rx * rx;
           d1 += dx - dy + ry * ry;
         }
-        x++
+        
+        this.drawEllipsePoints(xc, yc, x, y)
       }
 
-      let d2 = ry * ry * (x + 0.5) * (x + 0.5) + rx * rx * (y - 1) * (y - 1) - rx * rx * ry * ry;
-      while (y >= 0) {
-        this.drawEllipsePoints(xc, yc, x, y);
-        if (d2 < 0) {
-          d2+=ry*ry*(2*x+2)+rx*rx*(-2*y+3)
-          x++
-        } else {
-          d2+=rx*rx*(-2*y+3)
-        }
+      let d2 = Math.ceil(ry * ry * (x + 0.5) * (x + 0.5) + rx * rx * (y - 1) * (y - 1) - rx * rx * ry * ry);
+      while (y > 0) {
         y--
+        dy -= 2 * rx * rx
+        if (d2 <= 0) {
+          x++
+          dx += 2 *ry*ry
+          d2 += ry*ry - dy + dx
+          
+        } else {
+          d2 += rx * rx - dy
+        }
+        this.drawEllipsePoints(xc, yc, x, y)
       }
+    },
+    drawEllipsePoints(xc, yc, x, y) {
+      xc -= 0.5
+      yc -= 0.5
+      this.drawPixel({ x: (xc + x) * this.gridSize, y: (yc - y) * this.gridSize });
+      this.drawPixel({ x: (xc - x) * this.gridSize, y: (yc - y) * this.gridSize });
+      this.drawPixel({ x: (xc - x) * this.gridSize, y: (yc + y) * this.gridSize });
+      this.drawPixel({ x: (xc + x) * this.gridSize, y: (yc + y) * this.gridSize });
     },
     // 在你的像素画板中实现一个填充功能（类似于“油漆桶”工具），你需要用到一种称为“洪水填充”（Flood Fill）算法。这个算法将会递归地或使用队列填充相同颜色的相邻像素。为了避免递归深度过深导致栈溢出，我们可以使用队列来实现非递归的广度优先搜索（BFS）填充算法。
     fillArea(startPoint) {
@@ -281,60 +311,50 @@ export default {
 
       const stack = [startPoint];
       const { width, height } = this.$refs.canvas;
+      const visited = new Set();
+
+      const key = (x, y) => `${x},${y}`;
       
       while (stack.length) {
         const { x, y } = stack.pop();
         const currentColor = this.getColorAtPixel({ x, y });
 
-        if (this.colorsMatch(currentColor, targetColor)) {
-          this.drawPixel({x,y})
+        if (!visited.has(key(x, y)) && this.colorsMatch(currentColor, targetColor)) {
+          this.drawPixel({ x, y });
+          visited.add(key(x, y));
 
           if (x > 0) stack.push({ x: x - this.gridSize, y });
           if (x < width - this.gridSize) stack.push({ x: x + this.gridSize, y });
           if (y > 0) stack.push({ x, y: y - this.gridSize });
           if (y < height - this.gridSize) stack.push({ x, y: y + this.gridSize });
+
         }
       }
     },
     getColorAtPixel(point) {
       const { data } = this.ctx.getImageData(point.x, point.y, 1, 1);
-      return { r: data[0], g: data[1], b: data[2], a: data[3] };
+      return data.slice(0, 4);
     },
     hexToArgb(hex) {
-      let a = 255, r = 0, g = 0, b = 0;
-      console.log(hex)
-      if (hex.length === 9) { // #AARRGGBB
-        a = parseInt(hex.slice(1, 3), 16);
-        r = parseInt(hex.slice(3, 5), 16);
-        g = parseInt(hex.slice(5, 7), 16);
-        b = parseInt(hex.slice(7, 9), 16);
-      } else if (hex.length === 7) { // #RRGGBB
-        r = parseInt(hex.slice(1, 3), 16);
-        g = parseInt(hex.slice(3, 5), 16);
-        b = parseInt(hex.slice(5, 7), 16);
-      } else if (hex.length === 5) { // #ARGB
-        a = parseInt(hex.slice(1, 2).repeat(2), 16);
-        r = parseInt(hex.slice(2, 3).repeat(2), 16);
-        g = parseInt(hex.slice(3, 4).repeat(2), 16);
-        b = parseInt(hex.slice(4, 5).repeat(2), 16);
-      } else if (hex.length === 4) { // #RGB
-        r = parseInt(hex.slice(1, 2).repeat(2), 16);
-        g = parseInt(hex.slice(2, 3).repeat(2), 16);
-        b = parseInt(hex.slice(3, 4).repeat(2), 16);
+      if (hex[0] === '#') hex = hex.slice(1);
+      const bigint = parseInt(hex, 16);
+      if (hex.length === 8) {
+        return [(bigint >> 24) & 255, (bigint >> 16) & 255, (bigint >> 8) & 255, bigint & 255];
+      } else if (hex.length === 6) {
+        return [255, (bigint >> 16) & 255, (bigint >> 8) & 255, bigint & 255];
+      } else if (hex.length === 4) {
+        return [(bigint >> 12) & 15 * 17, (bigint >> 8) & 15 * 17, (bigint >> 4) & 15 * 17, bigint & 15 * 17];
+      } else if (hex.length === 3) {
+        return [255, (bigint >> 8) & 15 * 17, (bigint >> 4) & 15 * 17, bigint & 15 * 17];
       }
-      return { a, r, g, b };
+      return [0, 0, 0, 0]; // 默认返回透明黑色
     },
     colorsMatch(color1, color2) {
-      return color1.r === color2.r && color1.g === color2.g && color1.b === color2.b && color1.a === color2.a;
+      return color1[0] === color2[0] && color1[1] === color2[1] && color1[2] === color2[2] && color1[3] === color2[3];
     },
 
 
-    drawEllipsePoints(xc, yc, x, y) {
-      this.drawPixel({ x: (xc + x) * this.gridSize, y: (yc + y) * this.gridSize });
-      this.drawPixel({ x: (xc - x) * this.gridSize, y: (yc + y) * this.gridSize });
-      this.drawPixel({ x: (xc + x) * this.gridSize, y: (yc - y) * this.gridSize });
-      this.drawPixel({ x: (xc - x) * this.gridSize, y: (yc - y) * this.gridSize });
-    },
+
     clearAll(){
       this.ctx.clearRect(0,0,this.width,this.height)
       this.addHistoy()
@@ -354,12 +374,13 @@ export default {
         data: this.ctx.getImageData(0, 0, this.width, this.height)
       })
     },
-    validateNumber(event){
-      var input = event.target
-      if(input.value % 1 !== 0 || input.value <= 0){
-        input.value = Math.max(Math.floor(input.value), 1)
+    undo(){
+      var history = this.historys;
+      
+      if(history && history.length > 1){
+        history.pop();
+        this.showLastHistory();
       }
-      this.drawGrid() 
     }
   },
 };
@@ -412,6 +433,10 @@ canvas {
   display: flex;
   justify-content: space-between
 }
+.tool-setting-bar > div{
+  display: flex;
+  align-items: center;
+}
 .work-area{
   display: flex;
   width: 100%;
@@ -430,8 +455,11 @@ canvas {
   padding: 5px;
 }
 
-.icon-item {
+.icon-item-box{
   position: relative;
+}
+
+.icon-item {
   padding:2px;
   width:26px;
   height: 26px;
@@ -450,11 +478,21 @@ canvas {
   border-radius: 8px;
   padding: 8px;
   z-index: 999;
+  opacity: 0;
+  transform: translateY(15%);
+  transition: opacity 0.5s ease,transform 0.5s ease;
+
+}
+
+.size-setting.show{
+  opacity: 1;
+  transform: translateY(0)
 }
 
 .size-setting .size{
   display: flex;
   width: 140px;
+  align-items: center;
 }
 
 .size-setting .size > input {

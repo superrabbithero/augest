@@ -456,3 +456,17 @@ margin-left: -10px;
     display: inline-block;
 }
 
+/*重写input nmuber样式*/
+input[type="number"] {
+    border: 1px solid rgba(0, 0, 0, 0);
+    width: 100px;
+    background-color: var(--box-bgc);
+    border-radius: 4px;
+    padding: 5px;
+    font-size: 16px;
+}
+
+input[type="number"]:focus , input[type="number"]:hover {
+    border: var(--box-border);
+    outline: none; /* 移除默认的蓝色轮廓 */
+}
