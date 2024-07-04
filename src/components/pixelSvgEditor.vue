@@ -1,6 +1,11 @@
 <template>
   <div class="tool-setting-bar">
-    <div class="right"></div>
+    <div class="right">
+      <div class="tool-option">
+        <div class="label" style="width: 91px">画笔大小({{penSize}}):</div>
+        <input type="range" v-model="penSize" min="1" max="20">
+      </div>
+    </div>
     <div class="left">
       <div class="icon-item-box">
         {{log}}
@@ -8,6 +13,7 @@
       <div class="icon-item" @click="undo">
         <img src="@/assets/pixel-icon/undo1.png"/>
       </div>
+
       <div class="icon-item-box">
         <div class="icon-item" @click="sizeSettingShow=!sizeSettingShow">
           <img src="@/assets/pixel-icon/size-setting.png"/>
@@ -23,6 +29,23 @@
             <input type="number" v-model="gridSize"  @input="drawGrid">
         </div>
       </div>
+
+      <div class="icon-item-box">
+        <div class="icon-item" @click="downloadShow=!">
+          <img src="@/assets/pixel-icon/download.png"/>
+        </div>
+        <div :class="{'size-setting':true,'show':sizeSettingShow} " >
+          画布大小：
+          <div class="size">
+            <input type="number" v-model="rows"  @input="drawGrid">
+            <span>x</span>
+            <input type="number" v-model="cols"   @input="drawGrid">
+          </div>
+          像素大小：
+            <input type="number" v-model="gridSize"  @input="drawGrid">
+        </div>
+      </div>
+        
     </div>
   </div>
   <div class="work-area">
@@ -82,7 +105,12 @@ export default {
       historys:[],
       log:"",
       shiftdown:false,
-      sizeSettingShow:false
+      dropDownBoxShow:{
+        sizeSettingShow:false,
+        downloadShow:false
+      }
+      sizeSettingShow:false,
+      penSize:1,
     };
   },
   mounted() {
@@ -191,6 +219,7 @@ export default {
       }else{
         if(this.tool != 6 && this.tool != 7){
           this.showLastHistory()
+          this.ctx.fillStyle = 'rgba(0,0,0,0.3)'
           this.drawPixel(currPoint)
         }
       }
@@ -207,7 +236,11 @@ export default {
         this.showLastHistory()
     },
     drawPixel(point){
-      this.ctx.fillRect(point.x,point.y,this.gridSize,this.gridSize)
+      const size = this.penSize
+      const x = point.x/this.gridSize - Math.floor(size/2)
+      const y = point.y/this.gridSize - Math.floor(size/2)
+
+      this.ctx.fillRect(this.gridSize*x,this.gridSize*y,this.gridSize*size,this.gridSize*size)
     },
     clearPixel(point){
       this.ctx.clearRect(point.x,point.y,this.gridSize,this.gridSize)
@@ -431,11 +464,13 @@ canvas {
   height: 30px;
   border-bottom: var(--box-border);
   display: flex;
-  justify-content: space-between
+  justify-content: space-between;
+  font-size: 14px;
+  align-items: center;
 }
 .tool-setting-bar > div{
   display: flex;
-  align-items: center;
+  height: 100%
 }
 .work-area{
   display: flex;
@@ -498,4 +533,22 @@ canvas {
 .size-setting .size > input {
   width: 40px;
 }
+
+.tool-option {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.tool-option .label{
+  font-size: 15px;
+  line-height: 15px;
+}
+
+.tool-option input[type='range']{
+  width: 90px;
+  height: 15px;
+}
+
+
 </style>
