@@ -15,10 +15,10 @@
       </div>
 
       <div class="icon-item-box">
-        <div class="icon-item" @click="sizeSettingShow=!sizeSettingShow">
+        <div class="icon-item" @click="dropDown('sizeSettingShow')">
           <img src="@/assets/pixel-icon/size-setting.png"/>
         </div>
-        <div :class="{'size-setting':true,'show':sizeSettingShow} " >
+        <div :class="{'size-setting':true,'show':dropDownBoxShow.sizeSettingShow} " >
           画布大小：
           <div class="size">
             <input type="number" v-model="rows"  @input="drawGrid">
@@ -31,18 +31,12 @@
       </div>
 
       <div class="icon-item-box">
-        <div class="icon-item" @click="downloadShow=!">
+        <div class="icon-item" @click="dropDown('downloadShow')">
           <img src="@/assets/pixel-icon/download.png"/>
         </div>
-        <div :class="{'size-setting':true,'show':sizeSettingShow} " >
-          画布大小：
-          <div class="size">
-            <input type="number" v-model="rows"  @input="drawGrid">
-            <span>x</span>
-            <input type="number" v-model="cols"   @input="drawGrid">
-          </div>
-          像素大小：
-            <input type="number" v-model="gridSize"  @input="drawGrid">
+        <div :class="{'size-setting':true,'show':dropDownBoxShow.downloadShow} " >
+          <div class="drop-down-option">保存成 svg</div>
+          <div class="drop-down-option">保存成 png</div>
         </div>
       </div>
         
@@ -108,8 +102,7 @@ export default {
       dropDownBoxShow:{
         sizeSettingShow:false,
         downloadShow:false
-      }
-      sizeSettingShow:false,
+      },
       penSize:1,
     };
   },
@@ -124,6 +117,20 @@ export default {
     window.removeEventListener('keyup', this.handleKeyUp);
   },
   methods: {
+    dropDown(keyname){
+      const keys = Object.keys(this.dropDownBoxShow)
+      if(this.dropDownBoxShow[keyname]){
+        keys.forEach(key => {
+          this.dropDownBoxShow[key] = false
+        })
+      }else{
+        keys.forEach(key => {
+          this.dropDownBoxShow[key] = false
+        })
+        this.dropDownBoxShow[keyname] = true
+      }
+      console.log(this.dropDownBoxShow)
+    },
     drawGrid() {
       const that = this
       this.$nextTick(()=>{
@@ -548,6 +555,16 @@ canvas {
 .tool-option input[type='range']{
   width: 90px;
   height: 15px;
+}
+
+.drop-down-option{
+  width: 120px;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.drop-down-option:hover{
+  background-color: var(--card-hightlight)
 }
 
 
