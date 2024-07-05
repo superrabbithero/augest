@@ -470,3 +470,7 @@ input[type="number"]:focus , input[type="number"]:hover {
     border: var(--box-border);
     outline: none; /* 移除默认的蓝色轮廓 */
 }
+
+input[type="range"] {
+    outline: none; /* 移除默认的蓝色轮廓 */
+}

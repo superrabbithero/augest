@@ -3,7 +3,7 @@
     <h1>组件展示及测试界面</h1>
   </div>
   <button @click="latx_show=!latx_show">公式</button>
-  
+  <svg><use xlink:href="#download"></use></svg>
   <button @click="json_show=!json_show">Json展示</button>
   <button @click="showToast">展示toast</button>
   <button @click="testapi">测试api</button>

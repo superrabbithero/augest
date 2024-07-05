@@ -5,15 +5,15 @@
         <div class="label" style="width: 91px">画笔大小({{penSize}}):</div>
         <input type="range" v-model="penSize" min="1" max="20">
       </div>
+
     </div>
     <div class="left">
-      <div class="icon-item-box">
+      <div class="tool-option">
         {{log}}
       </div>
       <div class="icon-item" @click="undo">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 330 330"><rect x="90" y="30" width="30" height="30" fill="currentcolor" /><rect x="60" y="60" width="30" height="30" fill="currentcolor" /><rect x="30" y="90" width="30" height="30" fill="currentcolor" /><rect x="60" y="90" width="30" height="30" fill="currentcolor" /><rect x="90" y="90" width="30" height="30" fill="currentcolor" /><rect x="120" y="90" width="30" height="30" fill="currentcolor" /><rect x="150" y="90" width="30" height="30" fill="currentcolor" /><rect x="180" y="90" width="30" height="30" fill="currentcolor" /><rect x="210" y="90" width="30" height="30" fill="currentcolor" /><rect x="60" y="120" width="30" height="30" fill="currentcolor" /><rect x="240" y="120" width="30" height="30" fill="currentcolor" /><rect x="90" y="150" width="30" height="30" fill="currentcolor" /><rect x="270" y="150" width="30" height="30" fill="currentcolor" /><rect x="270" y="180" width="30" height="30" fill="currentcolor" /><rect x="270" y="210" width="30" height="30" fill="currentcolor" /><rect x="240" y="240" width="30" height="30" fill="currentcolor" /><rect x="60" y="270" width="30" height="30" fill="currentcolor" /><rect x="90" y="270" width="30" height="30" fill="currentcolor" /><rect x="120" y="270" width="30" height="30" fill="currentcolor" /><rect x="150" y="270" width="30" height="30" fill="currentcolor" /><rect x="180" y="270" width="30" height="30" fill="currentcolor" /><rect x="210" y="270" width="30" height="30" fill="currentcolor" /></svg>
       </div>
-
       <div class="icon-item-box">
         <div class="icon-item" @click="dropDown('sizeSettingShow')">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 330 330"><rect x="30" y="30" width="30" height="30" fill="currentcolor" /><rect x="60" y="30" width="30" height="30" fill="currentcolor" /><rect x="90" y="30" width="30" height="30" fill="currentcolor" /><rect x="120" y="30" width="30" height="30" fill="currentcolor" /><rect x="150" y="30" width="30" height="30" fill="currentcolor" /><rect x="180" y="30" width="30" height="30" fill="currentcolor" /><rect x="210" y="30" width="30" height="30" fill="currentcolor" /><rect x="240" y="30" width="30" height="30" fill="currentcolor" /><rect x="270" y="30" width="30" height="30" fill="currentcolor" /><rect x="30" y="60" width="30" height="30" fill="currentcolor" /><rect x="90" y="60" width="30" height="30" fill="currentcolor" /><rect x="150" y="60" width="30" height="30" fill="currentcolor" /><rect x="210" y="60" width="30" height="30" fill="currentcolor" /><rect x="270" y="60" width="30" height="30" fill="currentcolor" /><rect x="30" y="90" width="30" height="30" fill="currentcolor" /><rect x="60" y="90" width="30" height="30" fill="currentcolor" /><rect x="120" y="90" width="30" height="30" fill="currentcolor" /><rect x="180" y="90" width="30" height="30" fill="currentcolor" /><rect x="240" y="90" width="30" height="30" fill="currentcolor" /><rect x="270" y="90" width="30" height="30" fill="currentcolor" /><rect x="30" y="120" width="30" height="30" fill="currentcolor" /><rect x="90" y="120" width="30" height="30" fill="currentcolor" /><rect x="150" y="120" width="30" height="30" fill="currentcolor" /><rect x="210" y="120" width="30" height="30" fill="currentcolor" /><rect x="270" y="120" width="30" height="30" fill="currentcolor" /><rect x="30" y="150" width="30" height="30" fill="currentcolor" /><rect x="60" y="150" width="30" height="30" fill="currentcolor" /><rect x="120" y="150" width="30" height="30" fill="currentcolor" /><rect x="180" y="150" width="30" height="30" fill="currentcolor" /><rect x="240" y="150" width="30" height="30" fill="currentcolor" /><rect x="270" y="150" width="30" height="30" fill="currentcolor" /><rect x="30" y="180" width="30" height="30" fill="currentcolor" /><rect x="90" y="180" width="30" height="30" fill="currentcolor" /><rect x="150" y="180" width="30" height="30" fill="currentcolor" /><rect x="210" y="180" width="30" height="30" fill="currentcolor" /><rect x="270" y="180" width="30" height="30" fill="currentcolor" /><rect x="30" y="210" width="30" height="30" fill="currentcolor" /><rect x="60" y="210" width="30" height="30" fill="currentcolor" /><rect x="120" y="210" width="30" height="30" fill="currentcolor" /><rect x="180" y="210" width="30" height="30" fill="currentcolor" /><rect x="240" y="210" width="30" height="30" fill="currentcolor" /><rect x="270" y="210" width="30" height="30" fill="currentcolor" /><rect x="30" y="240" width="30" height="30" fill="currentcolor" /><rect x="90" y="240" width="30" height="30" fill="currentcolor" /><rect x="150" y="240" width="30" height="30" fill="currentcolor" /><rect x="210" y="240" width="30" height="30" fill="currentcolor" /><rect x="270" y="240" width="30" height="30" fill="currentcolor" /><rect x="30" y="270" width="30" height="30" fill="currentcolor" /><rect x="60" y="270" width="30" height="30" fill="currentcolor" /><rect x="90" y="270" width="30" height="30" fill="currentcolor" /><rect x="120" y="270" width="30" height="30" fill="currentcolor" /><rect x="150" y="270" width="30" height="30" fill="currentcolor" /><rect x="180" y="270" width="30" height="30" fill="currentcolor" /><rect x="210" y="270" width="30" height="30" fill="currentcolor" /><rect x="240" y="270" width="30" height="30" fill="currentcolor" /><rect x="270" y="270" width="30" height="30" fill="currentcolor" /></svg>
@@ -291,13 +291,36 @@ export default {
       }
     },
     drawRect(start,end){
-      this.ctx.strokeStyle = this.currentColor
-      this.ctx.lineWidth = this.gridSize
-      if(this.shiftdown){
-        this.ctx.strokeRect(start.x+this.gridSize/2,start.y+this.gridSize/2,end.x-start.x,end.x-start.x)
-      }else{
-        this.ctx.strokeRect(start.x+this.gridSize/2,start.y+this.gridSize/2,end.x-start.x,end.y-start.y)
+      let rightUp, leftDown;
+
+      if (this.shiftdown) {
+        // 计算水平和垂直距离
+        const deltaX = end.x - start.x;
+        const deltaY = end.y - start.y;
+
+        // 选择较小的距离作为正方形的边长
+        const sideLength = Math.min(Math.abs(deltaX), Math.abs(deltaY));
+
+        // 根据方向调整 end 点的位置
+        if (deltaX > 0 && deltaY > 0) {
+          end = { x: start.x + sideLength, y: start.y + sideLength };
+        } else if (deltaX > 0 && deltaY < 0) {
+          end = { x: start.x + sideLength, y: start.y - sideLength };
+        } else if (deltaX < 0 && deltaY > 0) {
+          end = { x: start.x - sideLength, y: start.y + sideLength };
+        } else {
+          end = { x: start.x - sideLength, y: start.y - sideLength };
+        }
       }
+
+      rightUp = { x: end.x, y: start.y };
+      leftDown = { x: start.x, y: end.y };
+
+      this.drawLine(start, rightUp);
+      this.drawLine(leftDown, end);
+      this.drawLine(start, leftDown);
+      this.drawLine(rightUp, end);
+      
     },
     //椭圆BH算法https://www.cnblogs.com/fortunely/p/17681502.html
      drawPixelEllipse(start, end) {
@@ -437,7 +460,10 @@ export default {
         this.showLastHistory();
       }
     },
-    getSvgContent(){
+    mergeAdjacentRects(rects) {
+
+    },
+    getSvgContent(filled=false){
       const width = this.width;
       const height = this.height;
       const imageData = this.ctx.getImageData(0, 0, width, height)
@@ -460,15 +486,38 @@ export default {
           }
         } 
       }
-      //生成svg文件,gpt生成代码
-      let svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}">`;
-      
-      pixelData.forEach(pixel => {
-        svgContent += `<rect x="${pixel.x}" y="${pixel.y}" width="${this.gridSize}" height="${this.gridSize}" fill="currentcolor" />`;
-      });
+      if(filled == true){
+        //生成svg文件,gpt生成代码
+        let svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}">`;
+        
+        pixelData.forEach(pixel => {
+          svgContent += `<rect x="${pixel.x}" y="${pixel.y}" width="${this.gridSize}" height="${this.gridSize}" fill="rgba(${pixel.r},${pixel.g},${pixel.b},${pixel.a})" />`;
+        });
 
-      svgContent += '</svg>';
-      return svgContent
+        svgContent += '</svg>';
+        return svgContent
+      }else{
+        let pathSet = new Set()
+        const key = (x1, y1, x2, y2) => `${x1},${y1},${x2},${y2}`;
+        pixelData.forEach(pixel => {
+          let rectPaths = [
+            //上右下左
+            key(pixel.x , pixel.y , pixel.x + this.gridSize , pixel.y),
+            key(pixel.x + this.gridSize , pixel.y,pixel.x + this.gridSize , pixel.y + this.gridSize),
+            key(pixel.x , pixel.y + this.gridSize,pixel.x + this.gridSize , pixel.y + this.gridSize),
+            key(pixel.x , pixel.y,pixel.x , pixel.y + this.gridSize)
+          ]
+          rectPaths.forEach(path => {
+            if(pathSet.has(path)){
+              pathSet.delete(path)
+            }else{
+              pathSet.add(path)
+            }
+          })
+        });
+        console.log(pathSet)
+      }
+      
     },
     copySvgCode(){
       this.copyToClipboard(this.getSvgContent())
@@ -536,7 +585,7 @@ canvas {
   padding: 5px
 }
 .tool-item:hover{
-  background-color: #eee
+  background-color: var(--box-hightlight);
 }
 .tool-item img{
   width: 30px;
@@ -585,7 +634,7 @@ canvas {
 }
 
 .icon-item:hover {
-  background-color: #eee;
+  background-color: var(--box-hightlight);
 }
 
 .size-setting {
