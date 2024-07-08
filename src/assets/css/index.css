@@ -5,6 +5,7 @@
   --box-bgc:#fff;
   --box-hightlight:#f3f3f3;
   --card-hightlight:rgb(238, 238, 238);
+  --white-highlight:#00000017;
   /*  盒子的白*/
   --box-shadow:0.2vw 0.2vw 1vw rgba(0,0,0,0.2);
   /*  卡片的阴影样式*/
@@ -115,6 +116,7 @@ img {
   --box-bgc:#1b1c20;
   --box-hightlight:#252525;
   --card-hightlight:#252525;
+  --white-highlight:#ffffff24;
   --box-shadow: none;
   --boxHoverShadow: none;
   --settingColor:#fff;

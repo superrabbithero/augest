@@ -1,13 +1,16 @@
 <template>
   <div class="tool-setting-bar">
-    <div class="right">
+    <div class="left">
+      <div v-show="tool == 7" class="tool-option">
+        <input type="color" v-model="currentColor">
+      </div>
       <div class="tool-option">
         <div class="label" style="width: 91px">画笔大小({{penSize}}):</div>
         <input type="range" v-model="penSize" min="1" max="20">
       </div>
 
     </div>
-    <div class="left">
+    <div class="right">
       <div class="tool-option">
         {{log}}
       </div>
@@ -46,42 +49,39 @@
   <div class="work-area">
     <div class="left">
       <div class="tools-bar">
-      <div class="tool-item" @click="tool = 1">
+      <div :class="{'tool-item':true,'active':tool == 1}" @click="tool = 1">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 450"><rect x="300" y="30" width="30" height="30" fill="currentcolor" /><rect x="270" y="60" width="30" height="30" fill="currentcolor" /><rect x="300" y="60" width="30" height="30" fill="currentcolor" /><rect x="330" y="60" width="30" height="30" fill="currentcolor" /><rect x="240" y="90" width="30" height="30" fill="currentcolor" /><rect x="300" y="90" width="30" height="30" fill="currentcolor" /><rect x="330" y="90" width="30" height="30" fill="currentcolor" /><rect x="360" y="90" width="30" height="30" fill="currentcolor" /><rect x="210" y="120" width="30" height="30" fill="currentcolor" /><rect x="270" y="120" width="30" height="30" fill="currentcolor" /><rect x="330" y="120" width="30" height="30" fill="currentcolor" /><rect x="360" y="120" width="30" height="30" fill="currentcolor" /><rect x="390" y="120" width="30" height="30" fill="currentcolor" /><rect x="180" y="150" width="30" height="30" fill="currentcolor" /><rect x="300" y="150" width="30" height="30" fill="currentcolor" /><rect x="360" y="150" width="30" height="30" fill="currentcolor" /><rect x="150" y="180" width="30" height="30" fill="currentcolor" /><rect x="330" y="180" width="30" height="30" fill="currentcolor" /><rect x="120" y="210" width="30" height="30" fill="currentcolor" /><rect x="300" y="210" width="30" height="30" fill="currentcolor" /><rect x="90" y="240" width="30" height="30" fill="currentcolor" /><rect x="270" y="240" width="30" height="30" fill="currentcolor" /><rect x="60" y="270" width="30" height="30" fill="currentcolor" /><rect x="240" y="270" width="30" height="30" fill="currentcolor" /><rect x="30" y="300" width="30" height="30" fill="currentcolor" /><rect x="90" y="300" width="30" height="30" fill="currentcolor" /><rect x="210" y="300" width="30" height="30" fill="currentcolor" /><rect x="30" y="330" width="30" height="30" fill="currentcolor" /><rect x="120" y="330" width="30" height="30" fill="currentcolor" /><rect x="180" y="330" width="30" height="30" fill="currentcolor" /><rect x="30" y="360" width="30" height="30" fill="currentcolor" /><rect x="60" y="360" width="30" height="30" fill="currentcolor" /><rect x="150" y="360" width="30" height="30" fill="currentcolor" /><rect x="30" y="390" width="30" height="30" fill="currentcolor" /><rect x="60" y="390" width="30" height="30" fill="currentcolor" /><rect x="90" y="390" width="30" height="30" fill="currentcolor" /><rect x="120" y="390" width="30" height="30" fill="currentcolor" /></svg>
       </div>
-      <div class="tool-item" @click="tool = 2">
+      <div :class="{'tool-item':true,'active':tool == 2}" @click="tool = 2">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 450"><rect x="240" y="30" width="30" height="30" fill="currentcolor" /><rect x="210" y="60" width="30" height="30" fill="currentcolor" /><rect x="240" y="60" width="30" height="30" fill="currentcolor" /><rect x="270" y="60" width="30" height="30" fill="currentcolor" /><rect x="180" y="90" width="30" height="30" fill="currentcolor" /><rect x="270" y="90" width="30" height="30" fill="currentcolor" /><rect x="300" y="90" width="30" height="30" fill="currentcolor" /><rect x="150" y="120" width="30" height="30" fill="currentcolor" /><rect x="300" y="120" width="30" height="30" fill="currentcolor" /><rect x="330" y="120" width="30" height="30" fill="currentcolor" /><rect x="120" y="150" width="30" height="30" fill="currentcolor" /><rect x="330" y="150" width="30" height="30" fill="currentcolor" /><rect x="360" y="150" width="30" height="30" fill="currentcolor" /><rect x="90" y="180" width="30" height="30" fill="currentcolor" /><rect x="360" y="180" width="30" height="30" fill="currentcolor" /><rect x="390" y="180" width="30" height="30" fill="currentcolor" /><rect x="60" y="210" width="30" height="30" fill="currentcolor" /><rect x="120" y="210" width="30" height="30" fill="currentcolor" /><rect x="360" y="210" width="30" height="30" fill="currentcolor" /><rect x="390" y="210" width="30" height="30" fill="currentcolor" /><rect x="30" y="240" width="30" height="30" fill="currentcolor" /><rect x="150" y="240" width="30" height="30" fill="currentcolor" /><rect x="330" y="240" width="30" height="30" fill="currentcolor" /><rect x="360" y="240" width="30" height="30" fill="currentcolor" /><rect x="60" y="270" width="30" height="30" fill="currentcolor" /><rect x="180" y="270" width="30" height="30" fill="currentcolor" /><rect x="300" y="270" width="30" height="30" fill="currentcolor" /><rect x="330" y="270" width="30" height="30" fill="currentcolor" /><rect x="90" y="300" width="30" height="30" fill="currentcolor" /><rect x="210" y="300" width="30" height="30" fill="currentcolor" /><rect x="270" y="300" width="30" height="30" fill="currentcolor" /><rect x="300" y="300" width="30" height="30" fill="currentcolor" /><rect x="120" y="330" width="30" height="30" fill="currentcolor" /><rect x="240" y="330" width="30" height="30" fill="currentcolor" /><rect x="270" y="330" width="30" height="30" fill="currentcolor" /><rect x="150" y="360" width="30" height="30" fill="currentcolor" /><rect x="180" y="360" width="30" height="30" fill="currentcolor" /><rect x="210" y="360" width="30" height="30" fill="currentcolor" /><rect x="240" y="360" width="30" height="30" fill="currentcolor" /><rect x="90" y="390" width="30" height="30" fill="currentcolor" /><rect x="120" y="390" width="30" height="30" fill="currentcolor" /><rect x="150" y="390" width="30" height="30" fill="currentcolor" /><rect x="180" y="390" width="30" height="30" fill="currentcolor" /><rect x="210" y="390" width="30" height="30" fill="currentcolor" /><rect x="240" y="390" width="30" height="30" fill="currentcolor" /><rect x="270" y="390" width="30" height="30" fill="currentcolor" /><rect x="300" y="390" width="30" height="30" fill="currentcolor" /><rect x="330" y="390" width="30" height="30" fill="currentcolor" /></svg>
       </div>
-      <div class="tool-item" @click="tool = 3">
+      <div :class="{'tool-item':true,'active':tool == 3}" @click="tool = 3">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 450"><rect x="360" y="30" width="30" height="30" fill="currentcolor" /><rect x="390" y="30" width="30" height="30" fill="currentcolor" /><rect x="360" y="60" width="30" height="30" fill="currentcolor" /><rect x="390" y="60" width="30" height="30" fill="currentcolor" /><rect x="330" y="90" width="30" height="30" fill="currentcolor" /><rect x="300" y="120" width="30" height="30" fill="currentcolor" /><rect x="270" y="150" width="30" height="30" fill="currentcolor" /><rect x="240" y="180" width="30" height="30" fill="currentcolor" /><rect x="210" y="210" width="30" height="30" fill="currentcolor" /><rect x="180" y="240" width="30" height="30" fill="currentcolor" /><rect x="150" y="270" width="30" height="30" fill="currentcolor" /><rect x="120" y="300" width="30" height="30" fill="currentcolor" /><rect x="90" y="330" width="30" height="30" fill="currentcolor" /><rect x="30" y="360" width="30" height="30" fill="currentcolor" /><rect x="60" y="360" width="30" height="30" fill="currentcolor" /><rect x="30" y="390" width="30" height="30" fill="currentcolor" /><rect x="60" y="390" width="30" height="30" fill="currentcolor" /></svg>
       </div>
-      <div class="tool-item" @click="tool = 4">
+      <div :class="{'tool-item':true,'active':tool == 4}" @click="tool = 4">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 450"><rect x="30" y="30" width="30" height="30" fill="currentcolor" /><rect x="60" y="30" width="30" height="30" fill="currentcolor" /><rect x="90" y="30" width="30" height="30" fill="currentcolor" /><rect x="120" y="30" width="30" height="30" fill="currentcolor" /><rect x="150" y="30" width="30" height="30" fill="currentcolor" /><rect x="180" y="30" width="30" height="30" fill="currentcolor" /><rect x="210" y="30" width="30" height="30" fill="currentcolor" /><rect x="240" y="30" width="30" height="30" fill="currentcolor" /><rect x="270" y="30" width="30" height="30" fill="currentcolor" /><rect x="300" y="30" width="30" height="30" fill="currentcolor" /><rect x="330" y="30" width="30" height="30" fill="currentcolor" /><rect x="360" y="30" width="30" height="30" fill="currentcolor" /><rect x="390" y="30" width="30" height="30" fill="currentcolor" /><rect x="30" y="60" width="30" height="30" fill="currentcolor" /><rect x="390" y="60" width="30" height="30" fill="currentcolor" /><rect x="30" y="90" width="30" height="30" fill="currentcolor" /><rect x="390" y="90" width="30" height="30" fill="currentcolor" /><rect x="30" y="120" width="30" height="30" fill="currentcolor" /><rect x="390" y="120" width="30" height="30" fill="currentcolor" /><rect x="30" y="150" width="30" height="30" fill="currentcolor" /><rect x="390" y="150" width="30" height="30" fill="currentcolor" /><rect x="30" y="180" width="30" height="30" fill="currentcolor" /><rect x="390" y="180" width="30" height="30" fill="currentcolor" /><rect x="30" y="210" width="30" height="30" fill="currentcolor" /><rect x="390" y="210" width="30" height="30" fill="currentcolor" /><rect x="30" y="240" width="30" height="30" fill="currentcolor" /><rect x="390" y="240" width="30" height="30" fill="currentcolor" /><rect x="30" y="270" width="30" height="30" fill="currentcolor" /><rect x="390" y="270" width="30" height="30" fill="currentcolor" /><rect x="30" y="300" width="30" height="30" fill="currentcolor" /><rect x="390" y="300" width="30" height="30" fill="currentcolor" /><rect x="30" y="330" width="30" height="30" fill="currentcolor" /><rect x="390" y="330" width="30" height="30" fill="currentcolor" /><rect x="30" y="360" width="30" height="30" fill="currentcolor" /><rect x="390" y="360" width="30" height="30" fill="currentcolor" /><rect x="30" y="390" width="30" height="30" fill="currentcolor" /><rect x="60" y="390" width="30" height="30" fill="currentcolor" /><rect x="90" y="390" width="30" height="30" fill="currentcolor" /><rect x="120" y="390" width="30" height="30" fill="currentcolor" /><rect x="150" y="390" width="30" height="30" fill="currentcolor" /><rect x="180" y="390" width="30" height="30" fill="currentcolor" /><rect x="210" y="390" width="30" height="30" fill="currentcolor" /><rect x="240" y="390" width="30" height="30" fill="currentcolor" /><rect x="270" y="390" width="30" height="30" fill="currentcolor" /><rect x="300" y="390" width="30" height="30" fill="currentcolor" /><rect x="330" y="390" width="30" height="30" fill="currentcolor" /><rect x="360" y="390" width="30" height="30" fill="currentcolor" /><rect x="390" y="390" width="30" height="30" fill="currentcolor" /></svg>
       </div>
-      <div class="tool-item" @click="tool = 5">
+      <div :class="{'tool-item':true,'active':tool == 5}" @click="tool = 5">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 450"><rect x="150" y="30" width="30" height="30" fill="currentcolor" /><rect x="180" y="30" width="30" height="30" fill="currentcolor" /><rect x="210" y="30" width="30" height="30" fill="currentcolor" /><rect x="240" y="30" width="30" height="30" fill="currentcolor" /><rect x="270" y="30" width="30" height="30" fill="currentcolor" /><rect x="90" y="60" width="30" height="30" fill="currentcolor" /><rect x="120" y="60" width="30" height="30" fill="currentcolor" /><rect x="300" y="60" width="30" height="30" fill="currentcolor" /><rect x="330" y="60" width="30" height="30" fill="currentcolor" /><rect x="60" y="90" width="30" height="30" fill="currentcolor" /><rect x="360" y="90" width="30" height="30" fill="currentcolor" /><rect x="60" y="120" width="30" height="30" fill="currentcolor" /><rect x="360" y="120" width="30" height="30" fill="currentcolor" /><rect x="30" y="150" width="30" height="30" fill="currentcolor" /><rect x="390" y="150" width="30" height="30" fill="currentcolor" /><rect x="30" y="180" width="30" height="30" fill="currentcolor" /><rect x="390" y="180" width="30" height="30" fill="currentcolor" /><rect x="30" y="210" width="30" height="30" fill="currentcolor" /><rect x="390" y="210" width="30" height="30" fill="currentcolor" /><rect x="30" y="240" width="30" height="30" fill="currentcolor" /><rect x="390" y="240" width="30" height="30" fill="currentcolor" /><rect x="30" y="270" width="30" height="30" fill="currentcolor" /><rect x="390" y="270" width="30" height="30" fill="currentcolor" /><rect x="60" y="300" width="30" height="30" fill="currentcolor" /><rect x="360" y="300" width="30" height="30" fill="currentcolor" /><rect x="60" y="330" width="30" height="30" fill="currentcolor" /><rect x="360" y="330" width="30" height="30" fill="currentcolor" /><rect x="90" y="360" width="30" height="30" fill="currentcolor" /><rect x="120" y="360" width="30" height="30" fill="currentcolor" /><rect x="300" y="360" width="30" height="30" fill="currentcolor" /><rect x="330" y="360" width="30" height="30" fill="currentcolor" /><rect x="150" y="390" width="30" height="30" fill="currentcolor" /><rect x="180" y="390" width="30" height="30" fill="currentcolor" /><rect x="210" y="390" width="30" height="30" fill="currentcolor" /><rect x="240" y="390" width="30" height="30" fill="currentcolor" /><rect x="270" y="390" width="30" height="30" fill="currentcolor" /></svg>
       </div>
-      <div class="tool-item" @click="tool = 6">
+      <div :class="{'tool-item':true,'active':tool == 6}" @click="tool = 6">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 450"><rect x="240" y="30" width="30" height="30" fill="currentcolor" /><rect x="270" y="30" width="30" height="30" fill="currentcolor" /><rect x="300" y="30" width="30" height="30" fill="currentcolor" /><rect x="210" y="60" width="30" height="30" fill="currentcolor" /><rect x="330" y="60" width="30" height="30" fill="currentcolor" /><rect x="360" y="60" width="30" height="30" fill="currentcolor" /><rect x="390" y="60" width="30" height="30" fill="currentcolor" /><rect x="210" y="90" width="30" height="30" fill="currentcolor" /><rect x="240" y="90" width="30" height="30" fill="currentcolor" /><rect x="270" y="90" width="30" height="30" fill="currentcolor" /><rect x="300" y="90" width="30" height="30" fill="currentcolor" /><rect x="330" y="90" width="30" height="30" fill="currentcolor" /><rect x="360" y="90" width="30" height="30" fill="currentcolor" /><rect x="390" y="90" width="30" height="30" fill="currentcolor" /><rect x="120" y="120" width="30" height="30" fill="currentcolor" /><rect x="150" y="120" width="30" height="30" fill="currentcolor" /><rect x="180" y="120" width="30" height="30" fill="currentcolor" /><rect x="210" y="120" width="30" height="30" fill="currentcolor" /><rect x="360" y="120" width="30" height="30" fill="currentcolor" /><rect x="390" y="120" width="30" height="30" fill="currentcolor" /><rect x="90" y="150" width="30" height="30" fill="currentcolor" /><rect x="150" y="150" width="30" height="30" fill="currentcolor" /><rect x="360" y="150" width="30" height="30" fill="currentcolor" /><rect x="390" y="150" width="30" height="30" fill="currentcolor" /><rect x="90" y="180" width="30" height="30" fill="currentcolor" /><rect x="150" y="180" width="30" height="30" fill="currentcolor" /><rect x="360" y="180" width="30" height="30" fill="currentcolor" /><rect x="390" y="180" width="30" height="30" fill="currentcolor" /><rect x="60" y="210" width="30" height="30" fill="currentcolor" /><rect x="120" y="210" width="30" height="30" fill="currentcolor" /><rect x="180" y="210" width="30" height="30" fill="currentcolor" /><rect x="360" y="210" width="30" height="30" fill="currentcolor" /><rect x="390" y="210" width="30" height="30" fill="currentcolor" /><rect x="60" y="240" width="30" height="30" fill="currentcolor" /><rect x="120" y="240" width="30" height="30" fill="currentcolor" /><rect x="180" y="240" width="30" height="30" fill="currentcolor" /><rect x="360" y="240" width="30" height="30" fill="currentcolor" /><rect x="390" y="240" width="30" height="30" fill="currentcolor" /><rect x="30" y="270" width="30" height="30" fill="currentcolor" /><rect x="150" y="270" width="30" height="30" fill="currentcolor" /><rect x="210" y="270" width="30" height="30" fill="currentcolor" /><rect x="360" y="270" width="30" height="30" fill="currentcolor" /><rect x="390" y="270" width="30" height="30" fill="currentcolor" /><rect x="30" y="300" width="30" height="30" fill="currentcolor" /><rect x="150" y="300" width="30" height="30" fill="currentcolor" /><rect x="240" y="300" width="30" height="30" fill="currentcolor" /><rect x="360" y="300" width="30" height="30" fill="currentcolor" /><rect x="390" y="300" width="30" height="30" fill="currentcolor" /><rect x="30" y="330" width="30" height="30" fill="currentcolor" /><rect x="150" y="330" width="30" height="30" fill="currentcolor" /><rect x="240" y="330" width="30" height="30" fill="currentcolor" /><rect x="360" y="330" width="30" height="30" fill="currentcolor" /><rect x="390" y="330" width="30" height="30" fill="currentcolor" /><rect x="60" y="360" width="30" height="30" fill="currentcolor" /><rect x="90" y="360" width="30" height="30" fill="currentcolor" /><rect x="120" y="360" width="30" height="30" fill="currentcolor" /><rect x="270" y="360" width="30" height="30" fill="currentcolor" /><rect x="330" y="360" width="30" height="30" fill="currentcolor" /><rect x="360" y="360" width="30" height="30" fill="currentcolor" /><rect x="390" y="360" width="30" height="30" fill="currentcolor" /><rect x="270" y="390" width="30" height="30" fill="currentcolor" /><rect x="300" y="390" width="30" height="30" fill="currentcolor" /><rect x="330" y="390" width="30" height="30" fill="currentcolor" /></svg>
       </div>
       <div class="tool-item" @click="clearAll">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 450"><rect x="210" y="30" width="30" height="30" fill="currentcolor" /><rect x="180" y="60" width="30" height="30" fill="currentcolor" /><rect x="240" y="60" width="30" height="30" fill="currentcolor" /><rect x="30" y="90" width="30" height="30" fill="currentcolor" /><rect x="60" y="90" width="30" height="30" fill="currentcolor" /><rect x="90" y="90" width="30" height="30" fill="currentcolor" /><rect x="120" y="90" width="30" height="30" fill="currentcolor" /><rect x="150" y="90" width="30" height="30" fill="currentcolor" /><rect x="180" y="90" width="30" height="30" fill="currentcolor" /><rect x="210" y="90" width="30" height="30" fill="currentcolor" /><rect x="240" y="90" width="30" height="30" fill="currentcolor" /><rect x="270" y="90" width="30" height="30" fill="currentcolor" /><rect x="300" y="90" width="30" height="30" fill="currentcolor" /><rect x="330" y="90" width="30" height="30" fill="currentcolor" /><rect x="360" y="90" width="30" height="30" fill="currentcolor" /><rect x="390" y="90" width="30" height="30" fill="currentcolor" /><rect x="30" y="120" width="30" height="30" fill="currentcolor" /><rect x="390" y="120" width="30" height="30" fill="currentcolor" /><rect x="30" y="150" width="30" height="30" fill="currentcolor" /><rect x="60" y="150" width="30" height="30" fill="currentcolor" /><rect x="90" y="150" width="30" height="30" fill="currentcolor" /><rect x="120" y="150" width="30" height="30" fill="currentcolor" /><rect x="150" y="150" width="30" height="30" fill="currentcolor" /><rect x="180" y="150" width="30" height="30" fill="currentcolor" /><rect x="210" y="150" width="30" height="30" fill="currentcolor" /><rect x="240" y="150" width="30" height="30" fill="currentcolor" /><rect x="270" y="150" width="30" height="30" fill="currentcolor" /><rect x="300" y="150" width="30" height="30" fill="currentcolor" /><rect x="330" y="150" width="30" height="30" fill="currentcolor" /><rect x="360" y="150" width="30" height="30" fill="currentcolor" /><rect x="390" y="150" width="30" height="30" fill="currentcolor" /><rect x="60" y="180" width="30" height="30" fill="currentcolor" /><rect x="120" y="180" width="30" height="30" fill="currentcolor" /><rect x="180" y="180" width="30" height="30" fill="currentcolor" /><rect x="240" y="180" width="30" height="30" fill="currentcolor" /><rect x="300" y="180" width="30" height="30" fill="currentcolor" /><rect x="360" y="180" width="30" height="30" fill="currentcolor" /><rect x="60" y="210" width="30" height="30" fill="currentcolor" /><rect x="90" y="210" width="30" height="30" fill="currentcolor" /><rect x="150" y="210" width="30" height="30" fill="currentcolor" /><rect x="210" y="210" width="30" height="30" fill="currentcolor" /><rect x="270" y="210" width="30" height="30" fill="currentcolor" /><rect x="330" y="210" width="30" height="30" fill="currentcolor" /><rect x="360" y="210" width="30" height="30" fill="currentcolor" /><rect x="60" y="240" width="30" height="30" fill="currentcolor" /><rect x="120" y="240" width="30" height="30" fill="currentcolor" /><rect x="180" y="240" width="30" height="30" fill="currentcolor" /><rect x="240" y="240" width="30" height="30" fill="currentcolor" /><rect x="300" y="240" width="30" height="30" fill="currentcolor" /><rect x="360" y="240" width="30" height="30" fill="currentcolor" /><rect x="60" y="270" width="30" height="30" fill="currentcolor" /><rect x="120" y="270" width="30" height="30" fill="currentcolor" /><rect x="180" y="270" width="30" height="30" fill="currentcolor" /><rect x="240" y="270" width="30" height="30" fill="currentcolor" /><rect x="300" y="270" width="30" height="30" fill="currentcolor" /><rect x="360" y="270" width="30" height="30" fill="currentcolor" /><rect x="90" y="300" width="30" height="30" fill="currentcolor" /><rect x="120" y="300" width="30" height="30" fill="currentcolor" /><rect x="180" y="300" width="30" height="30" fill="currentcolor" /><rect x="240" y="300" width="30" height="30" fill="currentcolor" /><rect x="300" y="300" width="30" height="30" fill="currentcolor" /><rect x="330" y="300" width="30" height="30" fill="currentcolor" /><rect x="90" y="330" width="30" height="30" fill="currentcolor" /><rect x="150" y="330" width="30" height="30" fill="currentcolor" /><rect x="210" y="330" width="30" height="30" fill="currentcolor" /><rect x="270" y="330" width="30" height="30" fill="currentcolor" /><rect x="330" y="330" width="30" height="30" fill="currentcolor" /><rect x="90" y="360" width="30" height="30" fill="currentcolor" /><rect x="150" y="360" width="30" height="30" fill="currentcolor" /><rect x="210" y="360" width="30" height="30" fill="currentcolor" /><rect x="270" y="360" width="30" height="30" fill="currentcolor" /><rect x="330" y="360" width="30" height="30" fill="currentcolor" /><rect x="90" y="390" width="30" height="30" fill="currentcolor" /><rect x="120" y="390" width="30" height="30" fill="currentcolor" /><rect x="150" y="390" width="30" height="30" fill="currentcolor" /><rect x="180" y="390" width="30" height="30" fill="currentcolor" /><rect x="210" y="390" width="30" height="30" fill="currentcolor" /><rect x="240" y="390" width="30" height="30" fill="currentcolor" /><rect x="270" y="390" width="30" height="30" fill="currentcolor" /><rect x="300" y="390" width="30" height="30" fill="currentcolor" /><rect x="330" y="390" width="30" height="30" fill="currentcolor" /></svg>  
       </div>
-      <!-- <div class="tool-item" @click="tool = 7">吸管</div> -->
-      <div class="tool-item">
-        <input type="color" v-model="currentColor">
+      <div :class="{'tool-item':true,'active':tool == 7}" @click="tool = 7" >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 450"><rect x="150" y="30" width="30" height="30" fill="currentColor" /><rect x="180" y="30" width="30" height="30" fill="currentColor" /><rect x="210" y="30" width="30" height="30" fill="currentColor" /><rect x="240" y="30" width="30" height="30" fill="currentColor" /><rect x="270" y="30" width="30" height="30" fill="currentColor" /><rect x="90" y="60" width="30" height="30" fill="currentColor" /><rect x="120" y="60" width="30" height="30" fill="currentColor" /><rect x="300" y="60" width="30" height="30" fill="currentColor" /><rect x="330" y="60" width="30" height="30" fill="currentColor" /><rect x="60" y="90" width="30" height="30" fill="currentColor" /><rect x="360" y="90" width="30" height="30" fill="currentColor" /><rect x="60" y="120" width="30" height="30" fill="currentColor" /><rect x="150" y="120" width="30" height="30" fill="currentColor" /><rect x="300" y="120" width="30" height="30" fill="currentColor" /><rect x="360" y="120" width="30" height="30" fill="currentColor" /><rect x="30" y="150" width="30" height="30" fill="currentColor" /><rect x="120" y="150" width="30" height="30" fill="currentColor" /><rect x="180" y="150" width="30" height="30" fill="currentColor" /><rect x="270" y="150" width="30" height="30" fill="currentColor" /><rect x="330" y="150" width="30" height="30" fill="currentColor" /><rect x="390" y="150" width="30" height="30" fill="currentColor" /><rect x="30" y="180" width="30" height="30" fill="currentColor" /><rect x="150" y="180" width="30" height="30" fill="currentColor" /><rect x="300" y="180" width="30" height="30" fill="currentColor" /><rect x="390" y="180" width="30" height="30" fill="currentColor" /><rect x="30" y="210" width="30" height="30" fill="currentColor" /><rect x="390" y="210" width="30" height="30" fill="currentColor" /><rect x="30" y="240" width="30" height="30" fill="currentColor" /><rect x="120" y="240" width="30" height="30" fill="currentColor" /><rect x="360" y="240" width="30" height="30" fill="currentColor" /><rect x="30" y="270" width="30" height="30" fill="currentColor" /><rect x="90" y="270" width="30" height="30" fill="currentColor" /><rect x="150" y="270" width="30" height="30" fill="currentColor" /><rect x="270" y="270" width="30" height="30" fill="currentColor" /><rect x="300" y="270" width="30" height="30" fill="currentColor" /><rect x="330" y="270" width="30" height="30" fill="currentColor" /><rect x="60" y="300" width="30" height="30" fill="currentColor" /><rect x="120" y="300" width="30" height="30" fill="currentColor" /><rect x="240" y="300" width="30" height="30" fill="currentColor" /><rect x="60" y="330" width="30" height="30" fill="currentColor" /><rect x="210" y="330" width="30" height="30" fill="currentColor" /><rect x="90" y="360" width="30" height="30" fill="currentColor" /><rect x="120" y="360" width="30" height="30" fill="currentColor" /><rect x="210" y="360" width="30" height="30" fill="currentColor" /><rect x="150" y="390" width="30" height="30" fill="currentColor" /><rect x="180" y="390" width="30" height="30" fill="currentColor" /></svg>
       </div>
     </div>
     </div>
-    <div class="right">
-      <div class="drawing-area">
+    <div class="right" @pointerdown="handlePointerDown"
+                       @pointermove="handlePointerMove"
+                       @pointerup="handlePointerUp">
+      <div style="position: absolute;">{{coordinate}}</div>
+      <div class="drawing-area" >
         <canvas class="canvas-grid" ref="canvas_grid" :width="width" :height="height"></canvas>
-        <canvas :width="width" :height="height" ref="canvas"
-                  @pointerdown="handlePointerDown"
-                  @pointermove="handlePointerMove"
-                  @pointerup="handlePointerUp"
-                  @pointerleave="handlePointerLeave"
-                  ></canvas>
+        <canvas :width="width" :height="height" ref="canvas"></canvas>
       </div>
     </div>
     
@@ -105,6 +105,7 @@ export default {
       rows:15,
       cols:15,
       gridSize:30,
+      coordinate:'x:0,y:0',
       currentColor:'#000',
       colorIndex:0,
       isDrawing: false,
@@ -213,8 +214,6 @@ export default {
         this.ctx.fillStyle = this.currentColor
         this.fillArea(this.endPoints);
         this.addHistoy()
-      }else if(this.tool == 7){
-        this.switchColor(this.endPoints)
       }
       
     },
@@ -222,6 +221,7 @@ export default {
       this.ctx.fillStyle = this.currentColor
       this.ctx.strokeStyle = this.currentColor
       const currPoint = this.getPoint({x:event.clientX,y:event.clientY})
+      
       if(this.isDrawing){
         if(this.tool == 1){
           this.drawLine(this.endPoints, currPoint)
@@ -241,8 +241,7 @@ export default {
       }else{
         if(this.tool != 6 && this.tool != 7){
           this.showLastHistory()
-          this.ctx.fillStyle = 'rgba(0,0,0,0.3)'
-          this.drawPixel(currPoint)
+          this.overMove(currPoint)
         }
       }
     },
@@ -253,19 +252,25 @@ export default {
       }
       
     },
-    handlePointerLeave(){
-      if(this.isDrawing == false)
-        this.showLastHistory()
-    },
     drawPixel(point){
+      this.ctx.fillStyle = this.currentColor
       const size = this.penSize
       const x = point.x/this.gridSize - Math.floor(size/2)
       const y = point.y/this.gridSize - Math.floor(size/2)
-
+      this.ctx.fillRect(this.gridSize*x,this.gridSize*y,this.gridSize*size,this.gridSize*size)
+    },
+    overMove(point){
+      this.ctx.fillStyle = 'rgba(0,0,0,0.3)'
+      const size = this.penSize
+      const x = point.x/this.gridSize - Math.floor(size/2)
+      const y = point.y/this.gridSize - Math.floor(size/2)
       this.ctx.fillRect(this.gridSize*x,this.gridSize*y,this.gridSize*size,this.gridSize*size)
     },
     clearPixel(point){
-      this.ctx.clearRect(point.x,point.y,this.gridSize,this.gridSize)
+      const size = this.penSize
+      const x = point.x/this.gridSize - Math.floor(size/2)
+      const y = point.y/this.gridSize - Math.floor(size/2)
+      this.ctx.clearRect(this.gridSize*x,this.gridSize*y,this.gridSize*size,this.gridSize*size)
     },
     // 直线BH算法https://blog.csdn.net/myf_666/article/details/128164135
     drawLine(start,end){
@@ -441,6 +446,7 @@ export default {
       const rect = this.$refs.canvas.getBoundingClientRect();
       const x = Math.floor((point.x - rect.left) / this.gridSize)*this.gridSize
       const y = Math.floor((point.y - rect.top) / this.gridSize)*this.gridSize
+      this.coordinate = `x:${x / this.gridSize},y:${y / this.gridSize}`
       return {x,y}
     },
     showLastHistory() {
@@ -486,37 +492,19 @@ export default {
           }
         } 
       }
-      if(filled == true){
-        //生成svg文件,gpt生成代码
-        let svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}">`;
-        
-        pixelData.forEach(pixel => {
-          svgContent += `<rect x="${pixel.x}" y="${pixel.y}" width="${this.gridSize}" height="${this.gridSize}" fill="rgba(${pixel.r},${pixel.g},${pixel.b},${pixel.a})" />`;
-        });
 
-        svgContent += '</svg>';
-        return svgContent
-      }else{
-        let pathSet = new Set()
-        const key = (x1, y1, x2, y2) => `${x1},${y1},${x2},${y2}`;
-        pixelData.forEach(pixel => {
-          let rectPaths = [
-            //上右下左
-            key(pixel.x , pixel.y , pixel.x + this.gridSize , pixel.y),
-            key(pixel.x + this.gridSize , pixel.y,pixel.x + this.gridSize , pixel.y + this.gridSize),
-            key(pixel.x , pixel.y + this.gridSize,pixel.x + this.gridSize , pixel.y + this.gridSize),
-            key(pixel.x , pixel.y,pixel.x , pixel.y + this.gridSize)
-          ]
-          rectPaths.forEach(path => {
-            if(pathSet.has(path)){
-              pathSet.delete(path)
-            }else{
-              pathSet.add(path)
-            }
-          })
-        });
-        console.log(pathSet)
-      }
+      let color = filled ? `rgba(${pixel.r},${pixel.g},${pixel.b},${pixel.a})` : "currentColor"
+
+
+      //生成svg文件,gpt生成代码
+      let svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}">`;
+      
+      pixelData.forEach(pixel => {
+        svgContent += `<rect x="${pixel.x}" y="${pixel.y}" width="${this.gridSize}" height="${this.gridSize}" fill="${color}" />`;
+      });
+
+      svgContent += '</svg>';
+      return svgContent
       
     },
     copySvgCode(){
@@ -574,7 +562,7 @@ canvas {
 .tools-bar {
   display: flex;
   flex-wrap: wrap;
-  width: 80px;
+  width: 84px;
   height: fit-content;
   
 }
@@ -582,10 +570,12 @@ canvas {
   width: 30px;
   height: 30px;
   display: flex;
-  padding: 5px
+  padding: 5px;
+  margin: 1px;
+  border-radius: 5px;
 }
-.tool-item:hover{
-  background-color: var(--box-hightlight);
+.tool-item:hover , .tool-item.active{
+  background-color: var(--white-highlight);
 }
 .tool-item img{
   width: 30px;
@@ -634,7 +624,7 @@ canvas {
 }
 
 .icon-item:hover {
-  background-color: var(--box-hightlight);
+  background-color: var(--white-highlight);
 }
 
 .size-setting {
@@ -673,6 +663,7 @@ canvas {
   height: 100%;
   display: flex;
   align-items: center;
+  margin: 2px;
 }
 
 .tool-option .label{
@@ -692,7 +683,7 @@ canvas {
 }
 
 .drop-down-option:hover{
-  background-color: var(--card-hightlight)
+  background-color: var(--white-highlight)
 }
 
 
