@@ -10,6 +10,10 @@ import {MY_EVN} from './assets/js/constants.js'
 import Toast from './components/Model/Toast.vue';
 import MdLoader from './components/Model/MdLoader.vue';
 import IconWrapper from './components/IconWrapper.vue';
+import "./assets/icons"
+import SvgIcon from "./components/Model/svgIcon.vue"
+
+
 
 // 插件
 const ToastPlugin = {
@@ -44,6 +48,7 @@ app
 	.component('toast',Toast)
 	.component('md-loader',MdLoader)
   .component('IconWrapper',IconWrapper)
+  .component('svg-icon',SvgIcon)
 // app.config.globalProperties.$MathJax = MathJax
 
 // 将常量挂载到应用程序的全局配置中

@@ -75,21 +75,24 @@
       </div>
     </div>
     </div>
-    <div class="right" @pointerdown="handlePointerDown"
+    <div class="middle" @pointerdown="handlePointerDown"
                        @pointermove="handlePointerMove"
                        @pointerup="handlePointerUp">
       <div style="position: absolute;">{{coordinate}}</div>
       <div class="drawing-area" >
-        <canvas class="canvas-grid" ref="canvas_grid" :width="width" :height="height"></canvas>
-        <canvas :width="width" :height="height" ref="canvas"></canvas>
+        
+        <canvas :width="width" :height="height"  class="gridsytle" :style="canvasStyle" ref="canvas"></canvas>
       </div>
     </div>
-    
+    <div class="right">
+      <div class="overview">
+        <canvas class="gridsytle" ref="canvas_overview" :style="overviewStyle" :width="overviewSize.width" :height="overviewSize.height"></canvas>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-
 export default {
   computed: {
     width() {
@@ -98,6 +101,38 @@ export default {
     height() {
       return this.rows*this.gridSize;;
     },
+    overviewSize() {
+      let width = 180
+      let height = width/this.cols*this.rows
+      if(height > 140){
+        height = 140
+        width = height/this.rows*this.cols
+      }
+      return {width,height}
+    },
+    overviewStyle(){
+      const size = this.overviewSize.width/this.cols
+      return {
+           // 背景大小必须小于盒子的大小 
+          backgroundSize: `${2*size}px ${2*size}px`,
+          // 第二种渐变的偏移必须为为背景大小的一半 
+          backgroundPosition: `0 0 , ${size}px ${size}px`
+      }
+    },
+    canvasStyle(){
+      const size = this.gridSize
+      return {
+           // 背景大小必须小于盒子的大小 
+          backgroundSize: `${2*size}px ${2*size}px`,
+          // 第二种渐变的偏移必须为为背景大小的一半 
+          backgroundPosition: `0 0 , ${size}px ${size}px`
+      }
+    }
+
+  
+  
+ 
+
   },
   data() {
     return {
@@ -111,7 +146,9 @@ export default {
       isDrawing: false,
       pixels: [],
       endPoints:{x:0,y:0},
+      maincanvas:null,
       ctx:null,
+      ovCtx:null,
       historys:[],
       log:"",
       shiftdown:false,
@@ -133,6 +170,14 @@ export default {
     window.removeEventListener('keyup', this.handleKeyUp);
   },
   methods: {
+    updateOverview(){
+      this.ovCtx.clearRect(0,0,this.overviewSize.width,this.overviewSize.height)
+      this.ovCtx.drawImage(
+        this.maincanvas,
+        0,0,this.width,this.height,
+        0,0,this.overviewSize.width,this.overviewSize.height
+      )
+    },
     dropDown(keyname){
       const keys = Object.keys(this.dropDownBoxShow)
       if(this.dropDownBoxShow[keyname]){
@@ -201,19 +246,25 @@ export default {
         // Pointer events are supported. 
         this.log="Pointer events are supported."
       }
-      const canvas = this.$refs.canvas;
-      this.ctx = canvas.getContext('2d');
-      this.addHistoy()
+      this.maincanvas = this.$refs.canvas;
+      const overview = this.$refs.canvas_overview
+      this.ctx = this.maincanvas.getContext('2d');
+      this.ovCtx = overview.getContext('2d')
+      this.addHistory()
     },
     handlePointerDown(event){
-      this.isDrawing = true
+      
       this.endPoints = this.getPoint({x:event.clientX,y:event.clientY})
-      if(this.tool == 1) this.drawPixel(this.endPoints)
-      else if(this.tool == 2) this.clearPixel(this.endPoints)
+
+      if(this.tool == 2) this.clearPixel(this.endPoints)
+      else if(this.tool < 6) {
+        this.isDrawing = true
+        this.drawPixel(this.endPoints)
+      }
       else if(this.tool == 6){
         this.ctx.fillStyle = this.currentColor
         this.fillArea(this.endPoints);
-        this.addHistoy()
+        this.addHistory()
       }
       
     },
@@ -248,13 +299,12 @@ export default {
     handlePointerUp(){
       if(this.isDrawing){
         this.isDrawing = false
-        this.addHistoy()
+        this.addHistory()
       }
       
     },
-    drawPixel(point){
+    drawPixel(point, size=this.penSize){
       this.ctx.fillStyle = this.currentColor
-      const size = this.penSize
       const x = point.x/this.gridSize - Math.floor(size/2)
       const y = point.y/this.gridSize - Math.floor(size/2)
       this.ctx.fillRect(this.gridSize*x,this.gridSize*y,this.gridSize*size,this.gridSize*size)
@@ -403,7 +453,7 @@ export default {
         const currentColor = this.getColorAtPixel({ x, y });
 
         if (!visited.has(key(x, y)) && this.colorsMatch(currentColor, targetColor)) {
-          this.drawPixel({ x, y });
+          this.drawPixel({ x, y }, 1);
           visited.add(key(x, y));
 
           if (x > 0) stack.push({ x: x - this.gridSize, y });
@@ -440,7 +490,7 @@ export default {
 
     clearAll(){
       this.ctx.clearRect(0,0,this.width,this.height)
-      this.addHistoy()
+      this.addHistory()
     },
     getPoint(point){
       const rect = this.$refs.canvas.getBoundingClientRect();
@@ -452,11 +502,13 @@ export default {
     showLastHistory() {
       const history = this.historys
       this.ctx.putImageData(history[history.length - 1]['data'], 0, 0)
+      this.updateOverview()
     },
-    addHistoy() {
+    addHistory() {
       this.historys.push({
         data: this.ctx.getImageData(0, 0, this.width, this.height)
       })
+      this.updateOverview()
     },
     undo(){
       var history = this.historys;
@@ -508,7 +560,8 @@ export default {
       
     },
     copySvgCode(){
-      this.copyToClipboard(this.getSvgContent())
+      const content = this.getSvgContent()
+      this.copyToClipboard(content)
     },
     saveAsSvg(){
       const svgContent = this.getSvgContent()
@@ -601,11 +654,24 @@ canvas {
   height: calc(100vh - 91px);
 }
 
-.work-area .right{
+.work-area .middle{
   flex: 1;
   position: relative;
   overflow: auto;
   border-left: var(--box-border)
+}
+
+.work-area .right{
+  border-left: var(--box-border)
+}
+
+.overview {
+  width: 180px;
+  height: 140px;
+  background-color: var(--canvas-bgc);
+  display: flex;
+  justify-content: center;
+
 }
 
 .work-area > div{
@@ -684,6 +750,26 @@ canvas {
 
 .drop-down-option:hover{
   background-color: var(--white-highlight)
+}
+
+.gridsytle{
+  background: linear-gradient(
+      -45deg,
+      #d9d9d9 25%,
+      transparent 25%,
+      transparent 75%,
+      #d9d9d9 75%,
+      #d9d9d9 100%
+    ),
+    linear-gradient(
+      -45deg,
+      #d9d9d9 25%,
+      transparent 25%,
+      transparent 75%,
+      #d9d9d9 75%,
+      #d9d9d9 100%
+    );
+  background-color: white;
 }
 
 

@@ -3,7 +3,10 @@
     <h1>组件展示及测试界面</h1>
   </div>
   <button @click="latx_show=!latx_show">公式</button>
-  <svg><use xlink:href="#download"></use></svg>
+
+  <svg-icon name="test"></svg-icon>
+  <svg-icon name="download"></svg-icon>
+
   <button @click="json_show=!json_show">Json展示</button>
   <button @click="showToast">展示toast</button>
   <button @click="testapi">测试api</button>
@@ -21,7 +24,6 @@
   <button @click="helloworldtimer.resetTimer">reset</button>
   <timer ref="helloworldtimer"></timer>
   <div v-html="htmlcontent"></div>
-  <pixelSvgEditor></pixelSvgEditor>
   
 </template>
 
@@ -32,7 +34,6 @@ import pagination from './Model/Pagination.vue'
 import {login, getanswercard} from "@/assets/js/xueceapi.js"
 import pencanvas from "./Model/PenCanvas.vue"
 import timer from "./Model/Time.vue"
-import pixelSvgEditor from "./pixelSvgEditor"
 
 export default {
   name: 'HelloWorld',
@@ -41,8 +42,7 @@ export default {
     JsonModel,
     pagination,
     pencanvas,
-    timer,
-    pixelSvgEditor
+    timer
   },
   data(){
     return {
