@@ -24,12 +24,12 @@
         <div :class="{'size-setting':true,'show':dropDownBoxShow.sizeSettingShow} " >
           画布大小：
           <div class="size">
-            <input type="number" v-model="rows"  @input="drawGrid">
+            <input type="number" v-model="rows"  >
             <span>x</span>
-            <input type="number" v-model="cols"   @input="drawGrid">
+            <input type="number" v-model="cols"  >
           </div>
           像素大小：
-            <input type="number" v-model="gridSize"  @input="drawGrid">
+            <input type="number" v-model="gridSize" >
         </div>
       </div>
 
@@ -87,6 +87,14 @@
     <div class="right">
       <div class="overview">
         <canvas class="gridsytle" ref="canvas_overview" :style="overviewStyle" :width="overviewSize.width" :height="overviewSize.height"></canvas>
+      </div>
+      <div class="overview-tools">
+        <div class="icon-item">
+          <svg-icon name="zoomIn"></svg-icon>
+        </div>
+        <div class="icon-item">
+          <svg-icon name="zoomOut"></svg-icon>
+        </div>
       </div>
     </div>
   </div>
@@ -161,7 +169,6 @@ export default {
   },
   mounted() {
     this.init()
-    this.drawGrid()
     window.addEventListener('keydown', this.handleKeyDown);
     window.addEventListener('keyup', this.handleKeyUp);
   },
@@ -191,37 +198,6 @@ export default {
         this.dropDownBoxShow[keyname] = true
       }
       console.log(this.dropDownBoxShow)
-    },
-    drawGrid() {
-      const that = this
-      this.$nextTick(()=>{
-        const canvas = that.$refs.canvas_grid
-        const ctx = canvas.getContext('2d');
-        ctx.clearRect(0, 0, that.width, that.height);
-        if(true){
-          for (let i = 0; i < that.rows; i++){
-            for (let j = 0; j < that.cols; j++){
-              ctx.fillStyle = (i+j)%2 ? "#fff" : '#d9d9d9'
-              ctx.fillRect(j * that.gridSize, i * that.gridSize,that.gridSize,that.gridSize)
-            }
-          }
-        }else{
-          ctx.strokeStyle = '#d9d9d9';
-          for (let i = 0; i <= that.rows; i++) {
-            ctx.beginPath();
-            ctx.moveTo(0, i * that.gridSize);
-            ctx.lineTo(that.width, i * that.gridSize);
-            ctx.stroke();
-          }
-          for (let i = 0; i <= that.cols; i++) {
-            ctx.beginPath();
-            ctx.moveTo(i * that.gridSize, 0);
-            ctx.lineTo(i * that.gridSize, that.height);
-            ctx.stroke();
-          }
-        }
-      })
-      
     },
     switchColor(point){
       const color = this.getColorAtPixel(point)
@@ -256,12 +232,13 @@ export default {
       
       this.endPoints = this.getPoint({x:event.clientX,y:event.clientY})
 
-      if(this.tool == 2) this.clearPixel(this.endPoints)
-      else if(this.tool < 6) {
+      if(this.tool == 2) {
+        this.isDrawing = true
+        this.clearPixel(this.endPoints)
+      }else if(this.tool < 6) {
         this.isDrawing = true
         this.drawPixel(this.endPoints)
-      }
-      else if(this.tool == 6){
+      }else if(this.tool == 6){
         this.ctx.fillStyle = this.currentColor
         this.fillArea(this.endPoints);
         this.addHistory()
@@ -671,9 +648,11 @@ canvas {
   background-color: var(--canvas-bgc);
   display: flex;
   justify-content: center;
-
 }
-
+.overview-tools{
+  width: 100%;
+  display: flex;
+}
 .work-area > div{
   padding: 5px;
 }

@@ -10,7 +10,7 @@ import {MY_EVN} from './assets/js/constants.js'
 import Toast from './components/Model/Toast.vue';
 import MdLoader from './components/Model/MdLoader.vue';
 import IconWrapper from './components/IconWrapper.vue';
-import "./assets/icons"
+import "@/icons"
 import SvgIcon from "./components/Model/svgIcon.vue"
 
 
