@@ -28,8 +28,6 @@
             <span>x</span>
             <input type="number" v-model="cols"  >
           </div>
-          像素大小：
-            <input type="number" v-model="gridSize" >
         </div>
       </div>
 
@@ -76,24 +74,28 @@
     </div>
     </div>
     <div class="middle" @pointerdown="handlePointerDown"
-                       @pointermove="handlePointerMove"
-                       @pointerup="handlePointerUp">
-      <div style="position: absolute;">{{coordinate}}</div>
+                        @pointermove="handlePointerMove"
+                        @pointerup="handlePointerUp" @wheel="zoomWheel" ref="realViewport">
+      <div style="position: absolute;left: 1rem">{{coordinate}}</div>
       <div class="drawing-area" >
         
         <canvas :width="width" :height="height"  class="gridsytle" :style="canvasStyle" ref="canvas"></canvas>
       </div>
     </div>
     <div class="right">
-      <div class="overview">
+      <div class="overview" @pointermove="dragViewportMove" @pointerup="dragViewportUp" @wheel="zoomWheel">
         <canvas class="gridsytle" ref="canvas_overview" :style="overviewStyle" :width="overviewSize.width" :height="overviewSize.height"></canvas>
+        <div class="viewport" ref="viewport" @pointerdown="dragViewportDown"></div>
       </div>
       <div class="overview-tools">
-        <div class="icon-item">
+        <div class="icon-item" @click="zoomIn">
           <svg-icon name="zoomIn"></svg-icon>
         </div>
-        <div class="icon-item">
+        <div class="icon-item" @click="zoomOut">
           <svg-icon name="zoomOut"></svg-icon>
+        </div>
+        <div class="icon-item" @click="zoomFit">
+          <svg-icon name="fit01"></svg-icon>
         </div>
       </div>
     </div>
@@ -107,7 +109,7 @@ export default {
       return this.cols*this.gridSize;
     },
     height() {
-      return this.rows*this.gridSize;;
+      return this.rows*this.gridSize;
     },
     overviewSize() {
       let width = 180
@@ -128,26 +130,25 @@ export default {
       }
     },
     canvasStyle(){
-      const size = this.gridSize
+      
+      const scale = this.scaleCount/100
+      const size = this.gridSize*scale
       return {
            // 背景大小必须小于盒子的大小 
+          width:`${this.width*scale}px`,
+          height:`${this.height*scale}px`,
           backgroundSize: `${2*size}px ${2*size}px`,
           // 第二种渐变的偏移必须为为背景大小的一半 
           backgroundPosition: `0 0 , ${size}px ${size}px`
       }
-    }
-
-  
-  
- 
-
-  },
+    },
+ },
   data() {
     return {
       tool:1,
       rows:15,
       cols:15,
-      gridSize:30,
+      gridSize:100,
       coordinate:'x:0,y:0',
       currentColor:'#000',
       colorIndex:0,
@@ -165,16 +166,26 @@ export default {
         downloadShow:false
       },
       penSize:1,
+      scaleCount:30,
+      minScaleCount:30,
+      viewport:null,
+      disx:0,
+      disy:0
     };
   },
   mounted() {
     this.init()
     window.addEventListener('keydown', this.handleKeyDown);
     window.addEventListener('keyup', this.handleKeyUp);
+    this.$refs.realViewport.addEventListener('scroll', this.viewportScroll);
+
   },
-  beforeDestroy() {
+  unmounted(){
     window.removeEventListener('keydown', this.handleKeyDown);
     window.removeEventListener('keyup', this.handleKeyUp);
+    if(this.$refs.realViewport){
+      this.$refs.realViewport.removeEventListener('scroll', this.viewportScroll);
+    }
   },
   methods: {
     updateOverview(){
@@ -227,7 +238,22 @@ export default {
       this.ctx = this.maincanvas.getContext('2d');
       this.ovCtx = overview.getContext('2d')
       this.addHistory()
+      this.resizeViewport()
+      this.getMinScale()
+      this.scaleCount = this.minScaleCount
     },
+    getMinScale(){
+      const realViewport = this.$refs.realViewport
+      let width = realViewport.clientWidth
+      let height = width/this.cols*this.rows
+      if(height > realViewport.clientHeight){
+        height = realViewport.clientHeight
+        width = height/this.rows*this.cols
+      }
+      this.minScaleCount = Math.floor(100*width/this.width)
+      this.log = this.minScaleCount
+    },
+    
     handlePointerDown(event){
       
       this.endPoints = this.getPoint({x:event.clientX,y:event.clientY})
@@ -362,10 +388,6 @@ export default {
       const yc = this.shiftdown ? start.y/this.gridSize + drx + 0.5 : (start.y + end.y) / 2 / this.gridSize + 0.5
       const ry = this.shiftdown ? rx : Math.abs((end.y - start.y) / this.gridSize / 2);
 
-      // this.drawPixel({x:(xc-0.5)*this.gridSize,y:(yc-0.5)*this.gridSize}) 显示圆心
-
-      this.log = "xc:"+xc+",yc:"+yc+",rx:"+rx +",ry:"+ry
-
       let x = rx%1 ? 0.5 : 0;
       let y = ry;
       let d1 = Math.ceil(ry * ry - rx * rx * ry + 0.25 * rx * rx);
@@ -470,16 +492,21 @@ export default {
       this.addHistory()
     },
     getPoint(point){
+      const scale = this.scaleCount/100
       const rect = this.$refs.canvas.getBoundingClientRect();
-      const x = Math.floor((point.x - rect.left) / this.gridSize)*this.gridSize
-      const y = Math.floor((point.y - rect.top) / this.gridSize)*this.gridSize
+      const x = Math.floor((point.x - rect.left) / this.gridSize/scale)*this.gridSize
+      const y = Math.floor((point.y - rect.top) / this.gridSize/scale)*this.gridSize
       this.coordinate = `x:${x / this.gridSize},y:${y / this.gridSize}`
       return {x,y}
     },
     showLastHistory() {
       const history = this.historys
-      this.ctx.putImageData(history[history.length - 1]['data'], 0, 0)
-      this.updateOverview()
+      // this.ctx.putImageData(history[history.length - 1]['data'], 0, 0)
+      const imageData = history[history.length - 1]['data']
+      this.ctx.putImageData(imageData, 0, 0)
+      // const scaledImage = this.ctx.getImageData(0, 0, imageData.width, imageData.height);
+      // this.ctx.clearRect(0,0,this.width,this.height)
+      // this.ctx.drawImage(this.maincanvas, 0, 0, imageData.width, imageData.height, 0, 0, this.width, this.height);
     },
     addHistory() {
       this.historys.push({
@@ -493,10 +520,8 @@ export default {
       if(history && history.length > 1){
         history.pop();
         this.showLastHistory();
+        this.updateOverview()
       }
-    },
-    mergeAdjacentRects(rects) {
-
     },
     getSvgContent(filled=false){
       const width = this.width;
@@ -562,7 +587,83 @@ export default {
       } catch (err) {
         this.$toast.show(err,'error')
       }
-    }
+    },
+    zoomIn(){
+      this.scaleCount += 10
+      this.resizeViewport()
+    },
+    zoomOut(){
+      this.scaleCount -= 10
+      this.resizeViewport()
+    },
+    zoomFit(){
+      this.getMinScale()
+      this.scaleCount = this.minScaleCount
+      this.resizeViewport()
+    },
+    dragViewportDown(e){
+      this.$refs.realViewport.removeEventListener('scroll', this.viewportScroll);
+      this.viewport = this.$refs.viewport
+      this.disx = e.pageX - this.viewport.offsetLeft
+      this.disy = e.pageY - this.viewport.offsetTop
+      this.resizeViewport()
+    },
+    dragViewportMove(e){
+      if(this.viewport){
+        const overview = this.$refs.canvas_overview
+        const realViewport = this.$refs.realViewport
+        const scale = overview.clientWidth/this.maincanvas.clientWidth
+
+        var left = e.pageX - this.disx
+        var top = e.pageY - this.disy
+        const leftmax = overview.offsetLeft +  overview.clientWidth - this.viewport.clientWidth - 2
+        const topmax = overview.offsetTop + this.viewport.parentElement.clientHeight - this.viewport.clientHeight - 2
+        left = Math.max(overview.offsetLeft, Math.min(left, leftmax));
+        top = Math.max(overview.offsetTop, Math.min(top, topmax));
+        this.viewport.style.left = left + 'px';
+        this.viewport.style.top = top + 'px';
+        this.log = `${overview.offsetLeft}`
+        const scrollLeft = (left - overview.offsetLeft)/scale
+        const scrollTop = (top - overview.offsetTop)/scale
+        realViewport.scrollTop = scrollTop
+        realViewport.scrollLeft = scrollLeft
+      }
+
+    },
+    dragViewportUp(){
+      this.$refs.realViewport.addEventListener('scroll', this.viewportScroll);
+      if(this.viewport)
+        this.viewport=null
+    },
+    viewportScroll(){
+      this.log = `${this.$refs.realViewport.scrollTop},${this.$refs.realViewport.scrollLeft}`
+      this.resizeViewport()
+    },
+    zoomWheel(event){
+      const deltaY = event.deltaY
+      if(deltaY < 0){
+        this.scaleCount++
+      }else{
+        this.scaleCount--
+      }
+      this.resizeViewport()
+    },
+    resizeViewport(){
+      //设置viewport大小
+      const overview = this.$refs.canvas_overview
+      const realViewport = this.$refs.realViewport
+      const scale = overview.clientWidth/this.maincanvas.clientWidth
+      this.$nextTick(()=>{
+        const viewportWidth = realViewport.clientWidth*scale
+        const viewportHeight = realViewport.clientHeight*scale
+        this.$refs.viewport.style.width = `${Math.floor(Math.min(viewportWidth,overview.clientWidth))}px`
+        this.$refs.viewport.style.height = `${Math.floor(Math.min(viewportHeight,overview.clientHeight)-1)}px`
+        const viewportTop = this.$refs.canvas_overview.offsetTop + this.$refs.realViewport.scrollTop*scale
+        const viewportLeft = this.$refs.canvas_overview.offsetLeft + this.$refs.realViewport.scrollLeft*scale
+        this.$refs.viewport.style.top = `${viewportTop}px`
+        this.$refs.viewport.style.left = `${viewportLeft}px`
+      })
+    },
   },
 };
 </script>
@@ -570,14 +671,10 @@ export default {
 <style>
 .drawing-area {
   border: 0.5px solid #d9d9d9;
-  position: absolute;
   width: fit-content;
   font-size: 0;
-/*  margin: 0 auto;*/
-  height: fit-content;
-    left: 50%;
-  transform: translateX(-50%);
 
+  height: fit-content;
 }
 canvas {
   position: relative;
@@ -634,8 +731,12 @@ canvas {
 .work-area .middle{
   flex: 1;
   position: relative;
+  display: flex;
+  justify-content: space-around;
   overflow: auto;
-  border-left: var(--box-border)
+  border-left: var(--box-border);
+  user-select: none;
+  padding: 0;
 }
 
 .work-area .right{
@@ -648,7 +749,22 @@ canvas {
   background-color: var(--canvas-bgc);
   display: flex;
   justify-content: center;
+  position: relative;
+  overflow: hidden;
 }
+
+
+
+.viewport{
+  position: absolute;
+  width: 20px;
+  height: 30px;
+  background-color: transparent;
+  border: 1px solid #425aef;
+  box-shadow: 0 0 0 5000px rgba(0, 0, 0, 0.3); /* 创建透明区域 */
+  z-index: 2;
+}
+
 .overview-tools{
   width: 100%;
   display: flex;
