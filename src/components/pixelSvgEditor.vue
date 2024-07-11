@@ -12,7 +12,7 @@
     </div>
     <div class="right">
       <div class="tool-option">
-        {{log}}
+        {{scaleCount}}
       </div>
       <div class="icon-item" @click="undo">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 330 330"><rect x="90" y="30" width="30" height="30" fill="currentcolor" /><rect x="60" y="60" width="30" height="30" fill="currentcolor" /><rect x="30" y="90" width="30" height="30" fill="currentcolor" /><rect x="60" y="90" width="30" height="30" fill="currentcolor" /><rect x="90" y="90" width="30" height="30" fill="currentcolor" /><rect x="120" y="90" width="30" height="30" fill="currentcolor" /><rect x="150" y="90" width="30" height="30" fill="currentcolor" /><rect x="180" y="90" width="30" height="30" fill="currentcolor" /><rect x="210" y="90" width="30" height="30" fill="currentcolor" /><rect x="60" y="120" width="30" height="30" fill="currentcolor" /><rect x="240" y="120" width="30" height="30" fill="currentcolor" /><rect x="90" y="150" width="30" height="30" fill="currentcolor" /><rect x="270" y="150" width="30" height="30" fill="currentcolor" /><rect x="270" y="180" width="30" height="30" fill="currentcolor" /><rect x="270" y="210" width="30" height="30" fill="currentcolor" /><rect x="240" y="240" width="30" height="30" fill="currentcolor" /><rect x="60" y="270" width="30" height="30" fill="currentcolor" /><rect x="90" y="270" width="30" height="30" fill="currentcolor" /><rect x="120" y="270" width="30" height="30" fill="currentcolor" /><rect x="150" y="270" width="30" height="30" fill="currentcolor" /><rect x="180" y="270" width="30" height="30" fill="currentcolor" /><rect x="210" y="270" width="30" height="30" fill="currentcolor" /></svg>
@@ -94,6 +94,7 @@
         <div class="icon-item" @click="zoomOut">
           <svg-icon name="zoomOut"></svg-icon>
         </div>
+        <input type="range" min="10" max="100" v-model="scaleCount" @input="resizeViewport">
         <div class="icon-item" @click="zoomFit">
           <svg-icon name="fit01"></svg-icon>
         </div>
@@ -589,11 +590,13 @@ export default {
       }
     },
     zoomIn(){
-      this.scaleCount += 10
+      var scale = Number(this.scaleCount) + 10
+      this.scaleCount = Math.min(scale,100)
       this.resizeViewport()
     },
     zoomOut(){
-      this.scaleCount -= 10
+      var scale = Number(this.scaleCount) - 10
+      this.scaleCount = Math.max(scale,10)
       this.resizeViewport()
     },
     zoomFit(){
