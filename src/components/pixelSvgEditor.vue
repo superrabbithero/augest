@@ -1,7 +1,7 @@
 <template>
   <div class="tool-setting-bar">
     <div class="left">
-      <div v-show="tool == 7" class="tool-option">
+      <div class="tool-option">
         <input type="color" v-model="currentColor">
       </div>
       <div class="tool-option">
@@ -15,11 +15,11 @@
         {{scaleCount}}
       </div>
       <div class="icon-item" @click="undo">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 330 330"><rect x="90" y="30" width="30" height="30" fill="currentcolor" /><rect x="60" y="60" width="30" height="30" fill="currentcolor" /><rect x="30" y="90" width="30" height="30" fill="currentcolor" /><rect x="60" y="90" width="30" height="30" fill="currentcolor" /><rect x="90" y="90" width="30" height="30" fill="currentcolor" /><rect x="120" y="90" width="30" height="30" fill="currentcolor" /><rect x="150" y="90" width="30" height="30" fill="currentcolor" /><rect x="180" y="90" width="30" height="30" fill="currentcolor" /><rect x="210" y="90" width="30" height="30" fill="currentcolor" /><rect x="60" y="120" width="30" height="30" fill="currentcolor" /><rect x="240" y="120" width="30" height="30" fill="currentcolor" /><rect x="90" y="150" width="30" height="30" fill="currentcolor" /><rect x="270" y="150" width="30" height="30" fill="currentcolor" /><rect x="270" y="180" width="30" height="30" fill="currentcolor" /><rect x="270" y="210" width="30" height="30" fill="currentcolor" /><rect x="240" y="240" width="30" height="30" fill="currentcolor" /><rect x="60" y="270" width="30" height="30" fill="currentcolor" /><rect x="90" y="270" width="30" height="30" fill="currentcolor" /><rect x="120" y="270" width="30" height="30" fill="currentcolor" /><rect x="150" y="270" width="30" height="30" fill="currentcolor" /><rect x="180" y="270" width="30" height="30" fill="currentcolor" /><rect x="210" y="270" width="30" height="30" fill="currentcolor" /></svg>
+        <svg-icon name="undo01"></svg-icon>
       </div>
       <div class="icon-item-box">
         <div class="icon-item" @click="dropDown('sizeSettingShow')">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 330 330"><rect x="30" y="30" width="30" height="30" fill="currentcolor" /><rect x="60" y="30" width="30" height="30" fill="currentcolor" /><rect x="90" y="30" width="30" height="30" fill="currentcolor" /><rect x="120" y="30" width="30" height="30" fill="currentcolor" /><rect x="150" y="30" width="30" height="30" fill="currentcolor" /><rect x="180" y="30" width="30" height="30" fill="currentcolor" /><rect x="210" y="30" width="30" height="30" fill="currentcolor" /><rect x="240" y="30" width="30" height="30" fill="currentcolor" /><rect x="270" y="30" width="30" height="30" fill="currentcolor" /><rect x="30" y="60" width="30" height="30" fill="currentcolor" /><rect x="90" y="60" width="30" height="30" fill="currentcolor" /><rect x="150" y="60" width="30" height="30" fill="currentcolor" /><rect x="210" y="60" width="30" height="30" fill="currentcolor" /><rect x="270" y="60" width="30" height="30" fill="currentcolor" /><rect x="30" y="90" width="30" height="30" fill="currentcolor" /><rect x="60" y="90" width="30" height="30" fill="currentcolor" /><rect x="120" y="90" width="30" height="30" fill="currentcolor" /><rect x="180" y="90" width="30" height="30" fill="currentcolor" /><rect x="240" y="90" width="30" height="30" fill="currentcolor" /><rect x="270" y="90" width="30" height="30" fill="currentcolor" /><rect x="30" y="120" width="30" height="30" fill="currentcolor" /><rect x="90" y="120" width="30" height="30" fill="currentcolor" /><rect x="150" y="120" width="30" height="30" fill="currentcolor" /><rect x="210" y="120" width="30" height="30" fill="currentcolor" /><rect x="270" y="120" width="30" height="30" fill="currentcolor" /><rect x="30" y="150" width="30" height="30" fill="currentcolor" /><rect x="60" y="150" width="30" height="30" fill="currentcolor" /><rect x="120" y="150" width="30" height="30" fill="currentcolor" /><rect x="180" y="150" width="30" height="30" fill="currentcolor" /><rect x="240" y="150" width="30" height="30" fill="currentcolor" /><rect x="270" y="150" width="30" height="30" fill="currentcolor" /><rect x="30" y="180" width="30" height="30" fill="currentcolor" /><rect x="90" y="180" width="30" height="30" fill="currentcolor" /><rect x="150" y="180" width="30" height="30" fill="currentcolor" /><rect x="210" y="180" width="30" height="30" fill="currentcolor" /><rect x="270" y="180" width="30" height="30" fill="currentcolor" /><rect x="30" y="210" width="30" height="30" fill="currentcolor" /><rect x="60" y="210" width="30" height="30" fill="currentcolor" /><rect x="120" y="210" width="30" height="30" fill="currentcolor" /><rect x="180" y="210" width="30" height="30" fill="currentcolor" /><rect x="240" y="210" width="30" height="30" fill="currentcolor" /><rect x="270" y="210" width="30" height="30" fill="currentcolor" /><rect x="30" y="240" width="30" height="30" fill="currentcolor" /><rect x="90" y="240" width="30" height="30" fill="currentcolor" /><rect x="150" y="240" width="30" height="30" fill="currentcolor" /><rect x="210" y="240" width="30" height="30" fill="currentcolor" /><rect x="270" y="240" width="30" height="30" fill="currentcolor" /><rect x="30" y="270" width="30" height="30" fill="currentcolor" /><rect x="60" y="270" width="30" height="30" fill="currentcolor" /><rect x="90" y="270" width="30" height="30" fill="currentcolor" /><rect x="120" y="270" width="30" height="30" fill="currentcolor" /><rect x="150" y="270" width="30" height="30" fill="currentcolor" /><rect x="180" y="270" width="30" height="30" fill="currentcolor" /><rect x="210" y="270" width="30" height="30" fill="currentcolor" /><rect x="240" y="270" width="30" height="30" fill="currentcolor" /><rect x="270" y="270" width="30" height="30" fill="currentcolor" /></svg>
+          <svg-icon name="canvas01"></svg-icon>
         </div>
         <div :class="{'size-setting':true,'show':dropDownBoxShow.sizeSettingShow} " >
           画布大小：
@@ -33,7 +33,7 @@
 
       <div class="icon-item-box">
         <div class="icon-item" @click="dropDown('downloadShow')">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 330 330"><rect x="150" y="30" width="30" height="30" fill="currentcolor" /><rect x="150" y="60" width="30" height="30" fill="currentcolor" /><rect x="150" y="90" width="30" height="30" fill="currentcolor" /><rect x="150" y="120" width="30" height="30" fill="currentcolor" /><rect x="30" y="150" width="30" height="30" fill="currentcolor" /><rect x="90" y="150" width="30" height="30" fill="currentcolor" /><rect x="150" y="150" width="30" height="30" fill="currentcolor" /><rect x="210" y="150" width="30" height="30" fill="currentcolor" /><rect x="270" y="150" width="30" height="30" fill="currentcolor" /><rect x="30" y="180" width="30" height="30" fill="currentcolor" /><rect x="120" y="180" width="30" height="30" fill="currentcolor" /><rect x="150" y="180" width="30" height="30" fill="currentcolor" /><rect x="180" y="180" width="30" height="30" fill="currentcolor" /><rect x="270" y="180" width="30" height="30" fill="currentcolor" /><rect x="30" y="210" width="30" height="30" fill="currentcolor" /><rect x="150" y="210" width="30" height="30" fill="currentcolor" /><rect x="270" y="210" width="30" height="30" fill="currentcolor" /><rect x="30" y="240" width="30" height="30" fill="currentcolor" /><rect x="270" y="240" width="30" height="30" fill="currentcolor" /><rect x="30" y="270" width="30" height="30" fill="currentcolor" /><rect x="60" y="270" width="30" height="30" fill="currentcolor" /><rect x="90" y="270" width="30" height="30" fill="currentcolor" /><rect x="120" y="270" width="30" height="30" fill="currentcolor" /><rect x="150" y="270" width="30" height="30" fill="currentcolor" /><rect x="180" y="270" width="30" height="30" fill="currentcolor" /><rect x="210" y="270" width="30" height="30" fill="currentcolor" /><rect x="240" y="270" width="30" height="30" fill="currentcolor" /><rect x="270" y="270" width="30" height="30" fill="currentcolor" /></svg>
+          <svg-icon name="download01"></svg-icon>
         </div>
         <div :class="{'size-setting':true,'show':dropDownBoxShow.downloadShow} " >
           <div class="drop-down-option" @click="saveAsSvg">保存成 svg</div>
@@ -47,35 +47,35 @@
   <div class="work-area">
     <div class="left">
       <div class="tools-bar">
-      <div :class="{'tool-item':true,'active':tool == 1}" @click="tool = 1">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 450"><rect x="300" y="30" width="30" height="30" fill="currentcolor" /><rect x="270" y="60" width="30" height="30" fill="currentcolor" /><rect x="300" y="60" width="30" height="30" fill="currentcolor" /><rect x="330" y="60" width="30" height="30" fill="currentcolor" /><rect x="240" y="90" width="30" height="30" fill="currentcolor" /><rect x="300" y="90" width="30" height="30" fill="currentcolor" /><rect x="330" y="90" width="30" height="30" fill="currentcolor" /><rect x="360" y="90" width="30" height="30" fill="currentcolor" /><rect x="210" y="120" width="30" height="30" fill="currentcolor" /><rect x="270" y="120" width="30" height="30" fill="currentcolor" /><rect x="330" y="120" width="30" height="30" fill="currentcolor" /><rect x="360" y="120" width="30" height="30" fill="currentcolor" /><rect x="390" y="120" width="30" height="30" fill="currentcolor" /><rect x="180" y="150" width="30" height="30" fill="currentcolor" /><rect x="300" y="150" width="30" height="30" fill="currentcolor" /><rect x="360" y="150" width="30" height="30" fill="currentcolor" /><rect x="150" y="180" width="30" height="30" fill="currentcolor" /><rect x="330" y="180" width="30" height="30" fill="currentcolor" /><rect x="120" y="210" width="30" height="30" fill="currentcolor" /><rect x="300" y="210" width="30" height="30" fill="currentcolor" /><rect x="90" y="240" width="30" height="30" fill="currentcolor" /><rect x="270" y="240" width="30" height="30" fill="currentcolor" /><rect x="60" y="270" width="30" height="30" fill="currentcolor" /><rect x="240" y="270" width="30" height="30" fill="currentcolor" /><rect x="30" y="300" width="30" height="30" fill="currentcolor" /><rect x="90" y="300" width="30" height="30" fill="currentcolor" /><rect x="210" y="300" width="30" height="30" fill="currentcolor" /><rect x="30" y="330" width="30" height="30" fill="currentcolor" /><rect x="120" y="330" width="30" height="30" fill="currentcolor" /><rect x="180" y="330" width="30" height="30" fill="currentcolor" /><rect x="30" y="360" width="30" height="30" fill="currentcolor" /><rect x="60" y="360" width="30" height="30" fill="currentcolor" /><rect x="150" y="360" width="30" height="30" fill="currentcolor" /><rect x="30" y="390" width="30" height="30" fill="currentcolor" /><rect x="60" y="390" width="30" height="30" fill="currentcolor" /><rect x="90" y="390" width="30" height="30" fill="currentcolor" /><rect x="120" y="390" width="30" height="30" fill="currentcolor" /></svg>
+        <div :class="{'tool-item':true,'active':tool == 1}" @click="tool = 1">
+          <svg-icon name="pencil" className="tool-item-svg"></svg-icon>
+        </div>
+        <div :class="{'tool-item':true,'active':tool == 2}" @click="tool = 2">
+          <svg-icon name="eraser" className="tool-item-svg"></svg-icon>
+        </div>
+        <div :class="{'tool-item':true,'active':tool == 3}" @click="tool = 3">
+          <svg-icon name="line" className="tool-item-svg"></svg-icon> 
+        </div>
+        <div :class="{'tool-item':true,'active':tool == 4}" @click="tool = 4">
+          <svg-icon name="rect" className="tool-item-svg"></svg-icon>
+        </div>
+        <div :class="{'tool-item':true,'active':tool == 5}" @click="tool = 5">
+          <svg-icon name="circle" className="tool-item-svg"></svg-icon>
+        </div>
+        <div :class="{'tool-item':true,'active':tool == 6}" @click="tool = 6">
+          <svg-icon name="paintBuckets" className="tool-item-svg"></svg-icon>
+        </div>
+        <div :class="{'tool-item':true,'active':tool == 7}" @click="tool = 7">
+          <svg-icon name="select" className="tool-item-svg"></svg-icon>
+        </div>
+        <div class="tool-item" @click="clearAll">
+          <svg-icon name="delete02" className="tool-item-svg"></svg-icon>
+        </div>
       </div>
-      <div :class="{'tool-item':true,'active':tool == 2}" @click="tool = 2">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 450"><rect x="240" y="30" width="30" height="30" fill="currentcolor" /><rect x="210" y="60" width="30" height="30" fill="currentcolor" /><rect x="240" y="60" width="30" height="30" fill="currentcolor" /><rect x="270" y="60" width="30" height="30" fill="currentcolor" /><rect x="180" y="90" width="30" height="30" fill="currentcolor" /><rect x="270" y="90" width="30" height="30" fill="currentcolor" /><rect x="300" y="90" width="30" height="30" fill="currentcolor" /><rect x="150" y="120" width="30" height="30" fill="currentcolor" /><rect x="300" y="120" width="30" height="30" fill="currentcolor" /><rect x="330" y="120" width="30" height="30" fill="currentcolor" /><rect x="120" y="150" width="30" height="30" fill="currentcolor" /><rect x="330" y="150" width="30" height="30" fill="currentcolor" /><rect x="360" y="150" width="30" height="30" fill="currentcolor" /><rect x="90" y="180" width="30" height="30" fill="currentcolor" /><rect x="360" y="180" width="30" height="30" fill="currentcolor" /><rect x="390" y="180" width="30" height="30" fill="currentcolor" /><rect x="60" y="210" width="30" height="30" fill="currentcolor" /><rect x="120" y="210" width="30" height="30" fill="currentcolor" /><rect x="360" y="210" width="30" height="30" fill="currentcolor" /><rect x="390" y="210" width="30" height="30" fill="currentcolor" /><rect x="30" y="240" width="30" height="30" fill="currentcolor" /><rect x="150" y="240" width="30" height="30" fill="currentcolor" /><rect x="330" y="240" width="30" height="30" fill="currentcolor" /><rect x="360" y="240" width="30" height="30" fill="currentcolor" /><rect x="60" y="270" width="30" height="30" fill="currentcolor" /><rect x="180" y="270" width="30" height="30" fill="currentcolor" /><rect x="300" y="270" width="30" height="30" fill="currentcolor" /><rect x="330" y="270" width="30" height="30" fill="currentcolor" /><rect x="90" y="300" width="30" height="30" fill="currentcolor" /><rect x="210" y="300" width="30" height="30" fill="currentcolor" /><rect x="270" y="300" width="30" height="30" fill="currentcolor" /><rect x="300" y="300" width="30" height="30" fill="currentcolor" /><rect x="120" y="330" width="30" height="30" fill="currentcolor" /><rect x="240" y="330" width="30" height="30" fill="currentcolor" /><rect x="270" y="330" width="30" height="30" fill="currentcolor" /><rect x="150" y="360" width="30" height="30" fill="currentcolor" /><rect x="180" y="360" width="30" height="30" fill="currentcolor" /><rect x="210" y="360" width="30" height="30" fill="currentcolor" /><rect x="240" y="360" width="30" height="30" fill="currentcolor" /><rect x="90" y="390" width="30" height="30" fill="currentcolor" /><rect x="120" y="390" width="30" height="30" fill="currentcolor" /><rect x="150" y="390" width="30" height="30" fill="currentcolor" /><rect x="180" y="390" width="30" height="30" fill="currentcolor" /><rect x="210" y="390" width="30" height="30" fill="currentcolor" /><rect x="240" y="390" width="30" height="30" fill="currentcolor" /><rect x="270" y="390" width="30" height="30" fill="currentcolor" /><rect x="300" y="390" width="30" height="30" fill="currentcolor" /><rect x="330" y="390" width="30" height="30" fill="currentcolor" /></svg>
-      </div>
-      <div :class="{'tool-item':true,'active':tool == 3}" @click="tool = 3">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 450"><rect x="360" y="30" width="30" height="30" fill="currentcolor" /><rect x="390" y="30" width="30" height="30" fill="currentcolor" /><rect x="360" y="60" width="30" height="30" fill="currentcolor" /><rect x="390" y="60" width="30" height="30" fill="currentcolor" /><rect x="330" y="90" width="30" height="30" fill="currentcolor" /><rect x="300" y="120" width="30" height="30" fill="currentcolor" /><rect x="270" y="150" width="30" height="30" fill="currentcolor" /><rect x="240" y="180" width="30" height="30" fill="currentcolor" /><rect x="210" y="210" width="30" height="30" fill="currentcolor" /><rect x="180" y="240" width="30" height="30" fill="currentcolor" /><rect x="150" y="270" width="30" height="30" fill="currentcolor" /><rect x="120" y="300" width="30" height="30" fill="currentcolor" /><rect x="90" y="330" width="30" height="30" fill="currentcolor" /><rect x="30" y="360" width="30" height="30" fill="currentcolor" /><rect x="60" y="360" width="30" height="30" fill="currentcolor" /><rect x="30" y="390" width="30" height="30" fill="currentcolor" /><rect x="60" y="390" width="30" height="30" fill="currentcolor" /></svg>
-      </div>
-      <div :class="{'tool-item':true,'active':tool == 4}" @click="tool = 4">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 450"><rect x="30" y="30" width="30" height="30" fill="currentcolor" /><rect x="60" y="30" width="30" height="30" fill="currentcolor" /><rect x="90" y="30" width="30" height="30" fill="currentcolor" /><rect x="120" y="30" width="30" height="30" fill="currentcolor" /><rect x="150" y="30" width="30" height="30" fill="currentcolor" /><rect x="180" y="30" width="30" height="30" fill="currentcolor" /><rect x="210" y="30" width="30" height="30" fill="currentcolor" /><rect x="240" y="30" width="30" height="30" fill="currentcolor" /><rect x="270" y="30" width="30" height="30" fill="currentcolor" /><rect x="300" y="30" width="30" height="30" fill="currentcolor" /><rect x="330" y="30" width="30" height="30" fill="currentcolor" /><rect x="360" y="30" width="30" height="30" fill="currentcolor" /><rect x="390" y="30" width="30" height="30" fill="currentcolor" /><rect x="30" y="60" width="30" height="30" fill="currentcolor" /><rect x="390" y="60" width="30" height="30" fill="currentcolor" /><rect x="30" y="90" width="30" height="30" fill="currentcolor" /><rect x="390" y="90" width="30" height="30" fill="currentcolor" /><rect x="30" y="120" width="30" height="30" fill="currentcolor" /><rect x="390" y="120" width="30" height="30" fill="currentcolor" /><rect x="30" y="150" width="30" height="30" fill="currentcolor" /><rect x="390" y="150" width="30" height="30" fill="currentcolor" /><rect x="30" y="180" width="30" height="30" fill="currentcolor" /><rect x="390" y="180" width="30" height="30" fill="currentcolor" /><rect x="30" y="210" width="30" height="30" fill="currentcolor" /><rect x="390" y="210" width="30" height="30" fill="currentcolor" /><rect x="30" y="240" width="30" height="30" fill="currentcolor" /><rect x="390" y="240" width="30" height="30" fill="currentcolor" /><rect x="30" y="270" width="30" height="30" fill="currentcolor" /><rect x="390" y="270" width="30" height="30" fill="currentcolor" /><rect x="30" y="300" width="30" height="30" fill="currentcolor" /><rect x="390" y="300" width="30" height="30" fill="currentcolor" /><rect x="30" y="330" width="30" height="30" fill="currentcolor" /><rect x="390" y="330" width="30" height="30" fill="currentcolor" /><rect x="30" y="360" width="30" height="30" fill="currentcolor" /><rect x="390" y="360" width="30" height="30" fill="currentcolor" /><rect x="30" y="390" width="30" height="30" fill="currentcolor" /><rect x="60" y="390" width="30" height="30" fill="currentcolor" /><rect x="90" y="390" width="30" height="30" fill="currentcolor" /><rect x="120" y="390" width="30" height="30" fill="currentcolor" /><rect x="150" y="390" width="30" height="30" fill="currentcolor" /><rect x="180" y="390" width="30" height="30" fill="currentcolor" /><rect x="210" y="390" width="30" height="30" fill="currentcolor" /><rect x="240" y="390" width="30" height="30" fill="currentcolor" /><rect x="270" y="390" width="30" height="30" fill="currentcolor" /><rect x="300" y="390" width="30" height="30" fill="currentcolor" /><rect x="330" y="390" width="30" height="30" fill="currentcolor" /><rect x="360" y="390" width="30" height="30" fill="currentcolor" /><rect x="390" y="390" width="30" height="30" fill="currentcolor" /></svg>
-      </div>
-      <div :class="{'tool-item':true,'active':tool == 5}" @click="tool = 5">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 450"><rect x="150" y="30" width="30" height="30" fill="currentcolor" /><rect x="180" y="30" width="30" height="30" fill="currentcolor" /><rect x="210" y="30" width="30" height="30" fill="currentcolor" /><rect x="240" y="30" width="30" height="30" fill="currentcolor" /><rect x="270" y="30" width="30" height="30" fill="currentcolor" /><rect x="90" y="60" width="30" height="30" fill="currentcolor" /><rect x="120" y="60" width="30" height="30" fill="currentcolor" /><rect x="300" y="60" width="30" height="30" fill="currentcolor" /><rect x="330" y="60" width="30" height="30" fill="currentcolor" /><rect x="60" y="90" width="30" height="30" fill="currentcolor" /><rect x="360" y="90" width="30" height="30" fill="currentcolor" /><rect x="60" y="120" width="30" height="30" fill="currentcolor" /><rect x="360" y="120" width="30" height="30" fill="currentcolor" /><rect x="30" y="150" width="30" height="30" fill="currentcolor" /><rect x="390" y="150" width="30" height="30" fill="currentcolor" /><rect x="30" y="180" width="30" height="30" fill="currentcolor" /><rect x="390" y="180" width="30" height="30" fill="currentcolor" /><rect x="30" y="210" width="30" height="30" fill="currentcolor" /><rect x="390" y="210" width="30" height="30" fill="currentcolor" /><rect x="30" y="240" width="30" height="30" fill="currentcolor" /><rect x="390" y="240" width="30" height="30" fill="currentcolor" /><rect x="30" y="270" width="30" height="30" fill="currentcolor" /><rect x="390" y="270" width="30" height="30" fill="currentcolor" /><rect x="60" y="300" width="30" height="30" fill="currentcolor" /><rect x="360" y="300" width="30" height="30" fill="currentcolor" /><rect x="60" y="330" width="30" height="30" fill="currentcolor" /><rect x="360" y="330" width="30" height="30" fill="currentcolor" /><rect x="90" y="360" width="30" height="30" fill="currentcolor" /><rect x="120" y="360" width="30" height="30" fill="currentcolor" /><rect x="300" y="360" width="30" height="30" fill="currentcolor" /><rect x="330" y="360" width="30" height="30" fill="currentcolor" /><rect x="150" y="390" width="30" height="30" fill="currentcolor" /><rect x="180" y="390" width="30" height="30" fill="currentcolor" /><rect x="210" y="390" width="30" height="30" fill="currentcolor" /><rect x="240" y="390" width="30" height="30" fill="currentcolor" /><rect x="270" y="390" width="30" height="30" fill="currentcolor" /></svg>
-      </div>
-      <div :class="{'tool-item':true,'active':tool == 6}" @click="tool = 6">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 450"><rect x="240" y="30" width="30" height="30" fill="currentcolor" /><rect x="270" y="30" width="30" height="30" fill="currentcolor" /><rect x="300" y="30" width="30" height="30" fill="currentcolor" /><rect x="210" y="60" width="30" height="30" fill="currentcolor" /><rect x="330" y="60" width="30" height="30" fill="currentcolor" /><rect x="360" y="60" width="30" height="30" fill="currentcolor" /><rect x="390" y="60" width="30" height="30" fill="currentcolor" /><rect x="210" y="90" width="30" height="30" fill="currentcolor" /><rect x="240" y="90" width="30" height="30" fill="currentcolor" /><rect x="270" y="90" width="30" height="30" fill="currentcolor" /><rect x="300" y="90" width="30" height="30" fill="currentcolor" /><rect x="330" y="90" width="30" height="30" fill="currentcolor" /><rect x="360" y="90" width="30" height="30" fill="currentcolor" /><rect x="390" y="90" width="30" height="30" fill="currentcolor" /><rect x="120" y="120" width="30" height="30" fill="currentcolor" /><rect x="150" y="120" width="30" height="30" fill="currentcolor" /><rect x="180" y="120" width="30" height="30" fill="currentcolor" /><rect x="210" y="120" width="30" height="30" fill="currentcolor" /><rect x="360" y="120" width="30" height="30" fill="currentcolor" /><rect x="390" y="120" width="30" height="30" fill="currentcolor" /><rect x="90" y="150" width="30" height="30" fill="currentcolor" /><rect x="150" y="150" width="30" height="30" fill="currentcolor" /><rect x="360" y="150" width="30" height="30" fill="currentcolor" /><rect x="390" y="150" width="30" height="30" fill="currentcolor" /><rect x="90" y="180" width="30" height="30" fill="currentcolor" /><rect x="150" y="180" width="30" height="30" fill="currentcolor" /><rect x="360" y="180" width="30" height="30" fill="currentcolor" /><rect x="390" y="180" width="30" height="30" fill="currentcolor" /><rect x="60" y="210" width="30" height="30" fill="currentcolor" /><rect x="120" y="210" width="30" height="30" fill="currentcolor" /><rect x="180" y="210" width="30" height="30" fill="currentcolor" /><rect x="360" y="210" width="30" height="30" fill="currentcolor" /><rect x="390" y="210" width="30" height="30" fill="currentcolor" /><rect x="60" y="240" width="30" height="30" fill="currentcolor" /><rect x="120" y="240" width="30" height="30" fill="currentcolor" /><rect x="180" y="240" width="30" height="30" fill="currentcolor" /><rect x="360" y="240" width="30" height="30" fill="currentcolor" /><rect x="390" y="240" width="30" height="30" fill="currentcolor" /><rect x="30" y="270" width="30" height="30" fill="currentcolor" /><rect x="150" y="270" width="30" height="30" fill="currentcolor" /><rect x="210" y="270" width="30" height="30" fill="currentcolor" /><rect x="360" y="270" width="30" height="30" fill="currentcolor" /><rect x="390" y="270" width="30" height="30" fill="currentcolor" /><rect x="30" y="300" width="30" height="30" fill="currentcolor" /><rect x="150" y="300" width="30" height="30" fill="currentcolor" /><rect x="240" y="300" width="30" height="30" fill="currentcolor" /><rect x="360" y="300" width="30" height="30" fill="currentcolor" /><rect x="390" y="300" width="30" height="30" fill="currentcolor" /><rect x="30" y="330" width="30" height="30" fill="currentcolor" /><rect x="150" y="330" width="30" height="30" fill="currentcolor" /><rect x="240" y="330" width="30" height="30" fill="currentcolor" /><rect x="360" y="330" width="30" height="30" fill="currentcolor" /><rect x="390" y="330" width="30" height="30" fill="currentcolor" /><rect x="60" y="360" width="30" height="30" fill="currentcolor" /><rect x="90" y="360" width="30" height="30" fill="currentcolor" /><rect x="120" y="360" width="30" height="30" fill="currentcolor" /><rect x="270" y="360" width="30" height="30" fill="currentcolor" /><rect x="330" y="360" width="30" height="30" fill="currentcolor" /><rect x="360" y="360" width="30" height="30" fill="currentcolor" /><rect x="390" y="360" width="30" height="30" fill="currentcolor" /><rect x="270" y="390" width="30" height="30" fill="currentcolor" /><rect x="300" y="390" width="30" height="30" fill="currentcolor" /><rect x="330" y="390" width="30" height="30" fill="currentcolor" /></svg>
-      </div>
-      <div class="tool-item" @click="clearAll">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 450"><rect x="210" y="30" width="30" height="30" fill="currentcolor" /><rect x="180" y="60" width="30" height="30" fill="currentcolor" /><rect x="240" y="60" width="30" height="30" fill="currentcolor" /><rect x="30" y="90" width="30" height="30" fill="currentcolor" /><rect x="60" y="90" width="30" height="30" fill="currentcolor" /><rect x="90" y="90" width="30" height="30" fill="currentcolor" /><rect x="120" y="90" width="30" height="30" fill="currentcolor" /><rect x="150" y="90" width="30" height="30" fill="currentcolor" /><rect x="180" y="90" width="30" height="30" fill="currentcolor" /><rect x="210" y="90" width="30" height="30" fill="currentcolor" /><rect x="240" y="90" width="30" height="30" fill="currentcolor" /><rect x="270" y="90" width="30" height="30" fill="currentcolor" /><rect x="300" y="90" width="30" height="30" fill="currentcolor" /><rect x="330" y="90" width="30" height="30" fill="currentcolor" /><rect x="360" y="90" width="30" height="30" fill="currentcolor" /><rect x="390" y="90" width="30" height="30" fill="currentcolor" /><rect x="30" y="120" width="30" height="30" fill="currentcolor" /><rect x="390" y="120" width="30" height="30" fill="currentcolor" /><rect x="30" y="150" width="30" height="30" fill="currentcolor" /><rect x="60" y="150" width="30" height="30" fill="currentcolor" /><rect x="90" y="150" width="30" height="30" fill="currentcolor" /><rect x="120" y="150" width="30" height="30" fill="currentcolor" /><rect x="150" y="150" width="30" height="30" fill="currentcolor" /><rect x="180" y="150" width="30" height="30" fill="currentcolor" /><rect x="210" y="150" width="30" height="30" fill="currentcolor" /><rect x="240" y="150" width="30" height="30" fill="currentcolor" /><rect x="270" y="150" width="30" height="30" fill="currentcolor" /><rect x="300" y="150" width="30" height="30" fill="currentcolor" /><rect x="330" y="150" width="30" height="30" fill="currentcolor" /><rect x="360" y="150" width="30" height="30" fill="currentcolor" /><rect x="390" y="150" width="30" height="30" fill="currentcolor" /><rect x="60" y="180" width="30" height="30" fill="currentcolor" /><rect x="120" y="180" width="30" height="30" fill="currentcolor" /><rect x="180" y="180" width="30" height="30" fill="currentcolor" /><rect x="240" y="180" width="30" height="30" fill="currentcolor" /><rect x="300" y="180" width="30" height="30" fill="currentcolor" /><rect x="360" y="180" width="30" height="30" fill="currentcolor" /><rect x="60" y="210" width="30" height="30" fill="currentcolor" /><rect x="90" y="210" width="30" height="30" fill="currentcolor" /><rect x="150" y="210" width="30" height="30" fill="currentcolor" /><rect x="210" y="210" width="30" height="30" fill="currentcolor" /><rect x="270" y="210" width="30" height="30" fill="currentcolor" /><rect x="330" y="210" width="30" height="30" fill="currentcolor" /><rect x="360" y="210" width="30" height="30" fill="currentcolor" /><rect x="60" y="240" width="30" height="30" fill="currentcolor" /><rect x="120" y="240" width="30" height="30" fill="currentcolor" /><rect x="180" y="240" width="30" height="30" fill="currentcolor" /><rect x="240" y="240" width="30" height="30" fill="currentcolor" /><rect x="300" y="240" width="30" height="30" fill="currentcolor" /><rect x="360" y="240" width="30" height="30" fill="currentcolor" /><rect x="60" y="270" width="30" height="30" fill="currentcolor" /><rect x="120" y="270" width="30" height="30" fill="currentcolor" /><rect x="180" y="270" width="30" height="30" fill="currentcolor" /><rect x="240" y="270" width="30" height="30" fill="currentcolor" /><rect x="300" y="270" width="30" height="30" fill="currentcolor" /><rect x="360" y="270" width="30" height="30" fill="currentcolor" /><rect x="90" y="300" width="30" height="30" fill="currentcolor" /><rect x="120" y="300" width="30" height="30" fill="currentcolor" /><rect x="180" y="300" width="30" height="30" fill="currentcolor" /><rect x="240" y="300" width="30" height="30" fill="currentcolor" /><rect x="300" y="300" width="30" height="30" fill="currentcolor" /><rect x="330" y="300" width="30" height="30" fill="currentcolor" /><rect x="90" y="330" width="30" height="30" fill="currentcolor" /><rect x="150" y="330" width="30" height="30" fill="currentcolor" /><rect x="210" y="330" width="30" height="30" fill="currentcolor" /><rect x="270" y="330" width="30" height="30" fill="currentcolor" /><rect x="330" y="330" width="30" height="30" fill="currentcolor" /><rect x="90" y="360" width="30" height="30" fill="currentcolor" /><rect x="150" y="360" width="30" height="30" fill="currentcolor" /><rect x="210" y="360" width="30" height="30" fill="currentcolor" /><rect x="270" y="360" width="30" height="30" fill="currentcolor" /><rect x="330" y="360" width="30" height="30" fill="currentcolor" /><rect x="90" y="390" width="30" height="30" fill="currentcolor" /><rect x="120" y="390" width="30" height="30" fill="currentcolor" /><rect x="150" y="390" width="30" height="30" fill="currentcolor" /><rect x="180" y="390" width="30" height="30" fill="currentcolor" /><rect x="210" y="390" width="30" height="30" fill="currentcolor" /><rect x="240" y="390" width="30" height="30" fill="currentcolor" /><rect x="270" y="390" width="30" height="30" fill="currentcolor" /><rect x="300" y="390" width="30" height="30" fill="currentcolor" /><rect x="330" y="390" width="30" height="30" fill="currentcolor" /></svg>  
-      </div>
-      <div :class="{'tool-item':true,'active':tool == 7}" @click="tool = 7" >
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 450"><rect x="150" y="30" width="30" height="30" fill="currentColor" /><rect x="180" y="30" width="30" height="30" fill="currentColor" /><rect x="210" y="30" width="30" height="30" fill="currentColor" /><rect x="240" y="30" width="30" height="30" fill="currentColor" /><rect x="270" y="30" width="30" height="30" fill="currentColor" /><rect x="90" y="60" width="30" height="30" fill="currentColor" /><rect x="120" y="60" width="30" height="30" fill="currentColor" /><rect x="300" y="60" width="30" height="30" fill="currentColor" /><rect x="330" y="60" width="30" height="30" fill="currentColor" /><rect x="60" y="90" width="30" height="30" fill="currentColor" /><rect x="360" y="90" width="30" height="30" fill="currentColor" /><rect x="60" y="120" width="30" height="30" fill="currentColor" /><rect x="150" y="120" width="30" height="30" fill="currentColor" /><rect x="300" y="120" width="30" height="30" fill="currentColor" /><rect x="360" y="120" width="30" height="30" fill="currentColor" /><rect x="30" y="150" width="30" height="30" fill="currentColor" /><rect x="120" y="150" width="30" height="30" fill="currentColor" /><rect x="180" y="150" width="30" height="30" fill="currentColor" /><rect x="270" y="150" width="30" height="30" fill="currentColor" /><rect x="330" y="150" width="30" height="30" fill="currentColor" /><rect x="390" y="150" width="30" height="30" fill="currentColor" /><rect x="30" y="180" width="30" height="30" fill="currentColor" /><rect x="150" y="180" width="30" height="30" fill="currentColor" /><rect x="300" y="180" width="30" height="30" fill="currentColor" /><rect x="390" y="180" width="30" height="30" fill="currentColor" /><rect x="30" y="210" width="30" height="30" fill="currentColor" /><rect x="390" y="210" width="30" height="30" fill="currentColor" /><rect x="30" y="240" width="30" height="30" fill="currentColor" /><rect x="120" y="240" width="30" height="30" fill="currentColor" /><rect x="360" y="240" width="30" height="30" fill="currentColor" /><rect x="30" y="270" width="30" height="30" fill="currentColor" /><rect x="90" y="270" width="30" height="30" fill="currentColor" /><rect x="150" y="270" width="30" height="30" fill="currentColor" /><rect x="270" y="270" width="30" height="30" fill="currentColor" /><rect x="300" y="270" width="30" height="30" fill="currentColor" /><rect x="330" y="270" width="30" height="30" fill="currentColor" /><rect x="60" y="300" width="30" height="30" fill="currentColor" /><rect x="120" y="300" width="30" height="30" fill="currentColor" /><rect x="240" y="300" width="30" height="30" fill="currentColor" /><rect x="60" y="330" width="30" height="30" fill="currentColor" /><rect x="210" y="330" width="30" height="30" fill="currentColor" /><rect x="90" y="360" width="30" height="30" fill="currentColor" /><rect x="120" y="360" width="30" height="30" fill="currentColor" /><rect x="210" y="360" width="30" height="30" fill="currentColor" /><rect x="150" y="390" width="30" height="30" fill="currentColor" /><rect x="180" y="390" width="30" height="30" fill="currentColor" /></svg>
-      </div>
-    </div>
     </div>
     <div class="middle" @pointerdown="handlePointerDown"
                         @pointermove="handlePointerMove"
-                        @pointerup="handlePointerUp" @wheel="zoomWheel" ref="realViewport">
+                        @pointerup="handlePointerUp" ref="realViewport" @wheel="zoomWheel">
       <div style="position: absolute;left: 1rem">{{coordinate}}</div>
       <div class="drawing-area" >
         
@@ -94,7 +94,7 @@
         <div class="icon-item" @click="zoomOut">
           <svg-icon name="zoomOut"></svg-icon>
         </div>
-        <input type="range" min="10" max="100" v-model="scaleCount" @input="resizeViewport">
+        <input type="range" style="width: 80px;" min="10" max="100" v-model="scaleCount" @input="resizeViewport">
         <div class="icon-item" @click="zoomFit">
           <svg-icon name="fit01"></svg-icon>
         </div>
@@ -171,7 +171,9 @@ export default {
       minScaleCount:30,
       viewport:null,
       disx:0,
-      disy:0
+      disy:0,
+      selectedRect:{x:0,y:0,width:0,height:0},
+      selectedImgData:null,
     };
   },
   mounted() {
@@ -269,6 +271,22 @@ export default {
         this.ctx.fillStyle = this.currentColor
         this.fillArea(this.endPoints);
         this.addHistory()
+      }else if(this.tool == 7){
+        this.ctx.beginPath()
+        this.ctx.rect(this.selectedRect.x,this.selectedRect.y,this.selectedRect.width,this.selectedRect.height)
+        this.ctx.closePath()
+        const isPointInPath = this.ctx.isPointInPath(this.endPoints.x,this.endPoints.y)
+        if(isPointInPath){
+          //开始拖拽
+          this.selectedImgData = this.ctx.getImageData(this.selectedRect.x,this.selectedRect.y,this.selectedRect.width,this.selectedRect.height)
+          
+          // this.ctx.drawImage(this.selectedImgData, 0, 0);
+          this.ctx.putImageData(this.selectedImgData,0,0)
+        }else{
+          //选择区域
+          this.isDrawing = true
+        }
+        
       }
       
     },
@@ -292,9 +310,12 @@ export default {
         }else if(this.tool == 5){
           this.showLastHistory()
           this.drawPixelEllipse(this.endPoints, currPoint)
+        }else if(this.tool == 7){
+          this.showLastHistory()
+          this.select(this.endPoints, currPoint)
         }
       }else{
-        if(this.tool != 6 && this.tool != 7){
+        if(this.tool != 6){
           this.showLastHistory()
           this.overMove(currPoint)
         }
@@ -348,6 +369,12 @@ export default {
           y += sy
         }
       }
+    },
+    select(start,end){
+      this.ctx.lineWidth = 1
+      this.ctx.setLineDash([50])
+      this.ctx.strokeRect(start.x,start.y, end.x-start.x, end.y-start.y)
+      this.selectedRect = {x:start.x,y:start.y, width:end.x-start.x, height:end.y-start.y}
     },
     drawRect(start,end){
       let rightUp, leftDown;
@@ -543,7 +570,7 @@ export default {
 
           // 只保存非透明像素
           if (a > 0) {
-            pixelData.push({ x, y, r, g, b, a });
+            pixelData.push({ x:x*0.3, y:y*0.3, r, g, b, a });
           }
         } 
       }
@@ -552,10 +579,10 @@ export default {
 
 
       //生成svg文件,gpt生成代码
-      let svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}">`;
+      let svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width*0.3} ${height*0.3}">`;
       
       pixelData.forEach(pixel => {
-        svgContent += `<rect x="${pixel.x}" y="${pixel.y}" width="${this.gridSize}" height="${this.gridSize}" fill="${color}" />`;
+        svgContent += `<rect x="${pixel.x}" y="${pixel.y}" width="30" height="30" fill="${color}" />`;
       });
 
       svgContent += '</svg>';
@@ -589,21 +616,6 @@ export default {
         this.$toast.show(err,'error')
       }
     },
-    zoomIn(){
-      var scale = Number(this.scaleCount) + 10
-      this.scaleCount = Math.min(scale,100)
-      this.resizeViewport()
-    },
-    zoomOut(){
-      var scale = Number(this.scaleCount) - 10
-      this.scaleCount = Math.max(scale,10)
-      this.resizeViewport()
-    },
-    zoomFit(){
-      this.getMinScale()
-      this.scaleCount = this.minScaleCount
-      this.resizeViewport()
-    },
     dragViewportDown(e){
       this.$refs.realViewport.removeEventListener('scroll', this.viewportScroll);
       this.viewport = this.$refs.viewport
@@ -631,7 +643,6 @@ export default {
         realViewport.scrollTop = scrollTop
         realViewport.scrollLeft = scrollLeft
       }
-
     },
     dragViewportUp(){
       this.$refs.realViewport.addEventListener('scroll', this.viewportScroll);
@@ -643,12 +654,30 @@ export default {
       this.resizeViewport()
     },
     zoomWheel(event){
+      event.preventDefault()
       const deltaY = event.deltaY
       if(deltaY < 0){
-        this.scaleCount++
+        var scale = Number(this.scaleCount) + 1
+        this.scaleCount = Math.min(scale,100)
       }else{
-        this.scaleCount--
+        var scale = Number(this.scaleCount) - 1
+        this.scaleCount = Math.max(scale,10)
       }
+      this.resizeViewport()
+    },
+    zoomIn(){
+      var scale = Number(this.scaleCount) + 10
+      this.scaleCount = Math.min(scale,100)
+      this.resizeViewport()
+    },
+    zoomOut(){
+      var scale = Number(this.scaleCount) - 10
+      this.scaleCount = Math.max(scale,10)
+      this.resizeViewport()
+    },
+    zoomFit(){
+      this.getMinScale()
+      this.scaleCount = this.minScaleCount
       this.resizeViewport()
     },
     resizeViewport(){
@@ -704,6 +733,12 @@ canvas {
   margin: 1px;
   border-radius: 5px;
 }
+
+.tool-item-svg {
+  width: 30px !important;
+  height: 30px !important;
+}
+
 .tool-item:hover , .tool-item.active{
   background-color: var(--white-highlight);
 }
@@ -771,6 +806,7 @@ canvas {
 .overview-tools{
   width: 100%;
   display: flex;
+  justify-content: space-between;
 }
 .work-area > div{
   padding: 5px;
