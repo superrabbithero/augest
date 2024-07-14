@@ -78,8 +78,9 @@
                         @pointerup="handlePointerUp" ref="realViewport" @wheel="zoomWheel">
       <div style="position: absolute;left: 1rem">{{coordinate}}</div>
       <div class="drawing-area" >
-        
-        <canvas :width="width" :height="height"  class="gridsytle" :style="canvasStyle" ref="canvas"></canvas>
+        <canvas :width="width" :height="height"  class="gridsytle" :style="canvasStyle" ref="canvas">
+          
+        </canvas>
       </div>
     </div>
     <div class="right">
@@ -173,7 +174,9 @@ export default {
       disx:0,
       disy:0,
       selectedRect:{x:0,y:0,width:0,height:0},
+      offscreenCanvas:null,
       selectedImgData:null,
+      isDragingSelectRect:false
     };
   },
   mounted() {
@@ -244,6 +247,7 @@ export default {
       this.resizeViewport()
       this.getMinScale()
       this.scaleCount = this.minScaleCount
+      this.offscreenCanvas = document.createElement('canvas');
     },
     getMinScale(){
       const realViewport = this.$refs.realViewport
@@ -278,13 +282,39 @@ export default {
         const isPointInPath = this.ctx.isPointInPath(this.endPoints.x,this.endPoints.y)
         if(isPointInPath){
           //开始拖拽
-          this.selectedImgData = this.ctx.getImageData(this.selectedRect.x,this.selectedRect.y,this.selectedRect.width,this.selectedRect.height)
+          if(!this.selectedImgData){
+            this.selectedImgData = this.ctx.getImageData(this.selectedRect.x,this.selectedRect.y,this.selectedRect.width,this.selectedRect.height)
+            this.offscreenCanvas.width = this.selectedRect.width+2;
+            this.offscreenCanvas.height = this.selectedRect.height+2;
+            const offscreenCtx = this.offscreenCanvas.getContext('2d');
+            offscreenCtx.lineWidth = 1
+            offscreenCtx.setLineDash([50])
+            offscreenCtx.strokeRect(0,0, this.offscreenCanvas.width, this.offscreenCanvas.height)
+            offscreenCtx.putImageData(this.selectedImgData,1,1)
+            this.undo()
+            this.ctx.clearRect(this.selectedRect.x,this.selectedRect.y,this.selectedRect.width,this.selectedRect.height)
+            this.addHistory()
+             // 创建辅助Canvas
+          }else{
+            //如果已经选了图像了则不用重新绘制区域图片
+            this.historys.pop();
+            this.showLastHistory()
+          }
+          this.disx = this.endPoints.x - this.selectedRect.x
+          this.disy = this.endPoints.y - this.selectedRect.y
           
-          // this.ctx.drawImage(this.selectedImgData, 0, 0);
-          this.ctx.putImageData(this.selectedImgData,0,0)
+          this.isDragingSelectRect = true
+          this.ctx.drawImage(this.offscreenCanvas,this.selectedRect.x-1, this.selectedRect.y-1)
         }else{
+          if(this.selectedImgData){
+            this.selectSave()
+            this.selectedImgData = null
+            this.selectedRect = {x:0,y:0,width:0,height:0}
+          }
+          
           //选择区域
           this.isDrawing = true
+          
         }
         
       }
@@ -294,7 +324,7 @@ export default {
       this.ctx.fillStyle = this.currentColor
       this.ctx.strokeStyle = this.currentColor
       const currPoint = this.getPoint({x:event.clientX,y:event.clientY})
-      
+      console.log(`${this.isDragingSelectRect},${this.isDrawing},${this.tool}`)
       if(this.isDrawing){
         if(this.tool == 1){
           this.drawLine(this.endPoints, currPoint)
@@ -315,15 +345,37 @@ export default {
           this.select(this.endPoints, currPoint)
         }
       }else{
-        if(this.tool != 6){
-          this.showLastHistory()
+        this.showLastHistory()
+        if(this.tool == 7 && this.isDragingSelectRect){
+          this.selectedRect.x = currPoint.x-this.disx
+          this.selectedRect.y = currPoint.y-this.disy
+          this.ctx.drawImage(this.offscreenCanvas,this.selectedRect.x-1, this.selectedRect.y-1)
+        }else if(this.tool < 6 ){
           this.overMove(currPoint)
         }
       }
     },
+    select(start,end){
+      this.ctx.lineWidth = 1
+      this.ctx.setLineDash([50])
+      this.ctx.strokeRect(start.x-1,start.y-1, end.x-start.x+2, end.y-start.y+2)
+      this.selectedRect = {x:start.x,y:start.y, width:end.x-start.x, height:end.y-start.y}
+    },
+    selectSave(){
+      this.undo()
+      this.ctx.drawImage(
+        this.offscreenCanvas,
+        1,1,this.selectedRect.width, this.selectedRect.height,
+        this.selectedRect.x,this.selectedRect.y,this.selectedRect.width, this.selectedRect.height)
+      this.addHistory()
+    },
     handlePointerUp(){
       if(this.isDrawing){
         this.isDrawing = false
+        this.addHistory()
+      }
+      if(this.isDragingSelectRect){
+        this.isDragingSelectRect = false
         this.addHistory()
       }
       
@@ -370,12 +422,7 @@ export default {
         }
       }
     },
-    select(start,end){
-      this.ctx.lineWidth = 1
-      this.ctx.setLineDash([50])
-      this.ctx.strokeRect(start.x,start.y, end.x-start.x, end.y-start.y)
-      this.selectedRect = {x:start.x,y:start.y, width:end.x-start.x, height:end.y-start.y}
-    },
+    
     drawRect(start,end){
       let rightUp, leftDown;
 
@@ -905,6 +952,8 @@ canvas {
     );
   background-color: white;
 }
+
+
 
 
 </style>
