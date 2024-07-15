@@ -12,7 +12,7 @@
     </div>
     <div class="right">
       <div class="tool-option">
-        {{historys.length}}
+        {{selectRectAnimateId}}
       </div>
       <div class="icon-item" @click="undo">
         <svg-icon name="undo01"></svg-icon>
@@ -177,7 +177,8 @@ export default {
       offscreenCanvas:null,
       selectedImgData:null,
       selectedBgData:null,
-      isDragingSelectRect:false
+      isDragingSelectRect:false,
+      selectRectAnimateId:null
     };
   },
   mounted() {
@@ -295,18 +296,17 @@ export default {
           //开始拖拽
           if(!this.selectedImgData){
             this.selectedImgData = this.ctx.getImageData(this.selectedRect.x,this.selectedRect.y,this.selectedRect.width,this.selectedRect.height)
-            this.offscreenCanvas.width = this.selectedRect.width+2;
-            this.offscreenCanvas.height = this.selectedRect.height+2;
+            this.offscreenCanvas.width = this.selectedRect.width;
+            this.offscreenCanvas.height = this.selectedRect.height;
             const offscreenCtx = this.offscreenCanvas.getContext('2d');
             this.showLastHistory()
             this.ctx.clearRect(this.selectedRect.x,this.selectedRect.y,this.selectedRect.width,this.selectedRect.height)
             this.selectedBgData = this.ctx.getImageData(0,0,this.width,this.height)
-            offscreenCtx.lineWidth = 1
-            offscreenCtx.setLineDash([50])
-            offscreenCtx.strokeRect(0,0, this.offscreenCanvas.width, this.offscreenCanvas.height)
-            offscreenCtx.putImageData(this.selectedImgData,1,1)
+            offscreenCtx.putImageData(this.selectedImgData,0,0)
              // 创建辅助Canvas
-            this.ctx.strokeRect(this.selectedRect.x-1,this.selectedRect.y-1, this.selectedRect.width+2, this.selectedRect.height+2)
+            // this.dashedRectAnimate(this.selectedRect.x-1,this.selectedRect.y-1, this.selectedRect.width+2, this.selectedRect.height+2,0)
+            // this.ctx.strokeRect(this.selectedRect.x-1,this.selectedRect.y-1, this.selectedRect.width+2, this.selectedRect.height+2)
+            this.selectRectAnimateId = requestAnimationFrame(this.dashedRectAnimate)
             
             
           }else{
@@ -328,6 +328,7 @@ export default {
         }
       }
     },
+
     handlePointerMove(event){
       this.ctx.fillStyle = this.currentColor
       this.ctx.strokeStyle = this.currentColor
@@ -356,8 +357,10 @@ export default {
           this.ctx.putImageData(this.selectedBgData, 0, 0)
           this.selectedRect.x = currPoint.x-this.disx
           this.selectedRect.y = currPoint.y-this.disy
+
+          this.drawDashedRect()
           this.ctx.drawImage(this.offscreenCanvas,this.selectedRect.x-1, this.selectedRect.y-1)
-          this.ctx.strokeRect(this.selectedRect.x-1,this.selectedRect.y-1, this.selectedRect.width+2, this.selectedRect.height+2)
+          
         }else if(this.tool < 6 ){
           this.showLastHistory()
           this.overMove(currPoint)
@@ -371,14 +374,24 @@ export default {
       const y = Math.min(start.y,end.y)
       const width = Math.abs(end.x-start.x)
       const height = Math.abs(end.y-start.y)
-      this.ctx.strokeRect(x-1,y-1, width+2, height+2)
       this.selectedRect = {x, y, width, height}
+      this.drawDashedRect()
+    },
+    drawDashedRect(){
+      this.ctx.putImageData(this.selectedBgData,0,0)
+      this.ctx.lineDashOffset = (this.ctx.lineDashOffset+1)%100
+      this.ctx.setLineDash([50])
+      this.ctx.strokeRect(this.selectedRect.x-1,this.selectedRect.y-1, this.selectedRect.width+2, this.selectedRect.height+2)
+    },
+    dashedRectAnimate(){
+      this.drawDashedRect()
+      requestAnimationFrame(this.dashedRectAnimate)
     },
     selectSave(){
       this.ctx.putImageData(this.selectedBgData,0,0)
       this.ctx.drawImage(
         this.offscreenCanvas,
-        1,1,this.selectedRect.width, this.selectedRect.height,
+        0,0,this.selectedRect.width, this.selectedRect.height,
         this.selectedRect.x,this.selectedRect.y,this.selectedRect.width, this.selectedRect.height)
       this.addHistory()
       
@@ -393,7 +406,7 @@ export default {
       if(this.isDragingSelectRect){
         this.isDragingSelectRect = false
         this.selectSave()
-        this.ctx.strokeRect(this.selectedRect.x-1,this.selectedRect.y-1, this.selectedRect.width+2, this.selectedRect.height+2)
+        // this.dashedRectAnimate()
       }
       
     },
@@ -576,17 +589,10 @@ export default {
     colorsMatch(color1, color2) {
       return color1[0] === color2[0] && color1[1] === color2[1] && color1[2] === color2[2] && color1[3] === color2[3];
     },
-
-
-
     clearAll(){
-      this.selectedImgData = null
       this.selectedRect = {x:0,y:0,width:0,height:0}
-      if(this.isRectEqual(this.selectedRect, {x: 0, y: 0, width: 0, height: 0})){
-        this.ctx.clearRect(0,0,this.width,this.height)
-      }else{
-        this.ctx.clearRect(this.selectedRect.x,this.selectedRect.y,this.selectedRect.width,this.selectedRect.height)
-      }
+      this.selectedImgData = null
+      this.ctx.clearRect(0,0,this.width,this.height)
       this.addHistory()
     },
     isRectEqual(rect1, rect2) {
