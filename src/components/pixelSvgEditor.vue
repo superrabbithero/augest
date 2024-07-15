@@ -178,7 +178,7 @@ export default {
       selectedImgData:null,
       selectedBgData:null,
       isDragingSelectRect:false,
-      selectRectAnimateId:null
+      selectRectAnimateId:0,
     };
   },
   mounted() {
@@ -201,6 +201,8 @@ export default {
         if(this.tool == 7){
           this.selectedImgData = null
           this.selectedRect = {x:0,y:0,width:0,height:0}
+          cancelAnimationFrame(this.selectRectAnimateId)
+          this.selectRectAnimateId = 0
         }
         if(index == 7){
           this.selectedBgData = this.ctx.getImageData(0,0,this.width,this.height)
@@ -303,9 +305,7 @@ export default {
             this.ctx.clearRect(this.selectedRect.x,this.selectedRect.y,this.selectedRect.width,this.selectedRect.height)
             this.selectedBgData = this.ctx.getImageData(0,0,this.width,this.height)
             offscreenCtx.putImageData(this.selectedImgData,0,0)
-             // 创建辅助Canvas
-            // this.dashedRectAnimate(this.selectedRect.x-1,this.selectedRect.y-1, this.selectedRect.width+2, this.selectedRect.height+2,0)
-            // this.ctx.strokeRect(this.selectedRect.x-1,this.selectedRect.y-1, this.selectedRect.width+2, this.selectedRect.height+2)
+             
             this.selectRectAnimateId = requestAnimationFrame(this.dashedRectAnimate)
             
             
@@ -321,8 +321,10 @@ export default {
           this.ctx.drawImage(this.offscreenCanvas, this.selectedRect.x-1, this.selectedRect.y-1)
         }else{
           //选择新的区域
+          cancelAnimationFrame(this.selectRectAnimateId)
           this.selectedImgData = null
           this.selectedRect = {x:0,y:0,width:0,height:0}
+          
           //选择区域
           this.isDrawing = true
         }
@@ -354,12 +356,12 @@ export default {
         }
       }else{
         if(this.tool == 7 && this.isDragingSelectRect){
-          this.ctx.putImageData(this.selectedBgData, 0, 0)
+          // this.ctx.putImageData(this.selectedBgData, 0, 0)
           this.selectedRect.x = currPoint.x-this.disx
           this.selectedRect.y = currPoint.y-this.disy
-
-          this.drawDashedRect()
-          this.ctx.drawImage(this.offscreenCanvas,this.selectedRect.x-1, this.selectedRect.y-1)
+          // window.cancelAnimationFrame(this.selectRectAnimateId)
+          // this.drawDashedRect()
+          // this.ctx.drawImage(this.offscreenCanvas,this.selectedRect.x-1, this.selectedRect.y-1)
           
         }else if(this.tool < 6 ){
           this.showLastHistory()
@@ -375,17 +377,19 @@ export default {
       const width = Math.abs(end.x-start.x)
       const height = Math.abs(end.y-start.y)
       this.selectedRect = {x, y, width, height}
-      this.drawDashedRect()
+      // this.drawDashedRect()
     },
     drawDashedRect(){
-      this.ctx.putImageData(this.selectedBgData,0,0)
+      
       this.ctx.lineDashOffset = (this.ctx.lineDashOffset+1)%100
       this.ctx.setLineDash([50])
       this.ctx.strokeRect(this.selectedRect.x-1,this.selectedRect.y-1, this.selectedRect.width+2, this.selectedRect.height+2)
     },
     dashedRectAnimate(){
+      this.ctx.putImageData(this.selectedBgData,0,0)
       this.drawDashedRect()
-      requestAnimationFrame(this.dashedRectAnimate)
+      this.ctx.drawImage(this.offscreenCanvas,this.selectedRect.x, this.selectedRect.y)
+      this.selectRectAnimateId = requestAnimationFrame(this.dashedRectAnimate)
     },
     selectSave(){
       this.ctx.putImageData(this.selectedBgData,0,0)
@@ -593,6 +597,8 @@ export default {
       this.selectedRect = {x:0,y:0,width:0,height:0}
       this.selectedImgData = null
       this.ctx.clearRect(0,0,this.width,this.height)
+      cancelAnimationFrame(this.selectRectAnimateId)
+      this.selectRectAnimateId = 0
       this.addHistory()
     },
     isRectEqual(rect1, rect2) {
@@ -636,6 +642,8 @@ export default {
       //清空选择区域
       this.selectedImgData = null
       this.selectedRect = {x:0,y:0,width:0,height:0}
+      cancelAnimationFrame(this.selectRectAnimateId)
+      this.selectRectAnimateId = 0
     },
     getSvgContent(filled=false){
       const width = this.width;
