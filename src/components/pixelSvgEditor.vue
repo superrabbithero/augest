@@ -12,7 +12,7 @@
     </div>
     <div class="right">
       <div class="tool-option">
-        {{scaleCount}}
+        {{historys.length}}
       </div>
       <div class="icon-item" @click="undo">
         <svg-icon name="undo01"></svg-icon>
@@ -47,25 +47,25 @@
   <div class="work-area">
     <div class="left">
       <div class="tools-bar">
-        <div :class="{'tool-item':true,'active':tool == 1}" @click="tool = 1">
+        <div :class="{'tool-item':true,'active':tool == 1}" @click="switchTool(1)">
           <svg-icon name="pencil" className="tool-item-svg"></svg-icon>
         </div>
-        <div :class="{'tool-item':true,'active':tool == 2}" @click="tool = 2">
+        <div :class="{'tool-item':true,'active':tool == 2}" @click="switchTool(2)">
           <svg-icon name="eraser" className="tool-item-svg"></svg-icon>
         </div>
-        <div :class="{'tool-item':true,'active':tool == 3}" @click="tool = 3">
+        <div :class="{'tool-item':true,'active':tool == 3}" @click="switchTool(3)">
           <svg-icon name="line" className="tool-item-svg"></svg-icon> 
         </div>
-        <div :class="{'tool-item':true,'active':tool == 4}" @click="tool = 4">
+        <div :class="{'tool-item':true,'active':tool == 4}" @click="switchTool(4)">
           <svg-icon name="rect" className="tool-item-svg"></svg-icon>
         </div>
-        <div :class="{'tool-item':true,'active':tool == 5}" @click="tool = 5">
+        <div :class="{'tool-item':true,'active':tool == 5}" @click="switchTool(5)">
           <svg-icon name="circle" className="tool-item-svg"></svg-icon>
         </div>
-        <div :class="{'tool-item':true,'active':tool == 6}" @click="tool = 6">
+        <div :class="{'tool-item':true,'active':tool == 6}" @click="switchTool(6)">
           <svg-icon name="paintBuckets" className="tool-item-svg"></svg-icon>
         </div>
-        <div :class="{'tool-item':true,'active':tool == 7}" @click="tool = 7">
+        <div :class="{'tool-item':true,'active':tool == 7}" @click="switchTool(7)">
           <svg-icon name="select" className="tool-item-svg"></svg-icon>
         </div>
         <div class="tool-item" @click="clearAll">
@@ -176,6 +176,7 @@ export default {
       selectedRect:{x:0,y:0,width:0,height:0},
       offscreenCanvas:null,
       selectedImgData:null,
+      selectedBgData:null,
       isDragingSelectRect:false
     };
   },
@@ -194,6 +195,18 @@ export default {
     }
   },
   methods: {
+    switchTool(index){
+      if(this.tool!= index){
+        if(this.tool == 7){
+          this.selectedImgData = null
+          this.selectedRect = {x:0,y:0,width:0,height:0}
+        }
+        if(index == 7){
+          this.selectedBgData = this.ctx.getImageData(0,0,this.width,this.height)
+        }
+        this.tool = index
+      }
+    },
     updateOverview(){
       this.ovCtx.clearRect(0,0,this.overviewSize.width,this.overviewSize.height)
       this.ovCtx.drawImage(
@@ -214,7 +227,6 @@ export default {
         })
         this.dropDownBoxShow[keyname] = true
       }
-      console.log(this.dropDownBoxShow)
     },
     switchColor(point){
       const color = this.getColorAtPixel(point)
@@ -222,7 +234,6 @@ export default {
       if(currentColor != 'rgba(0,0,0,0)'){
         this.currentColor = currentColor
       }
-      console.log(this.currentColor)
     },
     handleKeyDown(event) {
       if (event.key === 'Shift') {
@@ -287,44 +298,40 @@ export default {
             this.offscreenCanvas.width = this.selectedRect.width+2;
             this.offscreenCanvas.height = this.selectedRect.height+2;
             const offscreenCtx = this.offscreenCanvas.getContext('2d');
+            this.showLastHistory()
+            this.ctx.clearRect(this.selectedRect.x,this.selectedRect.y,this.selectedRect.width,this.selectedRect.height)
+            this.selectedBgData = this.ctx.getImageData(0,0,this.width,this.height)
             offscreenCtx.lineWidth = 1
             offscreenCtx.setLineDash([50])
             offscreenCtx.strokeRect(0,0, this.offscreenCanvas.width, this.offscreenCanvas.height)
             offscreenCtx.putImageData(this.selectedImgData,1,1)
-            this.undo()
-            this.ctx.clearRect(this.selectedRect.x,this.selectedRect.y,this.selectedRect.width,this.selectedRect.height)
-            this.addHistory()
              // 创建辅助Canvas
+            this.ctx.strokeRect(this.selectedRect.x-1,this.selectedRect.y-1, this.selectedRect.width+2, this.selectedRect.height+2)
+            
+            
           }else{
             //如果已经选了图像了则不用重新绘制区域图片
-            this.historys.pop();
-            this.showLastHistory()
+            this.ctx.putImageData(this.selectedBgData,0,0)
           }
           this.disx = this.endPoints.x - this.selectedRect.x
           this.disy = this.endPoints.y - this.selectedRect.y
           
           this.isDragingSelectRect = true
-          this.ctx.drawImage(this.offscreenCanvas,this.selectedRect.x-1, this.selectedRect.y-1)
-        }else{
-          if(this.selectedImgData){
-            this.selectSave()
-            this.selectedImgData = null
-            this.selectedRect = {x:0,y:0,width:0,height:0}
-          }
           
+          this.ctx.drawImage(this.offscreenCanvas, this.selectedRect.x-1, this.selectedRect.y-1)
+        }else{
+          //选择新的区域
+          this.selectedImgData = null
+          this.selectedRect = {x:0,y:0,width:0,height:0}
           //选择区域
           this.isDrawing = true
-          
         }
-        
       }
-      
     },
     handlePointerMove(event){
       this.ctx.fillStyle = this.currentColor
       this.ctx.strokeStyle = this.currentColor
       const currPoint = this.getPoint({x:event.clientX,y:event.clientY})
-      console.log(`${this.isDragingSelectRect},${this.isDrawing},${this.tool}`)
       if(this.isDrawing){
         if(this.tool == 1){
           this.drawLine(this.endPoints, currPoint)
@@ -345,12 +352,14 @@ export default {
           this.select(this.endPoints, currPoint)
         }
       }else{
-        this.showLastHistory()
         if(this.tool == 7 && this.isDragingSelectRect){
+          this.ctx.putImageData(this.selectedBgData, 0, 0)
           this.selectedRect.x = currPoint.x-this.disx
           this.selectedRect.y = currPoint.y-this.disy
           this.ctx.drawImage(this.offscreenCanvas,this.selectedRect.x-1, this.selectedRect.y-1)
+          this.ctx.strokeRect(this.selectedRect.x-1,this.selectedRect.y-1, this.selectedRect.width+2, this.selectedRect.height+2)
         }else if(this.tool < 6 ){
+          this.showLastHistory()
           this.overMove(currPoint)
         }
       }
@@ -358,25 +367,33 @@ export default {
     select(start,end){
       this.ctx.lineWidth = 1
       this.ctx.setLineDash([50])
-      this.ctx.strokeRect(start.x-1,start.y-1, end.x-start.x+2, end.y-start.y+2)
-      this.selectedRect = {x:start.x,y:start.y, width:end.x-start.x, height:end.y-start.y}
+      const x = Math.min(start.x,end.x)
+      const y = Math.min(start.y,end.y)
+      const width = Math.abs(end.x-start.x)
+      const height = Math.abs(end.y-start.y)
+      this.ctx.strokeRect(x-1,y-1, width+2, height+2)
+      this.selectedRect = {x, y, width, height}
     },
     selectSave(){
-      this.undo()
+      this.ctx.putImageData(this.selectedBgData,0,0)
       this.ctx.drawImage(
         this.offscreenCanvas,
         1,1,this.selectedRect.width, this.selectedRect.height,
         this.selectedRect.x,this.selectedRect.y,this.selectedRect.width, this.selectedRect.height)
       this.addHistory()
+      
     },
     handlePointerUp(){
       if(this.isDrawing){
         this.isDrawing = false
-        this.addHistory()
+        if(this.tool != 7){
+          this.addHistory()
+        } 
       }
       if(this.isDragingSelectRect){
         this.isDragingSelectRect = false
-        this.addHistory()
+        this.selectSave()
+        this.ctx.strokeRect(this.selectedRect.x-1,this.selectedRect.y-1, this.selectedRect.width+2, this.selectedRect.height+2)
       }
       
     },
@@ -563,8 +580,20 @@ export default {
 
 
     clearAll(){
-      this.ctx.clearRect(0,0,this.width,this.height)
+      this.selectedImgData = null
+      this.selectedRect = {x:0,y:0,width:0,height:0}
+      if(this.isRectEqual(this.selectedRect, {x: 0, y: 0, width: 0, height: 0})){
+        this.ctx.clearRect(0,0,this.width,this.height)
+      }else{
+        this.ctx.clearRect(this.selectedRect.x,this.selectedRect.y,this.selectedRect.width,this.selectedRect.height)
+      }
       this.addHistory()
+    },
+    isRectEqual(rect1, rect2) {
+      return rect1.x === rect2.x &&
+             rect1.y === rect2.y &&
+             rect1.width === rect2.width &&
+             rect1.height === rect2.height;
     },
     getPoint(point){
       const scale = this.scaleCount/100
@@ -597,6 +626,10 @@ export default {
         this.showLastHistory();
         this.updateOverview()
       }
+
+      //清空选择区域
+      this.selectedImgData = null
+      this.selectedRect = {x:0,y:0,width:0,height:0}
     },
     getSvgContent(filled=false){
       const width = this.width;
