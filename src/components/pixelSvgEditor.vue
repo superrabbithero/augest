@@ -724,14 +724,15 @@ export default {
           }
         } 
       }
-
-      let color = filled ? `rgba(${pixel.r},${pixel.g},${pixel.b},${pixel.a})` : "currentColor"
-
-
+    
       //生成svg文件,gpt生成代码
       let svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width*0.3} ${height*0.3}">`;
       
       pixelData.forEach(pixel => {
+        let color = `rgba(${pixel.r},${pixel.g},${pixel.b},${pixel.a})`
+        if(color =='rgb(0,0,0,0)'){
+          color = "currentColor"
+        }
         svgContent += `<rect x="${pixel.x}" y="${pixel.y}" width="30" height="30" fill="${color}" />`;
       });
 
