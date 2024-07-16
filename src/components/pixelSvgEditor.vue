@@ -179,6 +179,7 @@ export default {
       selectedBgData:null,
       isDragingSelectRect:false,
       selectRectAnimateId:0,
+      // newSelected:false,
     };
   },
   mounted() {
@@ -203,6 +204,7 @@ export default {
           this.selectedRect = {x:0,y:0,width:0,height:0}
           cancelAnimationFrame(this.selectRectAnimateId)
           this.selectRectAnimateId = 0
+          this.showLastHistory()
         }
         if(index == 7){
           this.selectedBgData = this.ctx.getImageData(0,0,this.width,this.height)
@@ -256,6 +258,7 @@ export default {
       this.maincanvas = this.$refs.canvas;
       const overview = this.$refs.canvas_overview
       this.ctx = this.maincanvas.getContext('2d');
+      this.ctx.lineWidth = 5
       this.ovCtx = overview.getContext('2d')
       this.addHistory()
       this.resizeViewport()
@@ -297,6 +300,7 @@ export default {
         if(isPointInPath){
           //开始拖拽
           if(!this.selectedImgData){
+            this.showLastHistory()
             this.selectedImgData = this.ctx.getImageData(this.selectedRect.x,this.selectedRect.y,this.selectedRect.width,this.selectedRect.height)
             this.offscreenCanvas.width = this.selectedRect.width;
             this.offscreenCanvas.height = this.selectedRect.height;
@@ -306,9 +310,6 @@ export default {
             this.selectedBgData = this.ctx.getImageData(0,0,this.width,this.height)
             offscreenCtx.putImageData(this.selectedImgData,0,0)
              
-            this.selectRectAnimateId = requestAnimationFrame(this.dashedRectAnimate)
-            
-            
           }else{
             //如果已经选了图像了则不用重新绘制区域图片
             this.ctx.putImageData(this.selectedBgData,0,0)
@@ -321,9 +322,15 @@ export default {
           this.ctx.drawImage(this.offscreenCanvas, this.selectedRect.x-1, this.selectedRect.y-1)
         }else{
           //选择新的区域
-          cancelAnimationFrame(this.selectRectAnimateId)
+          this.showLastHistory()
+
+          if(this.selectRectAnimateId == 0){
+            this.selectRectAnimateId = requestAnimationFrame(this.dashedRectAnimate)
+          }
+          // this.newSelected = true
           this.selectedImgData = null
           this.selectedRect = {x:0,y:0,width:0,height:0}
+          this.selectedBgData = this.ctx.getImageData(0,0,this.width,this.height)
           
           //选择区域
           this.isDrawing = true
@@ -360,7 +367,6 @@ export default {
           this.selectedRect.x = currPoint.x-this.disx
           this.selectedRect.y = currPoint.y-this.disy
           // window.cancelAnimationFrame(this.selectRectAnimateId)
-          // this.drawDashedRect()
           // this.ctx.drawImage(this.offscreenCanvas,this.selectedRect.x-1, this.selectedRect.y-1)
           
         }else if(this.tool < 6 ){
@@ -370,25 +376,30 @@ export default {
       }
     },
     select(start,end){
-      this.ctx.lineWidth = 1
-      this.ctx.setLineDash([50])
       const x = Math.min(start.x,end.x)
       const y = Math.min(start.y,end.y)
-      const width = Math.abs(end.x-start.x)
-      const height = Math.abs(end.y-start.y)
+      const width = Math.abs(end.x-start.x)+this.gridSize
+      const height = Math.abs(end.y-start.y)+this.gridSize
       this.selectedRect = {x, y, width, height}
-      // this.drawDashedRect()
     },
     drawDashedRect(){
-      
       this.ctx.lineDashOffset = (this.ctx.lineDashOffset+1)%100
+      this.ctx.setLineDash([0])
+      this.ctx.strokeStyle = "#fff"
+      this.ctx.strokeRect(this.selectedRect.x-5,this.selectedRect.y-5, this.selectedRect.width+10, this.selectedRect.height+10)
       this.ctx.setLineDash([50])
-      this.ctx.strokeRect(this.selectedRect.x-1,this.selectedRect.y-1, this.selectedRect.width+2, this.selectedRect.height+2)
+      this.ctx.strokeStyle = "#000"
+      this.ctx.strokeRect(this.selectedRect.x-5,this.selectedRect.y-5, this.selectedRect.width+10, this.selectedRect.height+10)
+      this.ctx.fillStyle = "rgba(0,0,0,0.3)"
+      this.ctx.fillRect(this.selectedRect.x,this.selectedRect.y, this.selectedRect.width, this.selectedRect.height)
+      this.ctx.fillStyle = this.currentColor
     },
     dashedRectAnimate(){
       this.ctx.putImageData(this.selectedBgData,0,0)
       this.drawDashedRect()
-      this.ctx.drawImage(this.offscreenCanvas,this.selectedRect.x, this.selectedRect.y)
+      if(this.selectedImgData){
+        this.ctx.drawImage(this.offscreenCanvas,this.selectedRect.x, this.selectedRect.y)
+      }
       this.selectRectAnimateId = requestAnimationFrame(this.dashedRectAnimate)
     },
     selectSave(){
@@ -403,9 +414,17 @@ export default {
     handlePointerUp(){
       if(this.isDrawing){
         this.isDrawing = false
-        if(this.tool != 7){
+        if(this.tool == 7){
+          //选择区域结束判断选择区域,如果长或宽小于0则关闭选择动画，取消选择
+          if(this.selectedRect.width*this.selectedRect.height == 0){
+            cancelAnimationFrame(this.selectRectAnimateId)
+            this.selectRectAnimateId = 0
+            this.selectedRect = {x:0,y:0,width:0,height:0}
+            this.selectedImgData = null
+          }
+        }else{
           this.addHistory()
-        } 
+        }
       }
       if(this.isDragingSelectRect){
         this.isDragingSelectRect = false
