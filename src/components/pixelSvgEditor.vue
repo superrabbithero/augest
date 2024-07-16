@@ -100,6 +100,13 @@
           <svg-icon name="fit01"></svg-icon>
         </div>
       </div>
+      <div class="color-tools">
+        <div v-for="(color,index) in myColors" class="color-item" :style="{backgroundColor:color}" 
+              @pointerdown="handleStart(event,index)"
+              @pointermove="handleMove(event,index)"
+              @pointerup="handleEnd(event,index)"
+              >{{index}}</div>
+      </div>
     </div>
   </div>
 </template>
@@ -153,6 +160,8 @@ export default {
       gridSize:100,
       coordinate:'x:0,y:0',
       currentColor:'#000',
+      bkgColor:"#fff",
+      myColors:['#000','#fff','#f44336','#e91e63','#3f51b5','#00bcd4','#4caf50','#ffeb3b'],
       colorIndex:0,
       isDrawing: false,
       pixels: [],
@@ -179,7 +188,7 @@ export default {
       selectedBgData:null,
       isDragingSelectRect:false,
       selectRectAnimateId:0,
-      // newSelected:false,
+      pressTimer:null
     };
   },
   mounted() {
@@ -197,6 +206,32 @@ export default {
     }
   },
   methods: {
+
+    //颜色卡片长按事件
+    handleStart(event,index){
+      this.pressTimer = setTimeout(() => {
+        this.setting_show = true
+        clearTimeout(this.pressTimer)
+        this.pressTimer = null
+      }, 500);
+    },
+    handleMove(event,index){
+      if (this.pressTimer) {
+        clearTimeout(this.pressTimer);
+        this.pressTimer = null;
+      }
+    },
+    handleEnd(event,index){
+      // 如果定时器还在，说明是点击事件
+      if (this.pressTimer) {
+        clearTimeout(this.pressTimer);
+        this.pressTimer = null;
+        this.selectColor(index)
+      }
+    },
+    selectColor(index){
+      this.currentColor = this.myColors[index]
+    },
     switchTool(index){
       if(this.tool!= index){
         if(this.tool == 7){
@@ -396,7 +431,9 @@ export default {
     },
     dashedRectAnimate(){
       this.ctx.putImageData(this.selectedBgData,0,0)
-      this.drawDashedRect()
+      if(this.selectedRect.width*this.selectedRect.height != 0 ){
+        this.drawDashedRect()
+      }
       if(this.selectedImgData){
         this.ctx.drawImage(this.offscreenCanvas,this.selectedRect.x, this.selectedRect.y)
       }
@@ -891,7 +928,8 @@ canvas {
 }
 
 .work-area .right{
-  border-left: var(--box-border)
+  border-left: var(--box-border);
+  width: 180px
 }
 
 .overview {
@@ -1019,7 +1057,27 @@ canvas {
   background-color: white;
 }
 
+.color-tools {
+  display: flex;
+  flex-wrap: wrap
+  
+}
 
+
+.color-item {
+  width: 30px;
+  height: 30px;
+  /* margin: 1px; */
+  /* box-shadow: inset 1px 1px 0px 1px rgb(110, 110, 110); */
+}
+
+.color-item.active {
+  box-shadow: inset 0px 0px 0px 2px rgb(255, 255, 255);
+}
+
+.color-item:hover {
+  box-shadow: inset 0px 0px 0px 2px rgba(255, 255, 255, 0.8);
+}
 
 
 </style>
