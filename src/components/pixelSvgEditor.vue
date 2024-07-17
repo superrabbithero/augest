@@ -11,6 +11,9 @@
       <div class="tool-option">
         {{colorToolsEdited}}
       </div>
+      <div class="icon-item" @click="toolsShow=!toolsShow">
+        <svg-icon name="phone"></svg-icon>
+      </div>
       <div class="icon-item" @click="undo">
         <svg-icon name="undo01"></svg-icon>
       </div>
@@ -42,7 +45,7 @@
     </div>
   </div>
   <div class="work-area">
-    <div class="left">
+    <div class="left" v-show="toolsShow">
       <div class="tools-bar">
         <div :class="{'tool-item':true,'active':tool == 1}" @click="switchTool(1)">
           <svg-icon name="pencil" className="tool-item-svg"></svg-icon>
@@ -80,7 +83,7 @@
         </canvas>
       </div>
     </div>
-    <div class="right">
+    <div class="right" v-show="toolsShow">
       <div class="overview" @pointermove="dragViewportMove" @pointerup="dragViewportUp" @wheel="zoomWheel">
         <canvas class="gridsytle" ref="canvas_overview" :style="overviewStyle" :width="overviewSize.width" :height="overviewSize.height"></canvas>
         <div class="viewport" ref="viewport" @pointerdown="dragViewportDown"></div>
@@ -193,7 +196,8 @@ export default {
       selectedBgData:null,
       isDragingSelectRect:false,
       selectRectAnimateId:0,
-      pressTimer:null
+      pressTimer:null,
+      toolsShow:true
     };
   },
   mounted() {
