@@ -1,12 +1,12 @@
 <template>
 	<div class="card-content main-content" style="text-align: left;">
         <div class="icon-item" v-for="icon in svgIconResult">
-        	<div class="cube">
-        		<div class="icon-copy" @click="copyToClipboard(icon.default.content)">
-        			<svg-icon name="copy" className="icon-icon"></svg-icon>
-        		</div>
+			<div class="cube">
 				<svg-icon :name="icon.default.id.slice(5)" className="icon"></svg-icon>
 				<div class="icon-name">{{icon.default.id.slice(5)}}</div>
+			</div>
+			<div class="icon-copy" @click="copyToClipboard(icon.default.content)">
+				<svg-icon name="copy" className="icon-icon"></svg-icon>
 			</div>
 		</div>
     </div>
@@ -43,6 +43,7 @@ export default {
 	display: flex;
 	flex-wrap: wrap
 }
+
 .icon-item{
 	width: calc(16.66% - 10px);
 	padding-top: calc(16.66% - 10px);
@@ -51,6 +52,19 @@ export default {
 	position: relative;
 	border-radius: 8px;
 	border: 1px solid var(--box-bgc);
+}
+
+@media (max-width: 1000px) {
+	.icon-item {
+		width: calc(25% - 10px);
+		padding-top: calc(25% - 10px);
+		margin: 5px;
+		box-sizing: border-box;
+		position: relative;
+		border-radius: 8px;
+		border: 1px solid var(--box-bgc);
+	}
+
 }
 
 .icon-item:hover {
@@ -64,6 +78,7 @@ export default {
     right: 0;
     bottom: 0;
 
+
 	align-items: center;
 	display: flex;
 	align-items: center;
@@ -73,20 +88,22 @@ export default {
     font-size: 14px;
 }
 
-.cube > * {
-	margin-top: 20px;
+.icon-name {
+	margin-top: 1em;
 }
 
 .icon {
-	width: 30px !important;
-	height: 30px !important;
+	width: 20% !important;
+	height: 20% !important;
+	min-width: 25px;
+	min-height: 25px;
 }
 
 .icon-copy{
 	opacity: 0;
 	position: absolute;
-	top: 0px;
-	right: 20px;
+	top: 4px;
+	right: 6px;
 	cursor: pointer;
 }
 
@@ -96,7 +113,7 @@ export default {
 
 .icon-icon{
 	width: 18px !important;
-	height: 18 !important;
+	height: 18px !important;
 }
 
 </style>
