@@ -39,6 +39,10 @@
             <IconWrapper iconName="BlockFive" theme="outline" :strokeWidth='2' />
             像素编辑器
           </div>
+          <div class="menu-item" @click="goto('/myPixelIcons')">
+            <IconWrapper iconName="RoadCone" theme="outline" :strokeWidth='2' />
+            我的像素图标
+          </div>
           <div class="menu-item" >
             <IconWrapper iconName="RoadCone" theme="outline" :strokeWidth='2' />
             待定...
@@ -49,7 +53,7 @@
   </div>
   <div class="header-block"></div>
   <router-view></router-view>
-  <div v-if="$route.meta.footerable" class="footer">
+  <div v-if="!$route.meta.footerHidden" class="footer">
     <div class="footer-link">
     </div>
     <div class="footer-bar">
@@ -94,31 +98,26 @@ export default {
     }else{
       localStorage.setItem('isDark',this.isDark)
     }
-    console.log('mounted',this.isDark)
     if(this.isDark){
       document.body.classList.add('dark')//黑夜模式时添加类名
     }
   },
   unmounted() {
     document.removeEventListener('click',this.closemenu)
-    console.log('销毁')
   },
   methods:{
     goto(path){
       this.$router.push(path)
       this.menuisshow = false
       document.removeEventListener('click',this.closemenu)
-      console.log('销毁')
     },
     openmenu() {
       if(!this.menuisshow){
         this.menuisshow = true
         document.addEventListener('click',this.closemenu);
-        console.log('添加成功')
       }else{
         this.menuisshow = false
         document.removeEventListener('click',this.closemenu)
-        console.log('销毁')
       }
       
     },
@@ -128,7 +127,6 @@ export default {
         if(this.menuisshow == true){
           this.menuisshow = false
           document.removeEventListener('click',this.closemenu)
-          console.log('销毁')
         }
       }
     },
@@ -136,8 +134,6 @@ export default {
     changeStyle(){
       this.isDark = !this.isDark//点击切换模式
       localStorage.setItem('isDark',this.isDark)
-      console.log(localStorage.getItem('isDark'))
-      console.log(this.isDark)
       if(this.isDark){
         document.body.classList.add('dark')//黑夜模式时添加类名
       }else{

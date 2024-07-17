@@ -12,6 +12,7 @@ import Ziliaofx from "@/components/ziliaofx"
 import GifEdit from "@/components/page/GifEdit"
 import examhome from "@/components/zhenti/ExamHome"
 import pixelSvgEditor from "@/components/pixelSvgEditor"
+import myPixelIcons from "@/components/myPixelIcons"
 
 
 
@@ -101,7 +102,7 @@ const routes = [
         component: examhome,
         meta:{
             title: '考试模拟器',
-            footerable: false
+            footerHidden: true
         }
     },
     {
@@ -110,7 +111,15 @@ const routes = [
         component: pixelSvgEditor,
         meta:{
             title: '像素图标编辑器',
-            footerable: false
+            footerHidden: true
+        }
+    },
+    {
+        path: '/myPixelIcons',
+        name: 'myPixelIcons',
+        component: myPixelIcons,
+        meta:{
+            title: '我的像素图标',
         }
     }
 

@@ -1,4 +1,5 @@
 <template>
+  
   <div class="tool-setting-bar">
     <div class="left">
       <div class="tool-option">
@@ -9,7 +10,7 @@
     </div>
     <div class="right">
       <div class="tool-option">
-        {{colorToolsEdited}}
+        {{log}}
       </div>
       <div class="icon-item" @click="toolsShow=!toolsShow">
         <svg-icon name="phone"></svg-icon>
@@ -71,13 +72,19 @@
         <div class="tool-item" @click="clearAll">
           <svg-icon name="delete02" className="tool-item-svg"></svg-icon>
         </div>
+        <div class="tool-item-fullscreen">
+          <div class="color back" :style="{backgroundColor:bkgColor}" @click="[currentColor,bkgColor] = [bkgColor,currentColor]"></div>
+          <div class="color front" :style="{backgroundColor:currentColor}">
+            <input type="color" class="colorInput-hidden" ref="addColor1" @change="addColor($event)">
+          </div>
+        </div>
       </div>
     </div>
-    <div class="middle" @pointerdown="handlePointerDown"
+    <div class="middle" 
                         @pointermove="handlePointerMove"
                         @pointerup="handlePointerUp" ref="realViewport" @wheel="zoomWheel">
       <div style="position: absolute;left: 1rem">{{coordinate}}</div>
-      <div class="drawing-area" >
+      <div class="drawing-area" @pointerdown="handlePointerDown">
         <canvas :width="width" :height="height"  class="gridsytle" :style="canvasStyle" ref="canvas">
           
         </canvas>
@@ -100,14 +107,15 @@
           <svg-icon name="fit01"></svg-icon>
         </div>
       </div>
-      <div class="color-tools" ref="colorTools">
-        <div v-for="(color,index) in myColors" class="color-item" :style="{backgroundColor:color}" 
-              @pointerdown="handleStart(event,index)"
-              @pointermove="handleMove(event,index)"
-              @pointerup="handleEnd(event,index)"
+      <div class="color-tools" ref="colorTools" @pointermove="handleMove($event,index)">
+        <div class="color-item draged" v-show="dragedColorIndex != null" ref="dragedColor"></div>
+        <div v-for="(color,index) in myColors" class="color-item" ref="colorItem" :style="{backgroundColor:color}" 
+              @pointerdown="handleStart($event,index)"
+              
+              @pointerup="handleEnd($event,index)"
               ></div>
-        <div class="color-item"  @click="addColorClick()">+
-          <input type="color" style="position: absolute;left: 0;width: 0;z-index: -1;" ref="addColor" @change="addColor()">
+        <div class="color-item">+
+          <input type="color" class="colorInput-hidden" ref="addColor2" @change="addColor($event)">
         </div>
         <div :class="{'color-item delete':true,'show':dragedColorIndex!=null }" @pointerup="handleEnd(event,-1)">
           <svg-icon name="delete02" className="color-item-svg"></svg-icon>
@@ -167,7 +175,7 @@ export default {
       coordinate:'x:0,y:0',
       currentColor:'#000',
       bkgColor:"#fff",
-      colorToolsEdited:false,
+      // colorToolsEdited:false,
       myColors:['#000000','#ffffff','#f44336','#e91e63','#3f51b5','#00bcd4','#4caf50','#ffeb3b'],
       colorIndex:0,
       dragedColorIndex:null,
@@ -213,26 +221,48 @@ export default {
     if(this.$refs.realViewport){
       this.$refs.realViewport.removeEventListener('scroll', this.viewportScroll);
     }
+    // document.removeEventListener('click', this.offColorToolsEdit)
   },
   methods: {
     //颜色卡片长按事件
     handleStart(event,index){
-      if(this.colorToolsEdited){
-        this.dragedColorIndex = index
-      }else{
+      // if(this.colorToolsEdited){
+      //   this.dragedColorIndex = index
+      //   const el = event.target
+      //   this.disx = event.pageX - el.offsetLeft
+      //   this.disy = event.pageY - el.offsetTop
+      //   const dragedEl = this.$refs.dragedColor
+      //   dragedEl.style.backgroundColor = this.myColors[this.dragedColorIndex]
+      //   dragedEl.style.left = `${event.pageX - this.disx}px`
+      //   dragedEl.style.top = `${event.pageY - this.disy}px`
+        
+      // }else{
         this.pressTimer = setTimeout(() => {
-          this.colorToolsEdited = true
+          // this.colorToolsEdited = true
           this.dragedColorIndex = index
-          document.addEventListener("click",this.offColorToolsEdit)
+          const el = event.target
+          this.disx = event.pageX - el.offsetLeft
+          this.disy = event.pageY - el.offsetTop
+          const dragedEl = this.$refs.dragedColor
+          dragedEl.style.backgroundColor = this.myColors[this.dragedColorIndex]
+          dragedEl.style.left = `${event.pageX - this.disx}px`
+          dragedEl.style.top = `${event.pageY - this.disy}px`
+          // document.addEventListener("click",this.offColorToolsEdit)
           clearTimeout(this.pressTimer)
           this.pressTimer = null
         }, 500);
-      }
+      // }
     },
     handleMove(event,index){
       if (this.pressTimer) {
         clearTimeout(this.pressTimer);
         this.pressTimer = null;
+      }
+      if(this.dragedColorIndex != null){
+        const dragedEl = this.$refs.dragedColor
+        dragedEl.style.backgroundColor = this.myColors[this.dragedColorIndex]
+        dragedEl.style.left = `${event.pageX - this.disx}px`
+        dragedEl.style.top = `${event.pageY - this.disy}px`
       }
     },
     handleEnd(event,index){
@@ -254,23 +284,23 @@ export default {
         }
       }
     },
-    offColorToolsEdit(e){
-      if(!this.$refs.colorTools.contains(e.target) && this.colorToolsEdited){
-        this.colorToolsEdited = false
-        document.removeEventListener('click', this.offColorToolsEdit)
-      }
-    },
+    // offColorToolsEdit(e){
+    //   if(!this.$refs.colorTools.contains(e.target) && this.colorToolsEdited){
+    //     this.colorToolsEdited = false
+    //     document.removeEventListener('click', this.offColorToolsEdit)
+    //   }
+    // },
     selectColor(index){
-      this.currentColor = this.colorToolsEdited ? this.currentColor : this.myColors[index]
+      this.currentColor = this.myColors[index]
     },
-    addColorClick(){
-      this.$refs.addColor.click()
-    },
-    addColor(){
-      const colorDom = this.$refs.addColor
+    addColor(event){
+      const colorDom = event.currentTarget
       const colorValue = colorDom.value
-      this.myColors.push(colorValue)
+      if(!this.myColors.includes(colorValue)){
+        this.myColors.push(colorValue)
+      }
       this.currentColor = colorValue
+      
     },
     switchTool(index){
       if(this.tool!= index){
@@ -713,12 +743,8 @@ export default {
     },
     showLastHistory() {
       const history = this.historys
-      // this.ctx.putImageData(history[history.length - 1]['data'], 0, 0)
       const imageData = history[history.length - 1]['data']
       this.ctx.putImageData(imageData, 0, 0)
-      // const scaledImage = this.ctx.getImageData(0, 0, imageData.width, imageData.height);
-      // this.ctx.clearRect(0,0,this.width,this.height)
-      // this.ctx.drawImage(this.maincanvas, 0, 0, imageData.width, imageData.height, 0, 0, this.width, this.height);
     },
     addHistory() {
       this.historys.push({
@@ -770,7 +796,7 @@ export default {
       
       pixelData.forEach(pixel => {
         let color = `rgba(${pixel.r},${pixel.g},${pixel.b},${pixel.a})`
-        if(color =='rgb(0,0,0,0)'){
+        if(color =='rgba(0,0,0,255)'){
           color = "currentColor"
         }
         svgContent += `<rect x="${pixel.x}" y="${pixel.y}" width="30" height="30" fill="${color}" />`;
@@ -891,7 +917,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .drawing-area {
   border: 0.5px solid #d9d9d9;
   width: fit-content;
@@ -924,6 +950,35 @@ canvas {
   margin: 1px;
   border-radius: 5px;
 }
+
+.tool-item-fullscreen{
+  width: 100%;
+  height: 40px;
+  padding: 5px;
+  margin: 1px;
+  margin-top: 20px;
+  border-radius:5px;
+  position: relative;
+}
+
+.tool-item-fullscreen .color{
+  width: 30px;
+  height: 30px;
+  top:50%;
+  left: 50%;
+  position: absolute;
+  border: 2px solid var(--fontNormal);
+}
+.tool-item-fullscreen .color.front{
+  transform: translate(calc(-50% - 8px),calc(-50% - 8px));
+}
+
+.tool-item-fullscreen .color.back{
+  transform: translate(calc(-50% + 8px),calc(-50% + 8px));
+}
+
+
+
 
 .tool-item-svg {
   width: 30px !important;
@@ -1102,18 +1157,21 @@ canvas {
   display: flex;
   flex-wrap: wrap;
   user-select: none;
+  position: relative;
 }
 
 
 .color-item {
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
+  margin: 1px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 25px;
   position: relative;
+  box-shadow: inset 0px 0px 0px 1px var(--fontNormal)
 }
 
 .color-item-svg {
@@ -1140,9 +1198,24 @@ canvas {
   opacity: 1;
 }
 
-.color-item.delete:hover {
+.color-item.delete:hover , .color-item.draged:hover{
   box-shadow:none;
 }
 
+.color-item.draged {
+  opacity: 0.5;
+  position: absolute;
+  z-index: 99;
+  pointer-events: none;
+  box-shadow: inset 0px 0px 0px 2px var(--fontNormal)
+}
+
+.colorInput-hidden {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+/*  display: none;*/
+}
 
 </style>
