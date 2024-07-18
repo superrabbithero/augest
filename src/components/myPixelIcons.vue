@@ -67,6 +67,14 @@ export default {
 
 }
 
+@media (max-width: 500px) {
+
+	.icon-name {
+		display: none;
+	}
+
+}
+
 .icon-item:hover {
 	border: 1px solid var(--color-border-default);
 }

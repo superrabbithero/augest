@@ -14,7 +14,7 @@ const tagIndex = {};
 // 生成文档目录
 const docsList = mdFiles.map(file => {
     const content = fs.readFileSync(path.join(docsPath, file), 'utf-8');
-    const regex = /^<!--\s*\n([\s\S]*?)\n-->\s*\n/;
+    const regex = /^<!--\s*\n([\s\S]*?)\n-->\s*/;
     const titleRegex = /title:\s*(.*)/;
     const daterRegex = /date:\s*(.*)/
     const tagsRegex = /tags:\s*(.*)/
@@ -27,6 +27,8 @@ const docsList = mdFiles.map(file => {
     const dash_regex = /-\s*(\w+)/g
 
     const title = titleMatch ? titleMatch[1] : 'Untitled';
+    if(!titleMatch)
+        console.log(content)
     const date = dateMatch ? dateMatch[1] : 'Undated';
     const tagsStr = tagsMatch?tagsMatch[1]:""
     let tags = []

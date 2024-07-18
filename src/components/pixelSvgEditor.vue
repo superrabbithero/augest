@@ -169,8 +169,8 @@ export default {
   data() {
     return {
       tool:1,
-      rows:15,
-      cols:15,
+      rows:11,
+      cols:11,
       gridSize:100,
       coordinate:'x:0,y:0',
       currentColor:'#000',
@@ -767,6 +767,29 @@ export default {
       cancelAnimationFrame(this.selectRectAnimateId)
       this.selectRectAnimateId = 0
     },
+    getPixelVector(pixel){
+      const pixelSize = 30
+      const color = `rgba(${pixel.r},${pixel.g},${pixel.b},${pixel.a})`
+      const x1 = {x:pixel.x, y:pixel.y}
+      const x2 = {x:pixel.x + pixelSize, y:pixel.y}
+      const x3 = {x:pixel.x + pixelSize, y:pixel.y + pixelSize}
+      const x4 = {x:pixel.x, y:pixel.y + pixelSize}
+      //定义了正方形的4个边向量[向量起点，向量终点，向量右边的颜色]
+      return [[x1,x2,color],[x2,x3,color],[x3,x4,color],[x4,x1,color]]
+    }
+    getpathContent(pixelData){
+      let pathLists = [] 
+      let startPointList = []
+      let endPointList = [] //这三个list的index代表同一条路径的集合、开始点、结束点
+      pixelData.forEach(pixel => {
+        let color = `rgba(${pixel.r},${pixel.g},${pixel.b},${pixel.a})`
+        const pixelVectors = this.getPixelVector(pixel)
+        pixelVectors.forEach(vector => {
+          
+        })
+        svgContent += `<rect x="${pixel.x}" y="${pixel.y}" width="30" height="30" fill="${color}" />`;
+      });
+    },
     getSvgContent(filled=false){
       const width = this.width;
       const height = this.height;
@@ -794,13 +817,18 @@ export default {
       //生成svg文件,gpt生成代码
       let svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width*0.3} ${height*0.3}">`;
       
-      pixelData.forEach(pixel => {
-        let color = `rgba(${pixel.r},${pixel.g},${pixel.b},${pixel.a})`
-        if(color =='rgba(0,0,0,255)'){
-          color = "currentColor"
-        }
-        svgContent += `<rect x="${pixel.x}" y="${pixel.y}" width="30" height="30" fill="${color}" />`;
-      });
+      if(true){
+        pixelData.forEach(pixel => {
+          let color = `rgba(${pixel.r},${pixel.g},${pixel.b},${pixel.a})`
+          if(color =='rgba(0,0,0,255)'){
+            color = "currentColor"
+          }
+          svgContent += `<rect x="${pixel.x}" y="${pixel.y}" width="30" height="30" fill="${color}" />`;
+        });
+      }else{
+        this.getpathContent(pixelData)
+      }
+      
 
       svgContent += '</svg>';
       return svgContent

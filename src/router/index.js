@@ -1,18 +1,5 @@
 import {Vue} from 'vue'
 import {createRouter, createWebHashHistory} from 'vue-router'
-import HelloWorld from "../components/HelloWorld";
-import Home from "@/components/Home";
-import BulidAnswerSheet from "@/components/BulidAnswerSheet";
-import MiniGames from "@/components/MiniGames"
-import SchulteTable from "@/components/SchulteTable"
-import Turtle from "@/components/Turtle"
-import Post from "@/components/Post"
-import Pct2Fct from "@/components/Pct2Fct"
-import Ziliaofx from "@/components/ziliaofx"
-import GifEdit from "@/components/page/GifEdit"
-import examhome from "@/components/zhenti/ExamHome"
-import pixelSvgEditor from "@/components/pixelSvgEditor"
-import myPixelIcons from "@/components/myPixelIcons"
 
 
 
@@ -20,25 +7,26 @@ const routes = [
     {
         path: '/helloword',
         name: 'HelloWorld',
-        component: HelloWorld
+        component: () => import("@/components/HelloWorld")
     },
     {
         path: '/',
         name: 'Augest',
-        component: Home
+        component: () => import("@/components/Home")
     },
     {
         path: '/tools/bulidanswersheet',
         name: 'BulidAnswerSheet',
-        component: BulidAnswerSheet,
+        component: () => import("@/components/BulidAnswerSheet"),
         meta:{
-            title: '答题卡生成'
+            title: '答题卡生成',
+            footerHidden: true
         }
     },
     {
         path: '/minigames',
         name: 'MiniGames',
-        component: MiniGames,
+        component: () => import("@/components/MiniGames"),
         meta:{
             title: '小游戏'
         }
@@ -46,7 +34,7 @@ const routes = [
     {
         path: '/minigames/schultetable',
         name: 'SchulteTable',
-        component: SchulteTable,
+        component: () => import("@/components/SchulteTable"),
         meta:{
             title: '舒尔特表'
         }
@@ -54,7 +42,7 @@ const routes = [
     {
         path: '/minigames/turtle',
         name: 'Turtle',
-        component: Turtle,
+        component: () => import("@/components/Turtle"),
         meta:{
             title: '叠乌龟'
         }
@@ -62,12 +50,12 @@ const routes = [
     {
         path: '/post/:postname',
         name: 'Post',
-        component: Post
+        component: () => import("@/components/Post"),
     },
     {
         path: '/minigames/pct2fct',
         name: 'Pct2Fct',
-        component: Pct2Fct,
+        component: () => import("@/components/Pct2Fct"),
         meta:{
             title: '百化分'
         }
@@ -75,7 +63,7 @@ const routes = [
     {
         path: '/minigames/ziliaofx',
         name: 'ziliaofx',
-        component: Ziliaofx,
+        component: () => import("@/components/ziliaofx"),
         meta:{
             title: '资料分析公式'
         }
@@ -83,7 +71,7 @@ const routes = [
     {
         path: '/gifedit',
         name: 'gifedit',
-        component: GifEdit,
+        component: () => import("@/components/page/GifEdit"),
         meta:{
             title: 'GIF动图编辑'
         }
@@ -93,22 +81,22 @@ const routes = [
         name: 'zhenti',
         component: () => import("@/components/zhenti/zhenti"),
         meta:{
-            title: '真题'
+            title: '真题',
+            footerHidden: true
         }
     },
     {
         path: '/examhome',
         name: 'examhome',
-        component: examhome,
+        component: () => import("@/components/zhenti/ExamHome"),
         meta:{
-            title: '考试模拟器',
-            footerHidden: true
+            title: '考试模拟器'
         }
     },
     {
         path: '/pixelSvgEditor',
         name: 'pixelSvgEditor',
-        component: pixelSvgEditor,
+        component: () => import("@/components/pixelSvgEditor"),
         meta:{
             title: '像素图标编辑器',
             footerHidden: true
@@ -117,7 +105,7 @@ const routes = [
     {
         path: '/myPixelIcons',
         name: 'myPixelIcons',
-        component: myPixelIcons,
+        component: () => import("@/components/myPixelIcons"),
         meta:{
             title: '我的像素图标',
         }

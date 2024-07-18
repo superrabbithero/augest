@@ -2,37 +2,38 @@
   <div class="header">
     <!-- <div class="head-list"> -->
       <div class="head-item"  @click="openmenu" id="menuicon">
-        <IconWrapper iconName="ApplicationTwo" theme="filled" :strokeWidth='2' />
+        <!-- <IconWrapper iconName="ApplicationTwo" theme="filled" :strokeWidth='2' /> -->
+        <svg-icon name="menu01"></svg-icon>
       </div>
       <div class="head-item home" @click="goto('/')">
         <!-- <span class="logo">{{environment}}</span> -->
-        <IconWrapper iconName="Home" theme="outline" :strokeWidth='4' />
+        <!-- <IconWrapper iconName="Home" theme="outline" :strokeWidth='4' /> -->
+        <svg-icon name="home01"></svg-icon>
       </div>
       <div class="head-item"  style="margin-left: auto;">
         <div class="pagetitle">{{$route.meta.title?$route.meta.title:decodeURIComponent($route.path).slice(6)}}</div>
       </div>
       <div class="head-item" @click="changeStyle" style="margin-left: auto;">
-        <IconWrapper iconName="DarkMode" theme="outline" :strokeWidth='4' />
+        <!-- <IconWrapper iconName="DarkMode" theme="outline" :strokeWidth='4' /> -->
+        <svg-icon name="dark"></svg-icon>
       </div>  
     <!-- </div> -->
     <transition name="fade-slide">
       <div class="menu" v-if="menuisshow" ref="menu">
         <div class="menu-list">
           <div class="menu-list-title">工具</div>
-          <div class="menu-item">
-            <IconWrapper iconName="ApplicationOne" theme="outline" :strokeWidth='2' />
-            app管理
-          </div>
           <div class="menu-item" @click="goto('/tools/bulidanswersheet')">
-            <IconWrapper iconName="PhoneOne" theme="outline" :strokeWidth='2' />
+            <svg-icon name="pdf01"></svg-icon>
             答题卡生成
           </div>
           <div class="menu-item" @click="goto('/minigames')">
-            <IconWrapper iconName="GameThree" theme="outline" :strokeWidth='2' />
+            <!-- <IconWrapper iconName="GameThree" theme="outline" :strokeWidth='2' /> -->
+            <svg-icon name="game01"></svg-icon>
             小游戏
           </div>
           <div class="menu-item" @click="goto('/examhome')">
-            <IconWrapper iconName="Pyramid" theme="outline" :strokeWidth='2' />
+            <!-- <IconWrapper iconName="Pyramid" theme="outline" :strokeWidth='2' /> -->
+            <svg-icon name="exams02" style="color:red"></svg-icon>
             考试模拟器
           </div>
           <div class="menu-item" @click="goto('/pixelSvgEditor')">
@@ -40,7 +41,7 @@
             像素编辑器
           </div>
           <div class="menu-item" @click="goto('/myPixelIcons')">
-            <IconWrapper iconName="RoadCone" theme="outline" :strokeWidth='2' />
+            <svg-icon name="picture01"></svg-icon>
             我的像素图标
           </div>
           <div class="menu-item" >
@@ -58,6 +59,10 @@
     </div>
     <div class="footer-bar">
       <div>©2023 - 2024 By SuperRabbitHero</div>
+      <div>
+        <svg-icon name="notepad01" @click="goto('/post/更新文档')"></svg-icon>
+      </div>
+      
     </div>
   </div>
 </template>
@@ -275,7 +280,7 @@ export default {
   width: fill-available;
   bottom: 0;
   display: flex;
-  justify-content: start;
+  justify-content: space-between;
   align-items: center;
   padding: 0 30px;
 }
