@@ -545,6 +545,9 @@ export default {
       const x = point.x/this.gridSize - Math.floor(size/2)
       const y = point.y/this.gridSize - Math.floor(size/2)
       this.ctx.fillRect(this.gridSize*x,this.gridSize*y,this.gridSize*size,this.gridSize*size)
+      this.ctx.font = "40px serif"
+      this.ctx.fillStyle = "#ffffff"
+      this.ctx.fillText(`${(x+y*this.cols)*30}`,this.gridSize*x,this.gridSize*y+30)
     },
     overMove(point){
       this.ctx.fillStyle = 'rgba(0,0,0,0.3)'
@@ -774,21 +777,130 @@ export default {
       const x2 = {x:pixel.x + pixelSize, y:pixel.y}
       const x3 = {x:pixel.x + pixelSize, y:pixel.y + pixelSize}
       const x4 = {x:pixel.x, y:pixel.y + pixelSize}
+      const point2Num = (x,y)=>{
+        return x + y*this.cols
+      }
       //定义了正方形的4个边向量[向量起点，向量终点，向量右边的颜色]
-      return [[x1,x2,color],[x2,x3,color],[x3,x4,color],[x4,x1,color]]
-    }
+      return [[point2Num(x1.x,x1.y),point2Num(x2.x,x2.y),color],
+              [point2Num(x2.x,x2.y),point2Num(x3.x,x3.y),color],
+              [point2Num(x3.x,x3.y),point2Num(x4.x,x4.y),color],
+              [point2Num(x4.x,x4.y),point2Num(x1.x,x1.y),color]]
+    },
     getpathContent(pixelData){
       let pathLists = [] 
-      let startPointList = []
-      let endPointList = [] //这三个list的index代表同一条路径的集合、开始点、结束点
+      //这三个list的index代表同一条路径的集合、开始点、结束点
+
+      let pointWithNextPoints  = new Map()
       pixelData.forEach(pixel => {
-        let color = `rgba(${pixel.r},${pixel.g},${pixel.b},${pixel.a})`
+        
         const pixelVectors = this.getPixelVector(pixel)
+        //生成一个单向的相邻点的map
         pixelVectors.forEach(vector => {
-          
+          // console.log(`开始添加向量：（${vector[0]},${vector[1]}）`)
+          if(pointWithNextPoints.has(vector[0])){
+            if(pointWithNextPoints.has(vector[1])){
+              // console.log(`${vector[0]},${vector[1]}=======>${vector[1]},${vector[0]}`)
+              let nextPoints = pointWithNextPoints.get(vector[1])
+              
+              nextPoints.forEach(nextpoint=>{
+                console.log(nextpoint)
+              })
+              let findSameVector = null
+              for(var i=0; i < nextPoints.length ; i++){
+                // console.log(`${nextPoints[i]},${vector[0]},${vector[2]}`)
+                // console.log(nextPoints[i][0] == vector[0] && nextPoints[i][1] == vector[2])
+                if(nextPoints[i][0] == vector[0] && nextPoints[i][1] == vector[2]){
+                  findSameVector = nextPoints.splice(i,1)
+                  // console.log("存在同一条线，不添加")
+                  pointWithNextPoints.set(vector[1],nextPoints)
+                  // console.log("删除已经存在的线段")
+                  break;
+                }
+              }
+
+              if(findSameVector == null){
+                let newValue = pointWithNextPoints.get(vector[0]).push([vector[1],vector[2]])
+                pointWithNextPoints[vector[0], newValue]
+                // console.log("添加成功")
+              }
+            }else{
+              let newValue = pointWithNextPoints.get(vector[0]).push([vector[1],vector[2]])
+              pointWithNextPoints[vector[0], newValue]
+              // console.log("添加成功")
+            }
+          }else{
+            pointWithNextPoints.set(vector[0], [[vector[1],vector[2]]])
+            // console.log("添加成功")
+          }
         })
-        svgContent += `<rect x="${pixel.x}" y="${pixel.y}" width="30" height="30" fill="${color}" />`;
+        // svgContent += `<rect x="${pixel.x}" y="${pixel.y}" width="30" height="30" fill="${color}" />`;
       });
+      console.log(pointWithNextPoints)
+      //遍历pointWithNextPoints得到路径
+      let unusefullPoint = []
+
+      const findPath = (point,path=null, color=null)=>{
+        console.log(`findPath(\n${point},\n${path},\n${color})`)
+        if(pointWithNextPoints.has(point)){
+          let nextPoints = pointWithNextPoints.get(point)
+          if(color == null){
+            let nextPoint = nextPoints.splice(0)[0]
+            pointWithNextPoints.set(point,nextPoints)
+            if(nextPoints.length <= 0){
+              pointWithNextPoints.delete(point)
+            }
+            path = [point,nextPoint[0]]
+            findPath(nextPoint[0], path, nextPoint[1])
+          }else{
+            let nextPoints = pointWithNextPoints.get(point)
+            let nextPoint = null
+            for(var i=0 ; i < nextPoints.length ; i++){
+              if(nextPoints[i][1] == color){
+                nextPoint = nextPoints.splice(i, 1)[0]
+                pointWithNextPoints.set(point,nextPoints)
+                if(nextPoints.length <= 0){
+                  pointWithNextPoints.delete(point)
+                }
+                break
+              }
+            }
+            if(nextPoint){
+              path.push(nextPoint[0])
+              findPath(nextPoint[0], path, nextPoint[1])
+            }else{
+              path.push(color)
+              pathLists.push(path)
+              if(pointWithNextPoints.size > 0){
+                const newkey = pointWithNextPoints.keys().next().value
+                const newstart = pointWithNextPoints.get(newkey)[0]
+                findPath(newstart[0])
+              }else{
+                return
+              }
+            }
+          }
+        }else{
+          if(color){
+            path.push(color)
+            pathLists.push(path)
+            if(pointWithNextPoints.size > 0){
+              const newkey = pointWithNextPoints.keys().next().value
+              const newstart = pointWithNextPoints.get(newkey)[0]
+              console.log(`**********newstart[0]:${newstart[0]}`)
+              findPath(newstart[0])
+            }else{
+              return
+            }
+          }
+          return
+        }
+        
+      }
+      const start = pointWithNextPoints.keys().next().value
+      console.log(`start:${start}-----------`)
+      findPath(start)
+      console.log(`pathLists:${pathLists}`)
+      console.log(pointWithNextPoints)
     },
     getSvgContent(filled=false){
       const width = this.width;
@@ -817,7 +929,7 @@ export default {
       //生成svg文件,gpt生成代码
       let svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width*0.3} ${height*0.3}">`;
       
-      if(true){
+      if(false){
         pixelData.forEach(pixel => {
           let color = `rgba(${pixel.r},${pixel.g},${pixel.b},${pixel.a})`
           if(color =='rgba(0,0,0,255)'){

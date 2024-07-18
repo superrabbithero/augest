@@ -45,8 +45,8 @@ export default {
 }
 
 .icon-item{
-	width: calc(16.66% - 10px);
-	padding-top: calc(16.66% - 10px);
+	width: calc(12.5% - 10px);
+	padding-top: calc(12.5% - 10px);
 	margin: 5px;
 	box-sizing: border-box;
 	position: relative;
@@ -54,10 +54,10 @@ export default {
 	border: 1px solid var(--box-bgc);
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 850px) {
 	.icon-item {
-		width: calc(25% - 10px);
-		padding-top: calc(25% - 10px);
+		width: calc(16.66% - 10px);
+		padding-top: calc(16.66% - 10px);
 		margin: 5px;
 		box-sizing: border-box;
 		position: relative;
@@ -68,6 +68,15 @@ export default {
 }
 
 @media (max-width: 500px) {
+	.icon-item {
+		width: calc(25% - 10px);
+		padding-top: calc(25% - 10px);
+		margin: 5px;
+		box-sizing: border-box;
+		position: relative;
+		border-radius: 8px;
+		border: 1px solid var(--box-bgc);
+	}
 
 	.icon-name {
 		display: none;
@@ -93,7 +102,7 @@ export default {
     justify-content: center;
     flex-direction: column;
 
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .icon-name {
