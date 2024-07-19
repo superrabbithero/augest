@@ -792,7 +792,7 @@ export default {
 
       let pointWithNextPoints  = new Map()
       pixelData.forEach(pixel => {
-        
+        console.log(pixel)
         const pixelVectors = this.getPixelVector(pixel)
         //生成一个单向的相邻点的map
         pixelVectors.forEach(vector => {
@@ -802,9 +802,9 @@ export default {
               // console.log(`${vector[0]},${vector[1]}=======>${vector[1]},${vector[0]}`)
               let nextPoints = pointWithNextPoints.get(vector[1])
               
-              nextPoints.forEach(nextpoint=>{
-                console.log(nextpoint)
-              })
+              // nextPoints.forEach(nextpoint=>{
+              //   console.log(nextpoint)
+              // })
               let findSameVector = null
               for(var i=0; i < nextPoints.length ; i++){
                 // console.log(`${nextPoints[i]},${vector[0]},${vector[2]}`)
@@ -812,8 +812,14 @@ export default {
                 if(nextPoints[i][0] == vector[0] && nextPoints[i][1] == vector[2]){
                   findSameVector = nextPoints.splice(i,1)
                   // console.log("存在同一条线，不添加")
-                  pointWithNextPoints.set(vector[1],nextPoints)
-                  // console.log("删除已经存在的线段")
+                  if(nextPoints.length > 0){
+                    pointWithNextPoints.set(vector[1],nextPoints)
+                    // console.log("删除已经存在的线段")
+                  }else{
+                    pointWithNextPoints.delete(vector[1])
+                    // console.log("删除已经存在的线段,起始点没有相邻点，删除起始点")
+                  }
+                  
                   break;
                 }
               }
@@ -835,12 +841,11 @@ export default {
         })
         // svgContent += `<rect x="${pixel.x}" y="${pixel.y}" width="30" height="30" fill="${color}" />`;
       });
-      console.log(pointWithNextPoints)
+      // console.log(pointWithNextPoints)
       //遍历pointWithNextPoints得到路径
-      let unusefullPoint = []
 
       const findPath = (point,path=null, color=null)=>{
-        console.log(`findPath(\n${point},\n${path},\n${color})`)
+        // console.log(`findPath(\n${point},\n${path},\n${color})`)
         if(pointWithNextPoints.has(point)){
           let nextPoints = pointWithNextPoints.get(point)
           if(color == null){
@@ -873,6 +878,7 @@ export default {
               if(pointWithNextPoints.size > 0){
                 const newkey = pointWithNextPoints.keys().next().value
                 const newstart = pointWithNextPoints.get(newkey)[0]
+
                 findPath(newstart[0])
               }else{
                 return
@@ -886,7 +892,7 @@ export default {
             if(pointWithNextPoints.size > 0){
               const newkey = pointWithNextPoints.keys().next().value
               const newstart = pointWithNextPoints.get(newkey)[0]
-              console.log(`**********newstart[0]:${newstart[0]}`)
+              // console.log(`**********newstart[0]:${newstart[0]}`)
               findPath(newstart[0])
             }else{
               return
@@ -897,10 +903,75 @@ export default {
         
       }
       const start = pointWithNextPoints.keys().next().value
-      console.log(`start:${start}-----------`)
+      // console.log(`start:${start}-----------`)
       findPath(start)
-      console.log(`pathLists:${pathLists}`)
-      console.log(pointWithNextPoints)
+      let pathContent = ``
+      let colorWithPath = new Map() //保存颜色-路径的映射，用于合并相同颜色的路径
+      const num2Point = (num)=>{
+        const x = num%(this.cols*30)
+        return {x,y:Math.floor((num-x)/this.cols)}
+      }
+
+      pathLists.forEach((pathList)=>{
+        let p1 = num2Point(pathList[0])
+        // console.log(pathList[0],p1)
+        let step = {direction:"M",step:0}
+        let path = `M${p1.x} ${p1.y}`
+        for(var i=1; i<pathList.length-1 ;i++){
+          let p2 = num2Point(pathList[i])
+          // console.log(p2)
+          if(p1.x == p2.x){
+            if(step.direction == "v"){
+              step.step += (p2.y - p1.y)
+              // console.log(`1:::::::::${step.direction},${step.step}`)
+            }else{
+              if(step.step != 0){
+                path += `${step.direction}${step.step}`
+              }
+              step.direction = "v"
+              step.step = (p2.y - p1.y)
+              // console.log(`2:::::::::${step.direction},${step.step}`)
+            }
+          }else{
+            if(step.direction == "h"){
+              step.step += (p2.x - p1.x)
+              // console.log(`3:::::::::${step.direction},${step.step}`)
+            }else{
+              if(step.step != 0){
+                path += `${step.direction}${step.step}`
+                
+              }
+              step.direction = "h"
+              step.step = (p2.x - p1.x)
+              // console.log(`${p2.y},${p1.y},${p2.y-p1.y}`)
+              // console.log(`4:::::::::${step.direction},${step.step}`)
+            }
+          }
+          p1.x = p2.x
+          p1.y = p2.y
+          // console.log(`step:"${step.direction}",${step.step}`)
+        }
+        path += "z"
+        const colorKey = pathList[pathList.length-1]
+        if(colorWithPath.has(colorKey)){
+          let newValue = colorWithPath.get(colorKey)
+          newValue.push(path) 
+          colorWithPath.set(colorKey, newValue)
+        }else{
+          colorWithPath.set(colorKey, [path])
+        }
+      })
+      for(var [key,value] of colorWithPath){
+        let colorPath = `<path d="`
+        value.forEach((path)=>{
+          // console.log(key,path)
+          colorPath += path
+        })
+        colorPath += `" fill="${key=='rgba(0,0,0,255)'?'currentColor':key}"/>`
+        pathContent += colorPath
+      }
+      console.log(pathContent)
+      return pathContent
     },
     getSvgContent(filled=false){
       const width = this.width;
@@ -938,7 +1009,7 @@ export default {
           svgContent += `<rect x="${pixel.x}" y="${pixel.y}" width="30" height="30" fill="${color}" />`;
         });
       }else{
-        this.getpathContent(pixelData)
+        svgContent += this.getpathContent(pixelData)
       }
       
 
