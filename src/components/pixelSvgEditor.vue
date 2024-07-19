@@ -9,17 +9,14 @@
 
     </div>
     <div class="right">
-      <div class="tool-option">
-        {{log}}
-      </div>
       <div class="icon-item" @click="toolsShow=!toolsShow">
         <svg-icon name="phone"></svg-icon>
       </div>
       <div class="icon-item" @click="undo">
         <svg-icon name="undo01"></svg-icon>
       </div>
-      <div class="icon-item-box">
-        <div class="icon-item" @click="dropDown('sizeSettingShow')">
+      <div class="icon-item-box"  @click="dropDown($event,'sizeSettingShow')">
+        <div class="icon-item">
           <svg-icon name="canvas01"></svg-icon>
         </div>
         <div :class="{'size-setting':true,'show':dropDownBoxShow.sizeSettingShow} " >
@@ -32,14 +29,14 @@
         </div>
       </div>
 
-      <div class="icon-item-box">
-        <div class="icon-item" @click="dropDown('downloadShow')">
+      <div class="icon-item-box" @click="dropDown($event,'downloadShow')">
+        <div class="icon-item" >
           <svg-icon name="download01"></svg-icon>
         </div>
         <div :class="{'size-setting':true,'show':dropDownBoxShow.downloadShow} " >
           <div class="drop-down-option" @click="saveAsSvg">保存成 svg</div>
           <div class="drop-down-option" @click="copySvgCode">复制 svg 代码</div>
-          <div class="drop-down-option">保存成 png</div>
+          <div class="drop-down-option" @click="saveAsPng">保存成 png</div>
         </div>
       </div>
         
@@ -169,8 +166,8 @@ export default {
   data() {
     return {
       tool:1,
-      rows:11,
-      cols:11,
+      rows:5,
+      cols:3,
       gridSize:100,
       coordinate:'x:0,y:0',
       currentColor:'#000',
@@ -188,6 +185,7 @@ export default {
       historys:[],
       log:"",
       shiftdown:false,
+      dropDownBox:null,
       dropDownBoxShow:{
         sizeSettingShow:false,
         downloadShow:false
@@ -222,21 +220,12 @@ export default {
       this.$refs.realViewport.removeEventListener('scroll', this.viewportScroll);
     }
     // document.removeEventListener('click', this.offColorToolsEdit)
+    document.removeEventListener('click',this.closeDropDownBox)
   },
   methods: {
     //颜色卡片长按事件
     handleStart(event,index){
-      // if(this.colorToolsEdited){
-      //   this.dragedColorIndex = index
-      //   const el = event.target
-      //   this.disx = event.pageX - el.offsetLeft
-      //   this.disy = event.pageY - el.offsetTop
-      //   const dragedEl = this.$refs.dragedColor
-      //   dragedEl.style.backgroundColor = this.myColors[this.dragedColorIndex]
-      //   dragedEl.style.left = `${event.pageX - this.disx}px`
-      //   dragedEl.style.top = `${event.pageY - this.disy}px`
         
-      // }else{
         this.pressTimer = setTimeout(() => {
           // this.colorToolsEdited = true
           this.dragedColorIndex = index
@@ -251,7 +240,6 @@ export default {
           clearTimeout(this.pressTimer)
           this.pressTimer = null
         }, 500);
-      // }
     },
     handleMove(event,index){
       if (this.pressTimer) {
@@ -325,17 +313,22 @@ export default {
         0,0,this.overviewSize.width,this.overviewSize.height
       )
     },
-    dropDown(keyname){
+    dropDown(event, keyname){
+      this.dropDownBox = event.target
       const keys = Object.keys(this.dropDownBoxShow)
-      if(this.dropDownBoxShow[keyname]){
+      keys.forEach(key => {
+        this.dropDownBoxShow[key] = false
+      })
+      this.dropDownBoxShow[keyname] = true
+      document.addEventListener('click',this.closeDropDownBox)
+    },
+    closeDropDownBox(e){
+      if(!this.dropDownBox.contains(e.target)){
+        const keys = Object.keys(this.dropDownBoxShow)
         keys.forEach(key => {
           this.dropDownBoxShow[key] = false
         })
-      }else{
-        keys.forEach(key => {
-          this.dropDownBoxShow[key] = false
-        })
-        this.dropDownBoxShow[keyname] = true
+        document.removeEventListener('click',this.closeDropDownBox)
       }
     },
     switchColor(point){
@@ -545,9 +538,9 @@ export default {
       const x = point.x/this.gridSize - Math.floor(size/2)
       const y = point.y/this.gridSize - Math.floor(size/2)
       this.ctx.fillRect(this.gridSize*x,this.gridSize*y,this.gridSize*size,this.gridSize*size)
-      this.ctx.font = "40px serif"
-      this.ctx.fillStyle = "#ffffff"
-      this.ctx.fillText(`${(x+y*this.cols)*30}`,this.gridSize*x,this.gridSize*y+30)
+      // this.ctx.font = "40px serif"
+      // this.ctx.fillStyle = "#ffffff"
+      // this.ctx.fillText(`${(x+y*this.cols)*30}`,this.gridSize*x,this.gridSize*y+30)
     },
     overMove(point){
       this.ctx.fillStyle = 'rgba(0,0,0,0.3)'
@@ -778,7 +771,7 @@ export default {
       const x3 = {x:pixel.x + pixelSize, y:pixel.y + pixelSize}
       const x4 = {x:pixel.x, y:pixel.y + pixelSize}
       const point2Num = (x,y)=>{
-        return x + y*this.cols
+        return x + y*this.rows
       }
       //定义了正方形的4个边向量[向量起点，向量终点，向量右边的颜色]
       return [[point2Num(x1.x,x1.y),point2Num(x2.x,x2.y),color],
@@ -792,7 +785,7 @@ export default {
 
       let pointWithNextPoints  = new Map()
       pixelData.forEach(pixel => {
-        console.log(pixel)
+        // console.log(pixel)
         const pixelVectors = this.getPixelVector(pixel)
         //生成一个单向的相邻点的map
         pixelVectors.forEach(vector => {
@@ -839,20 +832,27 @@ export default {
             // console.log("添加成功")
           }
         })
-        // svgContent += `<rect x="${pixel.x}" y="${pixel.y}" width="30" height="30" fill="${color}" />`;
       });
       // console.log(pointWithNextPoints)
+      // for(const [key,value] of pointWithNextPoints){
+      //   console.log(key+":")
+      //   value.forEach(v => {
+      //     console.log(`point:${v[0]},color:${v[1]}`)
+      //   })
+      //   console.log("=============================")
+      // }
       //遍历pointWithNextPoints得到路径
 
       const findPath = (point,path=null, color=null)=>{
-        // console.log(`findPath(\n${point},\n${path},\n${color})`)
+        console.log(`findPath(\n${point},\n${path},\n${color})`)
         if(pointWithNextPoints.has(point)){
           let nextPoints = pointWithNextPoints.get(point)
           if(color == null){
-            let nextPoint = nextPoints.splice(0)[0]
+            let nextPoint = nextPoints.splice(0,1)[0]
             pointWithNextPoints.set(point,nextPoints)
             if(nextPoints.length <= 0){
               pointWithNextPoints.delete(point)
+              // console.log(`这个点是路径起始点，且只有一个继点，移除${point}`)
             }
             path = [point,nextPoint[0]]
             findPath(nextPoint[0], path, nextPoint[1])
@@ -861,10 +861,12 @@ export default {
             let nextPoint = null
             for(var i=0 ; i < nextPoints.length ; i++){
               if(nextPoints[i][1] == color){
+
                 nextPoint = nextPoints.splice(i, 1)[0]
                 pointWithNextPoints.set(point,nextPoints)
                 if(nextPoints.length <= 0){
                   pointWithNextPoints.delete(point)
+                  // console.log(`这个点的继点被全部匹配完了，移除${point}`)
                 }
                 break
               }
@@ -874,6 +876,7 @@ export default {
               findPath(nextPoint[0], path, nextPoint[1])
             }else{
               path.push(color)
+              // console.log(`map里有thispoint:${point},当时相同颜色:${color}没有可以找的点`)
               pathLists.push(path)
               if(pointWithNextPoints.size > 0){
                 const newkey = pointWithNextPoints.keys().next().value
@@ -889,6 +892,7 @@ export default {
           if(color){
             path.push(color)
             pathLists.push(path)
+            // console.log(`map里找不到thispoint:${point}了`)
             if(pointWithNextPoints.size > 0){
               const newkey = pointWithNextPoints.keys().next().value
               const newstart = pointWithNextPoints.get(newkey)[0]
@@ -908,11 +912,12 @@ export default {
       let pathContent = ``
       let colorWithPath = new Map() //保存颜色-路径的映射，用于合并相同颜色的路径
       const num2Point = (num)=>{
-        const x = num%(this.cols*30)
-        return {x,y:Math.floor((num-x)/this.cols)}
+        const x = num%(this.rows*30)
+        return {x,y:Math.floor((num-x)/this.rows)}
       }
 
       pathLists.forEach((pathList)=>{
+        // console.log(pathList)
         let p1 = num2Point(pathList[0])
         // console.log(pathList[0],p1)
         let step = {direction:"M",step:0}
@@ -1026,14 +1031,18 @@ export default {
       //保存svg文件
       const blob = new Blob([svgContent], { type: 'image/svg+xml' });
       const url = URL.createObjectURL(blob);
-      this.saveImage(url)
-    },
-    saveImage(url){
       const link = document.createElement('a');
       link.href = url;
       link.download = 'drawing.svg';
       link.click();
-
+      URL.revokeObjectURL(url);
+    },
+    saveAsPng(){
+      const link = document.createElement('a');
+      const url =  this.maincanvas.toDataURL("image/png");
+      link.href = url;
+      link.download = 'drawing.png';
+      link.click();
       URL.revokeObjectURL(url);
     },
     async copyToClipboard(content) {

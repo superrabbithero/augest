@@ -23,7 +23,7 @@
         <div class="menu-list">
           <div class="menu-list-title">工具</div>
           <div class="menu-item" @click="goto('/tools/bulidanswersheet')">
-            <svg-icon name="pdf01"></svg-icon>
+            <svg-icon name="file-pdf01"></svg-icon>
             答题卡生成
           </div>
           <div class="menu-item" @click="goto('/minigames')">
@@ -37,7 +37,7 @@
             考试模拟器
           </div>
           <div class="menu-item" @click="goto('/pixelSvgEditor')">
-            <IconWrapper iconName="BlockFive" theme="outline" :strokeWidth='2' />
+            <svg-icon name="art01"></svg-icon>
             像素编辑器
           </div>
           <div class="menu-item" @click="goto('/myPixelIcons')">

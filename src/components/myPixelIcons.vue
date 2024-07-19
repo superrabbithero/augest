@@ -1,15 +1,23 @@
 <template>
 	<div class="card-content main-content" style="text-align: left;">
-        <div class="icon-item" v-for="icon in svgIconResult">
-			<div class="cube">
-				<svg-icon :name="icon.default.id.slice(5)" className="icon"></svg-icon>
-				<div class="icon-name">{{icon.default.id.slice(5)}}</div>
-			</div>
-			<div class="icon-copy" @click="copyToClipboard(icon.default.content)">
-				<svg-icon name="copy" className="icon-icon"></svg-icon>
+		<div class="count-view">
+			<div class="number" v-for="index in iconCountStr">
+				<svg-icon :name="'number-'+index"></svg-icon>
 			</div>
 		</div>
-    </div>
+		<div>
+			<div class="icon-item" v-for="icon in svgIconResult">
+				<div class="cube">
+					<svg-icon :name="icon.default.id.slice(5)" className="icon"></svg-icon>
+					<div class="icon-name">{{icon.default.id.slice(5)}}</div>
+				</div>
+				<div class="icon-copy" @click="copyToClipboard(icon.default.content)">
+					<svg-icon name="copy" className="icon-icon"></svg-icon>
+				</div>
+			</div>
+		</div>
+    
+  </div>
 </template>
 
 <script>
@@ -18,11 +26,15 @@ import svgIconResult from "@/icons"
 export default {
   data(){
     return{
-    	svgIconResult
+    	svgIconResult,
+    	iconCountStr:''
     }
   },
   mounted(){
-  	console.log(svgIconResult)
+  	this.iconCountStr = svgIconResult.length + ''
+  	// for(var i of this.iconCountStr){
+  	// 	console.log(i)
+  	// }
   },
   methods: {
     async copyToClipboard(content) {
@@ -40,6 +52,21 @@ export default {
 <style>
 .main-content{
 	width: calc(100% - 80px);
+}
+
+.count-view {
+	margin-top: 10px;
+	display: flex;
+	justify-content: center
+}
+
+.count-view .number{
+	width: 20px;
+	height: 25px;
+}
+
+.main-content > div {
+	width: 100%;
 	display: flex;
 	flex-wrap: wrap
 }
