@@ -44,6 +44,10 @@
             <svg-icon name="picture01"></svg-icon>
             我的像素图标
           </div>
+          <div class="menu-item" @click="goto('/FQTManagement')">
+            <svg-icon name="4quadrant02" ></svg-icon>
+            四象限
+          </div>
           <div class="menu-item" >
             <IconWrapper iconName="RoadCone" theme="outline" :strokeWidth='2' />
             待定...
@@ -60,7 +64,7 @@
     <div class="footer-bar">
       <div>©2023 - 2024 By SuperRabbitHero</div>
       <div>
-        <svg-icon name="notepad01" @click="goto('/post/更新文档')"></svg-icon>
+        <svg-icon name="list01" @click="goto('/post/更新文档')"></svg-icon>
       </div>
       
     </div>

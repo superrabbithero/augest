@@ -109,7 +109,16 @@ const routes = [
         meta:{
             title: '我的像素图标',
         }
-    }
+    },
+    {
+        path: '/FQTManagement',
+        name: 'FQTManagement',
+        component: () => import("@/components/FQTManagement"),
+        meta:{
+            title: '四象限法则',
+            footerHidden: true
+        }
+    },
 
 ]
 

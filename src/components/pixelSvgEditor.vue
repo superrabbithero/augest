@@ -166,14 +166,14 @@ export default {
   data() {
     return {
       tool:1,
-      rows:5,
-      cols:3,
+      rows:13,
+      cols:13,
       gridSize:100,
       coordinate:'x:0,y:0',
       currentColor:'#000',
       bkgColor:"#fff",
       // colorToolsEdited:false,
-      myColors:['#000000','#ffffff','#f44336','#e91e63','#3f51b5','#00bcd4','#4caf50','#ffeb3b'],
+      myColors:['#000000','#ffffff','#F96635','#f9A822','#FAEC86','#93d3a2','#2bbaa5','#008080'],
       colorIndex:0,
       dragedColorIndex:null,
       isDrawing: false,
