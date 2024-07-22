@@ -11,12 +11,12 @@ const routes = [
     },
     {
         path: '/',
-        name: 'Augest',
+        name: 'Augest主页',
         component: () => import("@/components/Home")
     },
     {
         path: '/tools/bulidanswersheet',
-        name: 'BulidAnswerSheet',
+        name: '答题卡生成',
         component: () => import("@/components/BulidAnswerSheet"),
         meta:{
             title: '答题卡生成',
@@ -25,7 +25,7 @@ const routes = [
     },
     {
         path: '/minigames',
-        name: 'MiniGames',
+        name: '小游戏',
         component: () => import("@/components/MiniGames"),
         meta:{
             title: '小游戏'
@@ -33,7 +33,7 @@ const routes = [
     },
     {
         path: '/minigames/schultetable',
-        name: 'SchulteTable',
+        name: '舒尔特表',
         component: () => import("@/components/SchulteTable"),
         meta:{
             title: '舒尔特表'
@@ -41,7 +41,7 @@ const routes = [
     },
     {
         path: '/minigames/turtle',
-        name: 'Turtle',
+        name: '不能比下面的乌龟大哦',
         component: () => import("@/components/Turtle"),
         meta:{
             title: '叠乌龟'
@@ -49,12 +49,12 @@ const routes = [
     },
     {
         path: '/post/:postname',
-        name: 'Post',
+        name: 'Blog',
         component: () => import("@/components/Post"),
     },
     {
         path: '/minigames/pct2fct',
-        name: 'Pct2Fct',
+        name: '百化分',
         component: () => import("@/components/Pct2Fct"),
         meta:{
             title: '百化分'
@@ -62,7 +62,7 @@ const routes = [
     },
     {
         path: '/minigames/ziliaofx',
-        name: 'ziliaofx',
+        name: '资料分析公式',
         component: () => import("@/components/ziliaofx"),
         meta:{
             title: '资料分析公式'
@@ -78,7 +78,7 @@ const routes = [
     },
     {
         path: '/zhenti/:papername',
-        name: 'zhenti',
+        name: '真题',
         component: () => import("@/components/zhenti/zhenti"),
         meta:{
             title: '真题',
@@ -87,7 +87,7 @@ const routes = [
     },
     {
         path: '/examhome',
-        name: 'examhome',
+        name: '考试模拟器',
         component: () => import("@/components/zhenti/ExamHome"),
         meta:{
             title: '考试模拟器'
@@ -95,7 +95,7 @@ const routes = [
     },
     {
         path: '/pixelSvgEditor',
-        name: 'pixelSvgEditor',
+        name: '像素图标编辑器',
         component: () => import("@/components/pixelSvgEditor"),
         meta:{
             title: '像素图标编辑器',
@@ -104,7 +104,7 @@ const routes = [
     },
     {
         path: '/myPixelIcons',
-        name: 'myPixelIcons',
+        name: '我的像素图标',
         component: () => import("@/components/myPixelIcons"),
         meta:{
             title: '我的像素图标',
@@ -112,7 +112,7 @@ const routes = [
     },
     {
         path: '/FQTManagement',
-        name: 'FQTManagement',
+        name: '四象限法则',
         component: () => import("@/components/FQTManagement"),
         meta:{
             title: '四象限法则',

@@ -12,6 +12,7 @@
   --boxHoverShadow:0.5vw 0.5vw 1.1vw rgba(0,0,0,0.3);  
   /*  边框hover的阴影样式 */
   --fontNormal:#363636;
+  --fontOpposite:#ffffffab;
   /*  常规*/
   --settingColor:#000;
   /*  工具栏*/
@@ -121,6 +122,7 @@ img {
   --boxHoverShadow: none;
   --settingColor:#fff;
   --fontNormal:#ffffffab;
+  --fontOpposite:#363636;
   --icon-color:#ffffffab;
   --box-border:1px solid #3d3d3f;
   --canvas-bgc:#1b1c20;

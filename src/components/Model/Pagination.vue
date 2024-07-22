@@ -1,12 +1,13 @@
 <template>
     <div class="page-box" ref="pageBox">
-        <IconWrapper @click="pre()" iconName="Left" theme="outline" :strokeWidth='4' fill="#ffc848" size="34" />
+        <!-- <IconWrapper @click="pre()" iconName="Left" theme="outline" :strokeWidth='4' fill="#ffc848" size="34" /> -->
+        <svg-icon @click="pre()" name="arrow-left" fill="#ffc848" size="34"></svg-icon>
         <div class="page-item" v-if="currentPage>3 && totalPages>10" @click="toPage(1)">1</div>
         <div class="page-item" v-if="currentPage>4 && totalPages>10">...</div>
         <div v-for="item in currentList" :class="{'page-item':true,'active':item == currentPage}" @click="toPage(item)">{{item}}</div>
         <div class="page-item" v-if="currentPage<totalPages-3 && totalPages>10">...</div>
         <div class="page-item" v-if="currentPage<totalPages-2 && totalPages>10" @click="toPage(totalPages)">{{totalPages}}</div>
-        <IconWrapper @click="next()" iconName="Right" theme="outline" :strokeWidth='4' fill="#ffc848" size="34" />
+        <svg-icon @click="next()" name="arrow-right" fill="#ffc848" size="34"></svg-icon>
     </div>
 </template>
 <script>
@@ -84,6 +85,7 @@ export default {
 </script>
 <style>
     .page-box {
+        user-select: none;
         margin-top: 20px;
         display: flex;
         justify-content: center;
