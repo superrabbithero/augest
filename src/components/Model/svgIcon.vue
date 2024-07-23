@@ -20,7 +20,7 @@ export default {
       default: "auto"
     },
     size: {
-      type: Number,
+      type: [Number, String],
       default: 25
     }
   },

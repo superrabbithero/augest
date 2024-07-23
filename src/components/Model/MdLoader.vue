@@ -23,6 +23,7 @@ export default {
     updated(){
         
         this.findMarkdownHeadings();
+        this.TypeSet([document.getElementsByClassName("output")])
         
     },
     mounted(){
@@ -53,6 +54,20 @@ export default {
         };
       });
     },
+    TypeSet(elements){
+      if (!window.MathJax) {
+        console.log('no window.MathJax')
+        return
+      }
+      // window.MathJax.startup.promise = 
+      window.MathJax.startup.promise
+      .then(() => {
+        return window.MathJax.typesetPromise(elements)
+      })
+      .catch((err) => console.log('Typeset failed: ' + err.message))
+      
+      return window.MathJax.startup.promise
+    }
   }
 }
 </script>

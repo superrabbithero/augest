@@ -1,7 +1,5 @@
 <template>
-  <div>
     <vue-json-pretty :data="jsonData" :showLength="true" :showLine="true" :showSelectController="false" :virtual="true" :deep="1"></vue-json-pretty>
-  </div>
 </template>
 
 <script>

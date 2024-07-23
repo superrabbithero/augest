@@ -109,6 +109,7 @@ img {
 
 .container.left {
     align-items: flex-start;
+    text-align: left;
   }
 
 .dark{

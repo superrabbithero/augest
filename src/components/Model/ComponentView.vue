@@ -1,0 +1,74 @@
+<template>
+    <h4 @click="openContent()">{{name}}
+      <svg-icon :class="{'component-botton':true,'open':show}" name="arrow-right" size="16"></svg-icon>
+    </h4>
+    <div class="component-content" ref="content">
+      <div style="padding-bottom: 8px;">
+        <slot></slot>
+      </div>
+    </div> 
+</template>
+
+<script>
+
+export default {
+  props: {
+    name: {
+      type: String,
+      required: true
+    },
+  },
+  data(){
+    return {
+      show:false,
+      height:0
+    }
+  },
+  mounted(){
+    this.height = this.$refs.content.clientHeight
+    this.$refs.content.style.height = "0px"
+  },
+
+  methods:{
+    openContent(){
+      this.show = !this.show
+      const contentEl = this.$refs.content
+      if(this.show){
+        const value = this.height==8 ? "auto" : this.height + "px" 
+        contentEl.style.height = value
+      }else{
+        contentEl.style.height = "0px"
+      }
+    }
+  
+  }
+
+}
+</script>
+
+<style scoped>
+  .component-content {
+    width: 100%;
+    border-bottom: var(--box-border);
+    overflow: hidden;
+/*    margin-bottom: 1rem;*/
+    transition: height 0.3s ease;
+  }
+  h4 {
+    flex: 0 0 auto;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+
+  .component-botton{
+    margin-left: 5px;
+    transition: transform 0.1s ease;
+  }
+
+  .open {
+    transform: rotate(90deg);
+  }
+</style>
+
+

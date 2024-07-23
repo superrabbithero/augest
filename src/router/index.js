@@ -5,9 +5,12 @@ import {createRouter, createWebHashHistory} from 'vue-router'
 
 const routes = [
     {
-        path: '/helloword',
+        path: '/helloworld',
         name: 'HelloWorld',
-        component: () => import("@/components/HelloWorld")
+        component: () => import("@/components/HelloWorld"),
+        meta:{
+            title: 'HelloWorld'
+        }
     },
     {
         path: '/',

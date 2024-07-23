@@ -226,6 +226,25 @@
       "date": "2024-07-18 02:17:21"
     }
   ],
+  "repost": [
+    {
+      "title": "四象限时间管理法",
+      "path": "/post/四象限法则介绍",
+      "tags": [
+        "repost"
+      ],
+      "date": "2024-07-20 17:57:24"
+    },
+    {
+      "title": "常用数学符号LaTeX（转载摘录）",
+      "path": "/post/常用数学符号LaTeX（转载摘录）",
+      "tags": [
+        "LaTeX",
+        "repost"
+      ],
+      "date": "2024-07-23 03:00:05"
+    }
+  ],
   "pointerEvents": [
     {
       "title": "基于pointer-events的canvas编辑器",
@@ -235,6 +254,17 @@
         "Vue"
       ],
       "date": "2024-07-18 01:59:18"
+    }
+  ],
+  "LaTeX": [
+    {
+      "title": "常用数学符号LaTeX（转载摘录）",
+      "path": "/post/常用数学符号LaTeX（转载摘录）",
+      "tags": [
+        "LaTeX",
+        "repost"
+      ],
+      "date": "2024-07-23 03:00:05"
     }
   ]
 }

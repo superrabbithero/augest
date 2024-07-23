@@ -3,9 +3,13 @@
         <!-- <IconWrapper @click="pre()" iconName="Left" theme="outline" :strokeWidth='4' fill="#ffc848" size="34" /> -->
         <svg-icon @click="pre()" name="arrow-left" fill="#ffc848" size="34"></svg-icon>
         <div class="page-item" v-if="currentPage>3 && totalPages>10" @click="toPage(1)">1</div>
-        <div class="page-item" v-if="currentPage>4 && totalPages>10">...</div>
+        <div class="page-item more" v-if="currentPage>4 && totalPages>10">
+            <svg-icon name="more"></svg-icon>
+        </div>
         <div v-for="item in currentList" :class="{'page-item':true,'active':item == currentPage}" @click="toPage(item)">{{item}}</div>
-        <div class="page-item" v-if="currentPage<totalPages-3 && totalPages>10">...</div>
+        <div class="page-item more" v-if="currentPage<totalPages-3 && totalPages>10">
+            <svg-icon name="more"></svg-icon>
+        </div>
         <div class="page-item" v-if="currentPage<totalPages-2 && totalPages>10" @click="toPage(totalPages)">{{totalPages}}</div>
         <svg-icon @click="next()" name="arrow-right" fill="#ffc848" size="34"></svg-icon>
     </div>
@@ -99,6 +103,13 @@ export default {
         text-align: center;
         margin-right: 5px;
         border: 2px solid var(--box-hightlight);
+    }
+    .page-item.more {
+        background: transparent;
+        border:  2px solid transparent;
+    }
+    .page-item.more:hover {
+        border:  2px solid transparent;
     }
     .page-item:hover {
         border: 2px solid #ffc848;

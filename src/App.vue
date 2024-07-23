@@ -64,6 +64,7 @@
     <div class="footer-bar">
       <div>©2023 - 2024 By SuperRabbitHero</div>
       <div>
+        <svg-icon name="helloworld" size=35 @click="goto('/helloworld')"></svg-icon>
         <svg-icon name="list01" @click="goto('/post/更新文档')"></svg-icon>
       </div>
       
@@ -118,6 +119,7 @@ export default {
     goto(path){
       this.$router.push(path)
       this.menuisshow = false
+      document.documentElement.scrollTop = 0
       document.removeEventListener('click',this.closemenu)
     },
     openmenu() {
@@ -287,6 +289,14 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 0 30px;
+}
+
+.footer-bar > div:nth-child(2) > *{
+  cursor: pointer;
+  margin-left: 5px;
+}
+.footer-bar > div > *:hover{
+  color:#ffc848;
 }
 
 

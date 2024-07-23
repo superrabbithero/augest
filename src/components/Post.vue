@@ -72,9 +72,7 @@ export default {
 };
 </script>
 
-<style>
-
-
+<style scoped>
 
 .markdown-menu-item{
   overflow: hidden;
@@ -110,4 +108,5 @@ export default {
   font-family: SmileySans-Oblique;
   align-items: center
 }
+
 </style>
