@@ -1,5 +1,5 @@
 <template>
-  <div class="header">
+  <div class="header" >
     <!-- <div class="head-list"> -->
       <div class="head-item"  @click="openmenu" id="menuicon">
         <!-- <IconWrapper iconName="ApplicationTwo" theme="filled" :strokeWidth='2' /> -->
@@ -56,9 +56,11 @@
       </div>
     </transition>
   </div>
-  <div class="header-block"></div>
-  <router-view></router-view>
-  <div v-if="!$route.meta.footerHidden" class="footer">
+  <div>
+    <div class="header-block" ></div>
+    <router-view></router-view>
+  </div>
+  <div v-if="!$route.meta.footerHidden" class="footer" >
     <div class="footer-link">
     </div>
     <div class="footer-bar">
@@ -67,7 +69,6 @@
         <svg-icon name="helloworld" size=35 @click="goto('/helloworld')"></svg-icon>
         <svg-icon name="list01" @click="goto('/post/更新文档')"></svg-icon>
       </div>
-      
     </div>
   </div>
 </template>
@@ -166,6 +167,10 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   background-color: var(--content-bgc);
   color: var(--icon-color);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 
@@ -270,8 +275,12 @@ export default {
   font-size: 1.25rem;
   font-family: SmileySans-Oblique;
 }
+.footer {
+  width: 100%;
+}
+
 .footer-link{
-  height: 300px;
+/*  height: 300px;*/
 }
 
 .footer-bar {
@@ -284,7 +293,6 @@ export default {
   margin-top: 20px;
   width: 100%;
   width: fill-available;
-  bottom: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;

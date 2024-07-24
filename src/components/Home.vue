@@ -55,7 +55,7 @@ export default {
       filteredJson:null,
       tags:[],
       currentTag:null,
-      pageSize:5,
+      pageSize:10,
       keyword:null,
       totalPages:0
     }

@@ -224,10 +224,6 @@ body {
 }
 
 
-
-
-
-
 /*游戏相关css*/
 .game-title{
     font-family: SmileySans-Oblique;
@@ -375,15 +371,16 @@ mjx-container[jax="CHTML"][display="true"] {
 
 
 .home-container {
-width: -moz-available;
-width: -webkit-fill-available;
-width: fill-available;
-display: flex;
+    min-height: 100%;
+    width: -moz-available;
+    width: -webkit-fill-available;
+    width: fill-available;
+    display: flex;
 }
 
 .home-left{
-display: flex;
-flex:0 0 75%;
+    display: flex;
+    flex:0 0 75%;
 }
 
 .home-left.col{

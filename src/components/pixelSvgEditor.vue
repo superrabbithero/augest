@@ -356,7 +356,10 @@ export default {
       this.maincanvas = this.$refs.canvas;
       const overview = this.$refs.canvas_overview
       this.ctx = this.maincanvas.getContext('2d');
-      this.ctx.lineWidth = 5
+
+      // this.ctx.imageSmoothingEnabled = true;
+      this.ctx.lineWidth = 1
+      // this.ctx.strokeRect(10.5,10.5,9,9)
       this.ovCtx = overview.getContext('2d')
       this.addHistory()
       this.resizeViewport()
