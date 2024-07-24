@@ -3,7 +3,7 @@
       <svg-icon :class="{'component-botton':true,'open':show}" name="arrow-right" size="16"></svg-icon>
     </h4>
     <div class="component-content" ref="content">
-      <div style="padding-bottom: 8px;">
+      <div style="padding: 0 5px 8px 5px;">
         <slot></slot>
       </div>
     </div> 

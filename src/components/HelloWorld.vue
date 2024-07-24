@@ -27,14 +27,22 @@
       <timer ref="helloworldtimer"></timer>
     </cpt-view>
     
-
-    
-    
-  
-
-   
-    
-      
+    <cpt-view name="表单样式">
+      <h5>input</h5>
+      <div class="content">
+        <input type="text" value="text" />
+        <input type="password" value="password"/>
+      </div>
+      <div class="content">
+        <input type="color" value="#ffc848" />
+      </div>
+      <div class="content">
+        <input type="button" class="submit" value="submit" />
+      </div>
+      <div class="content">
+        <input type="range" min="0" max="10" value="5" />
+      </div>
+    </cpt-view>
   </div>
     
   
@@ -121,6 +129,10 @@ export default {
 
   .open {
     transform: rotate(90deg);
+  }
+
+  .content > input{
+    margin:0 10px 10px 0;
   }
 </style>
 

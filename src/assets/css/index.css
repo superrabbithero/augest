@@ -458,6 +458,21 @@ margin-left: -10px;
     display: inline-block;
 }
 
+/*重写input样式*/
+input {
+    border: var(--box-border);
+    width: 100px;
+    background-color: var(--box-bgc);
+    border-radius: 4px;
+    padding: 5px;
+    font-size: 14px;
+}
+
+input:focus, input:hover{
+    border: var(--box-border);
+    outline: 2px  solid #ffc848; /* 移除默认的蓝色轮廓 */
+}
+
 /*重写input nmuber样式*/
 input[type="number"] {
     border: 1px solid rgba(0, 0, 0, 0);
@@ -469,10 +484,80 @@ input[type="number"] {
 }
 
 input[type="number"]:focus , input[type="number"]:hover {
-    border: var(--box-border);
     outline: none; /* 移除默认的蓝色轮廓 */
 }
 
 input[type="range"] {
-    outline: none; /* 移除默认的蓝色轮廓 */
+    -webkit-appearance: none;
+    width: 200px;
+    height: 10px;
+
+    outline: none;
+    box-sizing: border-box;
+    border: none;
+    
+
+}
+
+input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none; /* 去除默认样式 (适用于 Chrome, Safari, Opera) */
+      appearance: none;
+      width: 10px; /* 滑块宽度 */
+      height: 10px; /* 滑块高度 */
+      border-radius: 50%;
+      background-color: #ffc848; /* 滑块颜色 */
+      cursor: pointer; /* 指针样式 */
+      transition: background 0.2s; /* 滑块背景颜色过渡效果 */
+      border-image: linear-gradient(#ffc848,#ffc848) 0 fill / 0 5px 0 0 / 0 0 0 99vw;
+
+  }
+
+input[type="range"]::-webkit-slider-thumb:hover {
+      background-color: #ffc848; /* 滑块悬停时的颜色 */
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+    height: 10px;
+/*    background-color: #ffc84844;*/
+    border-radius: 5px; /*将轨道设为圆角的*/
+    outline: none;
+    
+}
+input[type=range]::-webkit-slider-container {
+    margin-top: -5px;
+    height: 10px;
+    width: 100%;
+/*    background-color: red;*/
+    border-radius: 5px; /*将轨道设为圆角的*/
+    border: 1px solid #ffc848;
+    overflow: hidden;
+}
+
+input[type="color"] {
+    width: 30px;
+    padding: 1px 3px;
+}
+
+input[type="button"] {
+    width: auto;
+    padding: 5px 20px;
+    color:var(--fontNormal);
+}
+
+input[type="button"].submit {
+/*    border: 1px solid #ffc848;*/
+}
+
+input[type="button"]:focus{
+    outline:none;
+}
+
+input[type="button"].submit:hover{
+    outline:none;
+    border: 1px solid #ffc848;
+}
+
+input[type="button"].submit:active {
+   background-color: #ffc848; /* 移除默认的蓝色轮廓 */
+   color: white;
 }
