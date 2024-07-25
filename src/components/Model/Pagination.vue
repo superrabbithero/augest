@@ -87,12 +87,15 @@ export default {
     },
 }
 </script>
-<style>
+<style scoped>
     .page-box {
         user-select: none;
         margin-top: 20px;
         display: flex;
         justify-content: center;
+    }
+    .page-box.left{
+        justify-content: flex-start
     }
     .page-item{
         width: 30px;

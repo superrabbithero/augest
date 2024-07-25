@@ -14,7 +14,7 @@
 
     <cpt-view name="分页控件">
       <input v-model="totalPages" type="text"/>
-      <pagination :totalPages="totalPages"></pagination>
+      <pagination class="left" :totalPages="totalPages"></pagination>
     </cpt-view>
 
     <cpt-view name="Markdown Loader">
@@ -23,11 +23,17 @@
 
     <cpt-view name="计时器">
       <div class="content">
-        <input @click="helloworldtimer.startTimer" type="button" class="circle" value="start" />
-        <input @click="helloworldtimer.resetTimer" type="button" class="circle fill" value="reset" />
+        <timer ref="helloworldtimer"></timer>
+        <button @click="helloworldtimer.startTimer" class="circle">
+          <svg-icon name="play01" size="16"></svg-icon>
+        </button>
+        <button @click="helloworldtimer.pause" class="circle fill">
+          <svg-icon name="pause01" size="16"></svg-icon>
+        </button>
+        <button @click="helloworldtimer.resetTimer" class="circle fill">
+          <svg-icon name="stop01" size="16"></svg-icon>
+        </button>
       </div>
-      
-      <timer ref="helloworldtimer"></timer>
     </cpt-view>
     
     <cpt-view name="表单样式">
@@ -37,7 +43,7 @@
         <input type="password" value="password"/>
       </div>
       <div class="content">
-        <input type="color" value="#ffc848" />
+        <input type="color" v-model="mainColor"/>
       </div>
       <div class="content">
         <input type="button" value="button" />
@@ -102,10 +108,15 @@ export default {
     return {
       jsonData: { "name": "John", "age": { "name": "John", "age": 30 } },
       toastType: 0,
-      
+      mainColor: '#ffc848',
       totalPages:6,
       helloworldtimer: null,
       htmlcontent:"<span class=\"output\">$$\\frac{1}{2}$$</span><span class=\"output\">$$\\sqrt{3}$$</span>"
+    }
+  },
+  watch:{
+    mainColor(newVal, oldVal){
+      document.documentElement.style.setProperty('--main-color', newVal);
     }
   },
   mounted(){
@@ -159,6 +170,11 @@ export default {
 
   .open {
     transform: rotate(90deg);
+  }
+
+  .content {
+    display: flex;
+    align-items: center;
   }
 
   .content > *{

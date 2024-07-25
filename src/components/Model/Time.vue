@@ -9,7 +9,8 @@ export default {
       startTime:0,
       elapsedTime:0,
       timerInterval:null,
-      timer:"00:00:00"
+      timer:"00:00:00",
+      status:0
     }
   },
   unmounted(){
@@ -17,21 +18,30 @@ export default {
   },
   methods: {
     startTimer(){
-      if(!this.timerInterval){
+      if(this.status != 1){
+        clearInterval(this.timerInterval);
         console.log("start")
         this.startTime = Date.now() - this.elapsedTime;
         this.timerInterval = setInterval(this.updateTimer, 1000);
+        this.status = 1
       }
+        
     },
     resetTimer(){
-      clearInterval(this.timerInterval);
-      this.timerInterval = null
-      this.elapsedTime = 0;
-      this.$parent.timer = "00:00:00"
-      this.timer = "00:00:00";
+      if(this.status != 0){
+        clearInterval(this.timerInterval);
+        this.timerInterval = null
+        this.elapsedTime = 0;
+        this.$parent.timer = "00:00:00"
+        this.timer = "00:00:00";
+        this.status = 0
+      }
     },
     pause(){
-      clearInterval(this.timerInterval);
+      if(this.status == 1){
+        clearInterval(this.timerInterval);
+        this.status = 2
+      }
     },
     updateTimer() {
       this.elapsedTime = Date.now() - this.startTime;
@@ -45,3 +55,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+  div{
+    display: inline-block;
+  }
+</style>
