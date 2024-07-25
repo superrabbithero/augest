@@ -35,6 +35,10 @@
         </button>
       </div>
     </cpt-view>
+
+    <cpt-view name="日历">
+      <calender ></calender>
+    </cpt-view>
     
     <cpt-view name="表单样式">
       <h5>input</h5>
@@ -93,6 +97,8 @@ import {login, getanswercard} from "@/assets/js/xueceapi.js"
 import pencanvas from "./Model/PenCanvas.vue"
 import timer from "./Model/Time.vue"
 import cptView from "./Model/ComponentView.vue"
+import calender from "./Model/Calendar.vue"
+
 
 export default {
   name: 'HelloWorld',
@@ -102,7 +108,8 @@ export default {
     pagination,
     pencanvas,
     timer,
-    cptView
+    cptView,
+    calender
   },
   data(){
     return {
@@ -175,6 +182,8 @@ export default {
   .content {
     display: flex;
     align-items: center;
+    flex-wrap: wrap
+    
   }
 
   .content > *{
