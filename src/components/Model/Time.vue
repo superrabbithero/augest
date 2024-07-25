@@ -17,12 +17,15 @@ export default {
   },
   methods: {
     startTimer(){
-      console.log("start")
-      this.startTime = Date.now() - this.elapsedTime;
-      this.timerInterval = setInterval(this.updateTimer, 1000);
+      if(!this.timerInterval){
+        console.log("start")
+        this.startTime = Date.now() - this.elapsedTime;
+        this.timerInterval = setInterval(this.updateTimer, 1000);
+      }
     },
     resetTimer(){
       clearInterval(this.timerInterval);
+      this.timerInterval = null
       this.elapsedTime = 0;
       this.$parent.timer = "00:00:00"
       this.timer = "00:00:00";

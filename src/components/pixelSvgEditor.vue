@@ -4,7 +4,7 @@
     <div class="left">
       <div class="tool-option">
         <div class="label" style="width: 91px">画笔大小({{penSize}}):</div>
-        <input type="range" v-model="penSize" min="1" max="20">
+        <input type="range" style="color: currentColor" v-model="penSize" min="1" max="20">
       </div>
 
     </div>
@@ -99,7 +99,7 @@
         <div class="icon-item" @click="zoomOut">
           <svg-icon name="zoomOut"></svg-icon>
         </div>
-        <input type="range" style="width: 80px;" min="10" max="100" v-model="scaleCount" @input="resizeViewport">
+        <input type="range" style="width: 80px; color: currentColor;" min="10" max="100" v-model="scaleCount" @input="resizeViewport">
         <div class="icon-item" @click="zoomFit">
           <svg-icon name="fit01"></svg-icon>
         </div>

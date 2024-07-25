@@ -9,7 +9,7 @@
     </cpt-view>
 
     <cpt-view name="Toast">
-      <button @click="showToast">展示toast</button>
+      <input  type="button" value="展示toast" @click="showToast" />
     </cpt-view>
 
     <cpt-view name="分页控件">
@@ -22,8 +22,11 @@
     </cpt-view>
 
     <cpt-view name="计时器">
-      <button @click="helloworldtimer.startTimer">start</button>
-      <button @click="helloworldtimer.resetTimer">reset</button>
+      <div class="content">
+        <input @click="helloworldtimer.startTimer" type="button" class="circle" value="start" />
+        <input @click="helloworldtimer.resetTimer" type="button" class="circle fill" value="reset" />
+      </div>
+      
       <timer ref="helloworldtimer"></timer>
     </cpt-view>
     
@@ -37,10 +40,37 @@
         <input type="color" value="#ffc848" />
       </div>
       <div class="content">
-        <input type="button" class="submit" value="submit" />
+        <input type="button" value="button" />
+        <input type="button" class="fill" value="fill" />
+        <input type="button" class="circle" value="circle" />
+        <input type="button" class="circle fill" value="circle fill" />
+
       </div>
       <div class="content">
-        <input type="range" min="0" max="10" value="5" />
+        <input type="range" min="0" max="100" value="20" />
+      </div>
+      <div class="content">
+        <input type="checkbox" checked/>
+        <input type="checkbox"/>
+        <input type="checkbox" class="circle" checked/>
+        <input type="checkbox" class="circle"/>
+      </div>
+      <div class="content">
+        <input type="radio" name="test" checked/>
+        <input type="radio" name="test" />
+        <input type="radio" name="test" />
+      </div>
+      <div class="content">
+        <input type="date"/>
+        <input type="month"/>
+        <input type="time"/>
+      </div>
+      <h5>button</h5>
+      <div class="content">
+        <button>button</button>
+        <button class="fill">fill</button>
+        <button class="circle">circle</button>
+        <button class="circle fill">circle fill</button>
       </div>
     </cpt-view>
   </div>
@@ -131,7 +161,7 @@ export default {
     transform: rotate(90deg);
   }
 
-  .content > input{
+  .content > *{
     margin:0 10px 10px 0;
   }
 </style>

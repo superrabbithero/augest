@@ -460,6 +460,7 @@ margin-left: -10px;
 
 /*重写input样式*/
 input {
+    margin: 2px;
     border: var(--box-border);
     width: 100px;
     background-color: var(--box-bgc);
@@ -488,12 +489,12 @@ input[type="number"]:focus , input[type="number"]:hover {
 }
 
 input[type="range"] {
+    color:#ffc848;
+    position: relative;
     -webkit-appearance: none;
+    height: 1rem;
     width: 200px;
-    height: 10px;
-
     outline: none;
-    box-sizing: border-box;
     border: none;
     
 
@@ -505,15 +506,16 @@ input[type="range"]::-webkit-slider-thumb {
       width: 10px; /* 滑块宽度 */
       height: 10px; /* 滑块高度 */
       border-radius: 50%;
-      background-color: #ffc848; /* 滑块颜色 */
+/*      margin-top: -5px;*/
+      background-color: currentColor; /* 滑块颜色 */
       cursor: pointer; /* 指针样式 */
       transition: background 0.2s; /* 滑块背景颜色过渡效果 */
-      border-image: linear-gradient(#ffc848,#ffc848) 0 fill / 0 5px 0 0 / 0 0 0 99vw;
+      border-image: linear-gradient(currentColor,currentColor) 0 fill / 0px 5px 0px 0 / 0 0 0 99vw;
 
   }
 
 input[type="range"]::-webkit-slider-thumb:hover {
-      background-color: #ffc848; /* 滑块悬停时的颜色 */
+      background-color: currentColor; /* 滑块悬停时的颜色 */
 }
 
 input[type=range]::-webkit-slider-runnable-track {
@@ -524,12 +526,14 @@ input[type=range]::-webkit-slider-runnable-track {
     
 }
 input[type=range]::-webkit-slider-container {
-    margin-top: -5px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+/*    margin-top: -5px;*/
     height: 10px;
-    width: 100%;
-/*    background-color: red;*/
-    border-radius: 5px; /*将轨道设为圆角的*/
-    border: 1px solid #ffc848;
+    width: calc(100% - 7px);
+    border-radius: 5px; 
+    border: var(--box-border);
     overflow: hidden;
 }
 
@@ -542,22 +546,161 @@ input[type="button"] {
     width: auto;
     padding: 5px 20px;
     color:var(--fontNormal);
+
 }
 
-input[type="button"].submit {
-/*    border: 1px solid #ffc848;*/
+input[type="button"].circle {
+    padding:5px 10px;
+    height: 28px;
+    border-radius: 14px;
+}
+
+input[type="button"].fill {
+    border-color: #ffc848;
+    background-color: #ffc848; 
+    color: var(--box-bgc);
+}
+
+input[type="button"].fill:active {
+    border-color: #c49321;
+    background-color: #c49321; 
+    color: #bbb19b;
 }
 
 input[type="button"]:focus{
     outline:none;
 }
 
-input[type="button"].submit:hover{
+input[type="button"]:hover{
     outline:none;
     border: 1px solid #ffc848;
 }
 
-input[type="button"].submit:active {
+input[type="button"]:active {
+   background-color: #ffc848; /* 移除默认的蓝色轮廓 */
+   color: white;
+}
+
+input[type="checkbox"]{
+    width: 20px !important;
+    height: 20px;
+    width: auto;
+    appearance: none;/*清楚默认样式*/
+    -webkit-appearance: none;
+    color:#ffc848;
+    position: relative;
+}
+
+input[type="checkbox"].circle{
+    border-radius: 50%;
+}
+
+input[type="checkbox"]:hover, input[type="checkbox"]:focus{
+    outline: none;
+}
+
+input[type="checkbox"]:checked::after{
+    content: "";
+    position: absolute;
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border-right: 2px solid var(--box-bgc);
+    border-bottom: 2px solid var(--box-bgc);
+    transform: rotate(45deg);
+}
+
+input[type="radio"]{
+    width: 20px;
+    height: 20px;
+    -webkit-appearance: none;
+    box-sizing: border-box;
+    outline: none;
+    border-radius: 50%;
+    color:#ffc848;
+}
+
+input[type="radio"]:checked{
+    border-width: 2px;
+    box-shadow:0px 0px 0px 2px var(--box-bgc) inset
+}
+
+input[type="radio"]:checked,input[type="checkbox"]:checked{
+    background-color: currentColor;
+    border-color: currentColor;
+}
+
+input[type="checkbox"]:hover,input[type="radio"]:hover{
+    border-color: currentColor
+}
+
+/*修改button样式*/
+button {
+    width: auto;
+    padding: 5px 20px;
+    color:var(--fontNormal);
+    outline: none;
+    border: var(--box-border);
+    background-color: transparent;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+}
+
+button::after {
+    content: "";
+    width: 100px;
+    height: 100px;
+    top: 0;
+    left: 0;
+    position: absolute;
+    background-color: #0002;
+    
+    transition: 0.3s;
+    opacity: 0;
+}
+
+button:active::after {
+    content: "";
+    width: 10px;
+    height: 10px;
+    top: 0;
+    left: 0;
+    position: absolute;
+    background-color: #0002;
+    transition: 0.3s;
+    opacity: 1;
+}
+
+button.circle {
+    padding:5px 10px;
+    height: 28px;
+    border-radius: 14px;
+}
+
+button.fill {
+    border-color: #ffc848;
+    background-color: #ffc848; 
+    color: var(--box-bgc);
+}
+
+button.fill:active {
+    border-color: #c49321;
+    background-color: #c49321; 
+    color: #bbb19b;
+}
+
+button:focus{
+    outline:none;
+}
+
+button:hover{
+    outline:none;
+    border: 1px solid #ffc848;
+}
+
+button:active {
    background-color: #ffc848; /* 移除默认的蓝色轮廓 */
    color: white;
 }
