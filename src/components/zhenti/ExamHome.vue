@@ -25,16 +25,18 @@
     </div>
     <div class="home-right col">
       <div class="card-content">
-        日历
+        <calender ></calender>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-
+import calender from "@/components/Model/Calendar.vue"
 export default {
+  
   components: {
+    calender
   },
   data(){
     return {
