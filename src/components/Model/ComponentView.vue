@@ -17,16 +17,21 @@ export default {
       type: String,
       required: true
     },
+    defaultShow: {
+      type: Boolean,
+      default: false
+    }
   },
   data(){
     return {
-      show:false,
+      show: false,
       height:0
     }
   },
   mounted(){
-    this.height = this.$refs.content.clientHeight
-    this.$refs.content.style.height = "0px"
+    this.show = this.defaultShow
+    if(!this.show)
+      this.$refs.content.style.height = "0px"
   },
 
   methods:{
@@ -34,7 +39,8 @@ export default {
       this.show = !this.show
       const contentEl = this.$refs.content
       if(this.show){
-        const value = this.height==8 ? "auto" : this.height + "px" 
+        this.height = this.$refs.content.firstChild.clientHeight+8
+        const value = this.height + "px" 
         contentEl.style.height = value
       }else{
         contentEl.style.height = "0px"

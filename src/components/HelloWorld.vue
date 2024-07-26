@@ -36,7 +36,7 @@
       </div>
     </cpt-view>
 
-    <cpt-view name="日历">
+    <cpt-view name="日历" defaultShow="true">
       <calender ></calender>
     </cpt-view>
     
