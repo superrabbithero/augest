@@ -1,40 +1,46 @@
 <template>
-    <div class="calendar-container" style="max-width: 400px;">
-        <div class="cows title" >
-          <svg-icon name="arrow-left" @click="pre()" size="25"></svg-icon>
-          <div style="font-family: SmileySans-Oblique;font-size: 25px;" @click="viewType = viewType ? viewType-1 : 0">
-            {{ calendarTitle }}
+    <div  ref="calendar">
+      <div v-if="type == 'input'" class="input-container">
+        <input v-model="selectedDate"  type="text" />
+        <svg-icon name="calendar" class="input-icon" size="18" @click="openCalendar()"></svg-icon>
+      </div>
+      <div :class="{'calendar-container':true,'input':type == 'input','show':show}" style="max-width: 400px;">
+          <div class="cows title" >
+            <svg-icon name="arrow-left" @click="pre()" :size="type == 'input'?16:25"></svg-icon>
+            <div style="font-family: SmileySans-Oblique;" @click="viewType = viewType ? viewType-1 : 0">
+              {{ calendarTitle }}
+            </div>
+            <svg-icon name="arrow-right" @click="next()" :size="type == 'input'?16:25"></svg-icon>
           </div>
-          <svg-icon name="arrow-right" @click="next()" size="25"></svg-icon>
-        </div>
-        <div v-if="viewType == 2" class="cows" style=" border-bottom: var(--box-border);">
-          <div v-for="day of 7" class="date">
-                <div class="content title">
-                  {{weekDayEN[day-1]}}
-                </div>   
-            </div>
-        </div>
-        <div v-if="viewType == 2" class="cows">
-            <div v-for="(date, index) in currentDates" :class="{'date':true,'notCur': notCurClass(index) , 'today':todayClass(date)}">
-                <div  class="content">
-                    {{ date }}
-                </div>
-            </div>
-        </div>
-        <div v-else-if="viewType == 1"  class="cows">
-            <div v-for="index of 16" :class="{'date':true,'month':true,'notCur': notCurClass(index-1) , 'today':todayClass(index)}" @click="toMonth((index-1)%12)+1">
-                <div  class="content">
-                    {{ (index-1)%12+1 }}
-                </div>
-            </div>
-        </div>
-        <div v-else  class="cows">
-            <div v-for="year of current16Years" :class="{'date':true,'month':true,'notCur': notCurClass(year) , 'today':todayClass(year)}" @click="toYear(year)">
-                <div class="content">
-                    {{ year }}
-                </div>
-            </div>
-        </div>
+          <div v-if="viewType == 2" class="cows" style=" border-bottom: var(--box-border);">
+            <div v-for="day of 7" class="date">
+                  <div class="content title">
+                    {{weekTitle[day-1]}}
+                  </div>   
+              </div>
+          </div>
+          <div v-if="viewType == 2" class="cows">
+              <div v-for="(date, index) in currentDates" :class="{'date':true,'notCur': notCurClass(index) , 'today':todayClass(date)}" @click="selectDate(date)">
+                  <div  class="content">
+                      {{ date }}
+                  </div>
+              </div>
+          </div>
+          <div v-else-if="viewType == 1"  class="cows">
+              <div v-for="index of 16" :class="{'date':true,'month':true,'notCur': notCurClass(index-1) , 'today':todayClass(index)}" @click="toMonth(index)">
+                  <div  class="content">
+                      {{ (index-1)%12+1 }}
+                  </div>
+              </div>
+          </div>
+          <div v-else  class="cows">
+              <div v-for="year of current16Years" :class="{'date':true,'month':true,'notCur': notCurClass(year) , 'today':todayClass(year)}" @click="toYear(year)">
+                  <div class="content">
+                      {{ year }}
+                  </div>
+              </div>
+          </div>
+      </div>
     </div>
     
     
@@ -42,10 +48,20 @@
   
   <script>
   export default {
+    props: {
+      language:{
+        type: String,
+        default: `EN`
+      },
+      type: {
+        type: String,
+        default: "calendar"
+      }
+    },
     computed:{
       calendarTitle(){
         if(this.viewType == 2){
-          return `${this.monthTitleEN[this.currentMonth]} ${this.currentYear}`
+          return `${this.monthTitle[this.currentMonth]} ${this.currentYear}`
         }else if(this.viewType == 1){
           return `${this.currentYear}`
         }else{
@@ -79,14 +95,12 @@
         }
       }
     },
-
-    props: {
-    
-    },
     data(){
       return{
+        monthTitle:["Jan.","Feb.","Mar.","Apr.","May.","Jun.","Jul.","Aug.","Sep.","Oct.","Nov.","Dec."],
         monthTitleEN:["Jan.","Feb.","Mar.","Apr.","May.","Jun.","Jul.","Aug.","Sep.","Oct.","Nov.","Dec."],
-        monthTitleCN:["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一","十二"],
+        monthTitleEN:["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一","十二"],
+        weekTitle:["S","M","T","W","T","F","S"],
         weekDayCN:["日","一","二","三","四","五","六"],
         weekDayEN:["S","M","T","W","T","F","S"],
         currentDates:[],
@@ -97,13 +111,24 @@
         firstIndex:0,
         lastIndex:0,
         todayIndex:null,
-        viewType:2
+        viewType:2,
+        show:true,
+        selectedDate:`yyyy/mm/dd`
       }
     },
     mounted(){
+        if(this.language == 'CN'){
+          this.monthTitle = this.monthTitleEN
+          this.weekTitle = this.weekDayCN
+        }
+        if(this.type == 'input'){
+          this.show = false
+        }
         this.init()
     },
-
+    unmounted(){
+      document.removeEventListener('click',this.closeCalendar)
+    },
     methods: {
       init(){
         this.today = new Date()
@@ -156,7 +181,8 @@
         this.viewType = 1
       },
       toMonth(month){
-        this.currentMonth = month
+        this.currentMonth = (month-1)%12
+        this.currentYear += Math.floor((month-1)/12)
         this.viewType = 2
         this.getDates()
       },
@@ -179,6 +205,31 @@
           this.currentYear += 10
           this.get16Years()
         }
+      },
+      openCalendar(){
+        if(!this.show){
+          this.show = true
+          document.addEventListener('click',this.closeCalendar)
+        }else{
+          this.show = false
+          document.removeEventListener('click',this.closeCalendar)
+        }
+          
+        
+      },
+      closeCalendar(e){
+        if(!this.$refs.calendar.contains(e.target)){
+          this.show = false
+          document.removeEventListener('click',this.closeCalendar)
+        }
+      },
+      selectDate(date){
+        const newDate = new Date(this.currentYear,this.currentMonth,date)
+        this.selectedDate = `${newDate.getYear()+1900}/${(newDate.getMonth()+1)>10?'':0}${newDate.getMonth()+1}/${newDate.getDate()>10?'':0}${newDate.getDate()}`
+        if(this.show){
+          this.show = false
+          document.removeEventListener('click',this.closeCalendar)
+        }
       }
     }
   };
@@ -189,6 +240,7 @@
     font-size: 0;
   }
   .cows.title {
+    font-size: 25px!important;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -201,7 +253,6 @@
     margin: 8px 4px 0 4px;
     display: inline-block;
     position: relative;
-    font-size: 1rem;
   }
 
   .date.month{
@@ -210,6 +261,8 @@
   }
 
   .date .content{
+    user-select: none;
+    font-size:clamp(0.7rem, 0.648rem + 1.14vw, 1rem);
     position: absolute;
     top: 0;
     bottom: 0;
@@ -220,24 +273,81 @@
     justify-content: center;
     align-items: center;
     border-radius: 5px;
-    border: var(--box-border);
+/*    border: var(--box-border);*/
   }
 
-/*  .month*/
 
   .notCur .content{
-    background-color: #eee;
+    color: var(--font-lowlight);
   }
 
   .today .content{
     background-color: var(--main-color);
+    border: 2px solid var(--main-color);
   }
 
   .content.title{
     border: none!important;
+    pointer-events: none;
   }
 
   .calendar-container{
     width: 100%;
+  }
+
+  
+  
+
+  @media(any-hover:hover){
+    .content:hover{
+      background-color: var(--white-highlight);
+    }
+    .today .content:hover{
+      background-color: var(--main-color);
+      box-shadow:0px 0px 0px 2px var(--box-bgc) inset;
+      border: 2px solid var(--main-color);
+    }
+  }
+
+/*  input样式*/
+  .calendar-container.input {
+    position: absolute;
+    width: 220px;
+    opacity: 0;
+    z-index: 9;
+    padding: 5px;
+    border:var(--box-border);
+    background-color: var(--box-bgc);
+    border-radius: 5px;
+    pointer-events: none;
+  }
+  .input .cows.title{
+    font-size: 16px!important;
+  }
+  .input .content{
+    font-size: 12px!important;
+  }
+
+  .input .content{
+    border-radius: 50%;
+  }
+
+  .input.show{
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .input-container{
+    position: relative;
+  }
+
+  .input-icon{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 5px;
+  }
+  input {
+    width: calc(100% - 12px);
   }
   </style>

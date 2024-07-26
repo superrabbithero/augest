@@ -37,7 +37,15 @@
     </cpt-view>
 
     <cpt-view name="日历" defaultShow="true">
-      <calender ></calender>
+      <h5>calender</h5>
+      <div class="content">
+        <calender language="EN" style="width: 100%;"></calender>
+      </div>
+      <h5>input</h5>
+      <div class="content">
+        <calender language="EN" type="input" style="width: 150px;"></calender>
+      </div>
+
     </cpt-view>
     
     <cpt-view name="表单样式">
@@ -182,8 +190,7 @@ export default {
   .content {
     display: flex;
     align-items: center;
-    flex-wrap: wrap
-    
+    flex-wrap: wrap;
   }
 
   .content > *{
