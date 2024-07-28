@@ -708,3 +708,18 @@ button:active {
    color: white;
    transition: 0s;
 }
+
+textarea {
+    appearance: none;/*清楚默认样式*/
+    -webkit-appearance: none;
+    outline: var(--box-border);
+    border: none;
+    border-radius: 4px;
+    resize: none;
+    font-size: 16px;
+}
+
+textarea:active, textarea:focus{
+    outline:  2px solid var(--main-color);
+    /* border: none */
+}

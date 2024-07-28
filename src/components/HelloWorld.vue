@@ -90,6 +90,10 @@
         <button class="circle">circle</button>
         <button class="circle fill">circle fill</button>
       </div>
+      <h5>textarea</h5>
+      <div class="content">
+        <textarea></textarea>
+      </div>
     </cpt-view>
   </div>
     

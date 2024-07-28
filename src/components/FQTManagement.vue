@@ -1,9 +1,9 @@
 <template>
   <my-model :show="modal_show.addPlanShow" modalKey="addPlanShow">
-    <div>我计划（今天、明天、日历）开始，</div>
+    <div><calender language="EN" type="input" style="width: 150px;"></calender></div>
     <div>在（什么时间）之前</div>
     <div>每天、艾宾豪斯记忆法</div>
-    <div>完成(什么)任务</div>
+    <div><textarea></textarea></div>
     
   </my-model>
 	<div class="card-content main-content" style="text-align: left;">
@@ -50,8 +50,12 @@
 </template>
 
 <script>
+import calender from "./Model/Calendar.vue"
 
 export default {
+  components: {
+    calender
+  },
   data(){
     return{
       fourColors:['#f9A822','#F96635','#2bbaa5','#93d3a2'],
