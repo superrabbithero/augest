@@ -704,7 +704,7 @@ button:hover{
 }
 
 button:active {
-   background-color: var(--main-color); /* 移除默认的蓝色轮廓 */
+   /* background-color: var(--main-color);  */
    color: white;
    transition: 0s;
 }

@@ -20,7 +20,7 @@
               </div>
           </div>
           <div v-if="viewType == 2" class="cows">
-              <div v-for="(date, index) in currentDates" :class="{'date':true,'notCur': notCurClass(index) , 'today':todayClass(date)}" @click="selectDate(date)">
+              <div v-for="(date, index) in currentDates" :class="{'date':true,'notCur': notCurClass(index) , 'today':todayClass(date)}" @click="selectDate(index)">
                   <div  class="content">
                       {{ date }}
                   </div>
@@ -39,6 +39,9 @@
                       {{ year }}
                   </div>
               </div>
+          </div>
+          <div v-if="type == 'input'" class="rows">
+            <button class="input-button" @click="selectDate(-1)">今天</button>
           </div>
       </div>
     </div>
@@ -223,9 +226,18 @@
           document.removeEventListener('click',this.closeCalendar)
         }
       },
-      selectDate(date){
-        const newDate = new Date(this.currentYear,this.currentMonth,date)
-        this.selectedDate = `${newDate.getYear()+1900}/${(newDate.getMonth()+1)>10?'':0}${newDate.getMonth()+1}/${newDate.getDate()>10?'':0}${newDate.getDate()}`
+      selectDate(index){
+        if(index == -1){
+          this.init()
+          const date = this.today
+          this.selectedDate = `${date.getYear()+1900}/${(date.getMonth()+1)>10?'':0}${date.getMonth()+1}/${date.getDate()>10?'':0}${date.getDate()}`
+          return
+        }
+        let month = this.currentMonth
+        if(index<this.firstIndex) month-=1
+        else if(index > this.lastIndex) month+=1
+        const date = new Date(this.currentYear,month,this.currentDates[index])
+        this.selectedDate = `${date.getYear()+1900}/${(date.getMonth()+1)>10?'':0}${date.getMonth()+1}/${date.getDate()>10?'':0}${date.getDate()}`
         if(this.show){
           this.show = false
           document.removeEventListener('click',this.closeCalendar)
@@ -307,6 +319,9 @@
       box-shadow:0px 0px 0px 2px var(--box-bgc) inset;
       border: 2px solid var(--main-color);
     }
+    .input-button:hover{
+      color:var(--main-color)
+    }
   }
 
 /*  input样式*/
@@ -320,6 +335,8 @@
     background-color: var(--box-bgc);
     border-radius: 5px;
     pointer-events: none;
+    transform: translateY(10%);
+    transition: 0.3s;
   }
   .input .cows.title{
     font-size: 16px!important;
@@ -334,6 +351,7 @@
 
   .input.show{
     opacity: 1;
+    transform: translateY(0);
     pointer-events: auto;
   }
 
@@ -350,4 +368,11 @@
   input {
     width: calc(100% - 12px);
   }
+
+  .input-button{
+    padding: 2px 3px;
+    font-size: 12px;
+    border: none;
+  }
+ 
   </style>
