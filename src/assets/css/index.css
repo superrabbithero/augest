@@ -222,10 +222,7 @@ body {
     display: none;
 }
 
-/* 滑块悬浮效果 */
-::-webkit-scrollbar-thumb:hover {
-    background-color: var(--scrollbar-thumbhovered-bgc);
-}
+
 
 
 /*游戏相关css*/
@@ -327,7 +324,6 @@ mjx-container[jax="CHTML"][display="true"] {
     box-shadow: var(--box-shadow);
     transform: translate(-50%,-50%);
     border-radius: 8px;
-    overflow: hidden;
     z-index: 999;
 }
 
@@ -473,7 +469,7 @@ input {
     font-size: 14px;
 }
 
-input:focus, input:hover{
+input:focus{
     border: var(--box-border);
     outline: 2px  solid var(--main-color); /* 移除默认的蓝色轮廓 */
 }
@@ -488,8 +484,8 @@ input[type="number"] {
     font-size: 16px;
 }
 
-input[type="number"]:focus , input[type="number"]:hover {
-    outline: none; /* 移除默认的蓝色轮廓 */
+input[type="number"]:focus  {
+    outline: none; 
 }
 
 input[type="range"] {
@@ -500,8 +496,6 @@ input[type="range"] {
     width: 200px;
     outline: none;
     border: none;
-    
-
 }
 
 input[type="range"]::-webkit-slider-thumb {
@@ -518,9 +512,7 @@ input[type="range"]::-webkit-slider-thumb {
 
   }
 
-input[type="range"]::-webkit-slider-thumb:hover {
-      background-color: currentColor; /* 滑块悬停时的颜色 */
-}
+
 
 input[type=range]::-webkit-slider-runnable-track {
     height: 10px;
@@ -575,10 +567,7 @@ input[type="button"]:focus{
     outline:none;
 }
 
-input[type="button"]:hover{
-    outline:none;
-    border: 1px solid var(--main-color);
-}
+
 
 input[type="button"]:active {
    background-color: var(--main-color); /* 移除默认的蓝色轮廓 */
@@ -588,10 +577,10 @@ input[type="button"]:active {
 input[type="checkbox"]{
     width: 20px !important;
     height: 20px;
-    width: auto;
     appearance: none;/*清楚默认样式*/
     -webkit-appearance: none;
     color:var(--main-color);
+    border: var(--box-border);
     position: relative;
 }
 
@@ -599,9 +588,11 @@ input[type="checkbox"].circle{
     border-radius: 50%;
 }
 
-input[type="checkbox"]:hover, input[type="checkbox"]:focus{
+input[type="checkbox"]:focus{
     outline: none;
 }
+
+
 
 input[type="checkbox"]:checked::after{
     content: "";
@@ -635,9 +626,9 @@ input[type="radio"]:checked,input[type="checkbox"]:checked{
     border-color: currentColor;
 }
 
-input[type="checkbox"]:hover,input[type="radio"]:hover{
-    border-color: currentColor
-}
+
+
+
 
 /*修改button样式*/
 button {
@@ -698,10 +689,6 @@ button:focus{
     outline:none;
 }
 
-button:hover{
-    outline:none;
-    border: 1px solid var(--main-color);
-}
 
 button:active {
    /* background-color: var(--main-color);  */
@@ -710,16 +697,64 @@ button:active {
 }
 
 textarea {
+    font-family: auto;
     appearance: none;/*清楚默认样式*/
     -webkit-appearance: none;
     outline: var(--box-border);
     border: none;
     border-radius: 4px;
     resize: none;
-    font-size: 16px;
+    font-size: 14px;
+    padding: 7px 15px;
 }
 
 textarea:active, textarea:focus{
     outline:  2px solid var(--main-color);
-    /* border: none */
 }
+
+ @media(any-hover:hover){
+    /* 滑块悬浮效果 */
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: var(--scrollbar-thumbhovered-bgc);
+    }
+
+    input:hover{
+        border: var(--box-border);
+        outline: 2px  solid var(--main-color); /* 移除默认的蓝色轮廓 */
+    }
+
+    button:hover{
+        outline:none;
+        border: 1px solid var(--main-color);
+    }
+/*
+    input[type="checkbox"]:hover{
+        border-color: currentColor
+    }*/
+
+    input[type="number"]:hover,input[type="checkbox"]:hover {
+        outline: none; 
+    }
+    input[type="range"]::-webkit-slider-thumb:hover {
+          background-color: currentColor; /* 滑块悬停时的颜色 */
+    }
+    input[type="range"]:hover {
+        outline: none;
+        border: none;
+    }
+
+    input[type="button"]:hover{
+        outline:none;
+        border: 1px solid var(--main-color);
+    }
+
+    input[type="radio"]:hover,input[type="checkbox"]:hover{
+        outline: none;
+        border: 2px solid var(--main-color);
+    }
+
+    input[type="checkbox"]:checked:hover{
+        outline: none;
+        border: 1px solid var(--main-color);
+    }
+  }

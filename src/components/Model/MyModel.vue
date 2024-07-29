@@ -44,7 +44,6 @@ export default({
 
   methods:{
     dragdown(e) {
-      console.log(this.draged,this.show)
       if(this.dragable){
         this.dragedel = this.$refs.modal
         document.addEventListener('mousemove', this.dragmove)
@@ -64,7 +63,6 @@ export default({
       }      
     },
     close() {
-      console.log(this.modalKey)
       this.$parent.modal_show[this.modalKey] = false
     }
   }
@@ -83,7 +81,8 @@ export default({
   z-index: 999;
 }
 .modal {
-  width:400px;height: fit-content;
+  width:400px;
+  height: fit-content;
 }
 
 .modal-slide-enter-active, .modal-slide-leave-active {

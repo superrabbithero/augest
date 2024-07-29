@@ -69,7 +69,6 @@ export default {
       this.$router.push(path)
     },
     handlePageChange(page){
-      console.log("监听："+page)
       this.filteredJson = this.searchPosts(page).results
     },
     searchPosts(pageNumber=1){

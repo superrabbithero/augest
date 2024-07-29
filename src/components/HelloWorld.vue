@@ -51,7 +51,7 @@
     <cpt-view name="表单样式">
       <h5>input</h5>
       <div class="content">
-        <input type="text" value="text" />
+        <input type="text" value="text" placeholder="placeholder" />
         <input type="password" value="password"/>
       </div>
       <div class="content">
@@ -88,11 +88,11 @@
         <button>button</button>
         <button class="fill">fill</button>
         <button class="circle">circle</button>
-        <button class="circle fill">circle fill</button>
+        <button class="circle fill" >circle fill</button>
       </div>
       <h5>textarea</h5>
       <div class="content">
-        <textarea></textarea>
+        <textarea placeholder="这是一个textarea..." cols="30" rows="5"></textarea>
       </div>
     </cpt-view>
   </div>

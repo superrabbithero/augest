@@ -1,7 +1,7 @@
 <template>
     <div  ref="calendar">
       <div v-if="type == 'input'" class="input-container">
-        <input v-model="selectedDate"  type="text" />
+        <input :value="selectedDate" type="text" @input="$emit('update:modelValue', $event.target.value)">
         <svg-icon name="calendar" class="input-icon" size="18" @click="openCalendar()"></svg-icon>
       </div>
       <div :class="{'calendar-container':true,'input':type == 'input','show':show}" style="max-width: 400px;">
@@ -59,6 +59,12 @@
       type: {
         type: String,
         default: "calendar"
+      },
+      modelValue:[String,Number] //实现v-model
+    },
+    watch:{
+      modelValue(val){
+        this.selectedDate = val
       }
     },
     computed:{
@@ -116,7 +122,7 @@
         todayIndex:null,
         viewType:2,
         show:true,
-        selectedDate:`yyyy/mm/dd`
+        selectedDate: this.modelValue
       }
     },
     mounted(){
@@ -133,12 +139,16 @@
       document.removeEventListener('click',this.closeCalendar)
     },
     methods: {
+      changeHandler(val){
+        this.$emit('update:modelValue', val)
+      },
       init(){
         this.today = new Date()
         this.currentMonth = this.today.getMonth()
         this.currentYear = 1900 + this.today.getYear()
         this.getDates(this.currentYear, this.currentMonth)
         this.get16Years()
+        console.log(this)
       },
       getDates(year=this.currentYear,month=this.currentMonth){
         const preLastDate = new Date(year, month, 0)
@@ -242,6 +252,7 @@
           this.show = false
           document.removeEventListener('click',this.closeCalendar)
         }
+        this.changeHandler(this.selectedDate)
       }
     }
   };

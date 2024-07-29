@@ -1,9 +1,33 @@
 <template>
   <my-model :show="modal_show.addPlanShow" modalKey="addPlanShow">
-    <div><calender language="EN" type="input" style="width: 150px;"></calender></div>
-    <div>在（什么时间）之前</div>
-    <div>每天、艾宾豪斯记忆法</div>
-    <div><textarea></textarea></div>
+    <div class="line-content-center">
+      <label>日期：</label>
+      <calender language="EN" type="input" style="width: 150px;" class="form-input" v-model="planDate"></calender>
+      <svg-icon :class="{'text-button':true,'action':compareDate(planDate)}" name="today" size="16" @click="getPlanDate()"></svg-icon>
+      <svg-icon :class="{'text-button':true,'action':compareDate(planDate,1)}" name="tomorrow" size="16" @click="getPlanDate(1)"></svg-icon>
+    </div>
+    <div class="line-content-center">
+      <label>每：</label>
+      <input class="form-input" type="radio" name="repeat" checked/>
+      <label>天</label>
+      <input class="form-input" type="radio" name="repeat" />
+      <label>周</label>
+      <input class="form-input" type="radio" name="repeat" />
+      <label>月</label>
+      <input class="form-input" type="radio" name="repeat" />
+      <label>年</label>
+      <input class="form-input" type="radio" name="repeat" />
+      <label>艾宾豪斯记忆法</label>
+    </div>
+    <div class="line-content-center">
+      <textarea placeholder="做什么呢..." rows="5"></textarea>
+    </div>
+    <div class="line-content-center">
+      <label>紧急</label>
+      <input  type="checkbox" class="circle form-input" checked/>
+      <label>重要</label>
+      <input type="checkbox" class="circle form-input"/>
+    </div>
     
   </my-model>
 	<div class="card-content main-content" style="text-align: left;">
@@ -53,6 +77,17 @@
 import calender from "./Model/Calendar.vue"
 
 export default {
+  computed:{
+    compareDate(){
+        return (date1,n = 0)=>{
+          const strList = date1.split('/')
+          const a = new Date(strList[0],Number(strList[1])-1,strList[2])
+          const date = new Date()
+          date.setDate(date.getDate() + n)
+          return `${a.getYear()}${a.getMonth()}${a.getDate()}` == `${date.getYear()}${date.getMonth()}${date.getDate()}`
+        }
+      }
+  },
   components: {
     calender
   },
@@ -67,12 +102,19 @@ export default {
       modal_show:{
         addPlanShow:false,
       },
+      planDate:"yyyy/mm/dd"
     }
   },
   mounted(){
   	this.getWeekDate()
   },
   methods: {
+    getPlanDate(n = 0){
+      const date = new Date()
+      date.setDate(date.getDate() + n)
+
+      this.planDate = `${date.getYear()+1900}/${(date.getMonth()+1)>10?'':0}${date.getMonth()+1}/${date.getDate()>10?'':0}${date.getDate()}`;
+    },
     showAddPlan(){
       this.modal_show.addPlanShow = true
     },
@@ -95,7 +137,7 @@ export default {
       const month = today.getMonth() + 1; // 月份从0开始，需要加1
       const day = today.getDate();
 
-      return `${year}-${month}-${day}`;
+      return `${year}/${month}/${day}`;
     },
     getWeekDate(firstDay = null){
       const getDateNDaysAgo = (date, n) => {
@@ -168,18 +210,7 @@ export default {
   border-radius: 5px;
 }  
 
-.quadrant-list .list-item.item-0:hover{
-  background-color: #f9A82230;
-}  
-.quadrant-list .list-item.item-1:hover{
-  background-color: #F9663530;
-}  
-.quadrant-list .list-item.item-2:hover{
-  background-color: #2bbaa530;
-}  
-.quadrant-list .list-item.item-3:hover{
-  background-color: #93d3a230;
-}  
+
 
 .list-add-button-0 {
   width: 1rem;
@@ -223,6 +254,54 @@ export default {
   padding: 0px 4px 2px 4px;
 }
 
+.line-content-center{
+  flex-wrap: wrap;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  
+}
 
+.line-content-center label{
+  height: 20px;
+  line-height: 20px;
+}
+
+.line-content-center textarea {
+  width: 100%;
+}
+
+.form-input {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.text-button{
+  margin:0 10px;
+}
+
+.text-button.action{
+  color: var(--main-color);
+}
+
+@media(any-hover:hover){
+  .text-button:hover{
+    color: var(--main-color);
+  }
+
+  .quadrant-list .list-item.item-0:hover{
+    background-color: #f9A82230;
+  }  
+  .quadrant-list .list-item.item-1:hover{
+    background-color: #F9663530;
+  }  
+  .quadrant-list .list-item.item-2:hover{
+    background-color: #2bbaa530;
+  }  
+  .quadrant-list .list-item.item-3:hover{
+    background-color: #93d3a230;
+  }  
+
+}
 
 </style>
