@@ -20,7 +20,7 @@
               </div>
           </div>
           <div v-if="viewType == 2" class="cows">
-              <div v-for="(date, index) in currentDates" :class="{'date':true,'notCur': notCurClass(index) , 'today':todayClass(date)}" @click="selectDate(index)">
+              <div v-for="(date, index) in currentDates" :class="{'date':true,'notCur': notCurClass(index) , 'today':!notCurClass(index) && todayClass(date)}" @click="selectDate(index)">
                   <div  class="content">
                       {{ date }}
                   </div>

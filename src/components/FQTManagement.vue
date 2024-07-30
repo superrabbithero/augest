@@ -2,31 +2,36 @@
   <my-model :show="modal_show.addPlanShow" modalKey="addPlanShow">
     <div class="line-content-center">
       <label>日期：</label>
-      <calender language="EN" type="input" style="width: 150px;" class="form-input" v-model="planDate"></calender>
-      <svg-icon :class="{'text-button':true,'action':compareDate(planDate)}" name="today" size="16" @click="getPlanDate()"></svg-icon>
-      <svg-icon :class="{'text-button':true,'action':compareDate(planDate,1)}" name="tomorrow" size="16" @click="getPlanDate(1)"></svg-icon>
+      <calender language="EN" type="input" style="width: 150px;" class="form-input" v-model="management.date"></calender>
+      <svg-icon :class="{'text-button':true,'action':compareDate(management.date)}" name="today" size="16" @click="getManagementDate()"></svg-icon>
+      <svg-icon :class="{'text-button':true,'action':compareDate(management.date,1)}" name="tomorrow" size="16" @click="getManagementDate(1)"></svg-icon>
     </div>
     <div class="line-content-center">
-      <label>每：</label>
-      <input class="form-input" type="radio" name="repeat" checked/>
-      <label>天</label>
-      <input class="form-input" type="radio" name="repeat" />
-      <label>周</label>
-      <input class="form-input" type="radio" name="repeat" />
-      <label>月</label>
-      <input class="form-input" type="radio" name="repeat" />
-      <label>年</label>
-      <input class="form-input" type="radio" name="repeat" />
+      <input class="form-input" type="radio" name="repeat" value="0" v-model="management.repeat"/>
+      <label>不重复</label>
+      <label></label>
+      <input class="form-input" type="radio" name="repeat" value="1" v-model="management.repeat" checked/>
+      <label>每天</label>
+      <input class="form-input" type="radio" name="repeat" value="2" v-model="management.repeat"/>
+      <label>每周</label>
+      <input class="form-input" type="radio" name="repeat" value="3" v-model="management.repeat"/>
+      <label>每月</label>
+      <input class="form-input" type="radio" name="repeat" value="4" v-model="management.repeat"/>
+      <label>每年</label>
+      <input class="form-input" type="radio" name="repeat" value="5" v-model="management.repeat"/>
       <label>艾宾豪斯记忆法</label>
     </div>
     <div class="line-content-center">
-      <textarea placeholder="做什么呢..." rows="5"></textarea>
+      <textarea placeholder="做什么呢..." rows="5" v-model="management.content"></textarea>
     </div>
     <div class="line-content-center">
       <label>紧急</label>
-      <input  type="checkbox" class="circle form-input" checked/>
+      <input  type="checkbox" class="circle form-input" v-model="management.urgent" checked/>
       <label>重要</label>
-      <input type="checkbox" class="circle form-input"/>
+      <input type="checkbox" class="circle form-input" v-model="management.important"/>
+    </div>
+    <div class="line-content-center left">
+      <button class="fill">确定</button>
     </div>
     
   </my-model>
@@ -102,18 +107,33 @@ export default {
       modal_show:{
         addPlanShow:false,
       },
-      planDate:"yyyy/mm/dd"
+      management:{
+        date:"yyyy/mm/dd",
+        repeat:0,
+        content:"",
+        urgent:false,
+        important:false
+      }
     }
   },
   mounted(){
   	this.getWeekDate()
   },
   methods: {
-    getPlanDate(n = 0){
+    initManagementDate(){
+      this.management = {
+        date:"yyyy/mm/dd",
+        repeat:0,
+        content:"",
+        urgent:false,
+        important:false
+      }
+    },
+    getManagementDate(n = 0){
       const date = new Date()
       date.setDate(date.getDate() + n)
 
-      this.planDate = `${date.getYear()+1900}/${(date.getMonth()+1)>10?'':0}${date.getMonth()+1}/${date.getDate()>10?'':0}${date.getDate()}`;
+      this.management.date = `${date.getYear()+1900}/${(date.getMonth()+1)>10?'':0}${date.getMonth()+1}/${date.getDate()>10?'':0}${date.getDate()}`;
     },
     showAddPlan(){
       this.modal_show.addPlanShow = true
@@ -259,7 +279,10 @@ export default {
   display: flex;
   align-items: center;
   font-size: 14px;
-  
+}
+
+.line-content-center.left{
+  justify-content: end;
 }
 
 .line-content-center label{
