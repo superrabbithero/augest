@@ -5,7 +5,7 @@
 </template>
 <script>
 
-// import 'highlight.js'
+import 'highlight.js'
 // import 'highlightjs-line-numbers.js';
 export default {
     props:{
@@ -75,6 +75,7 @@ export default {
 <style>
 
     @import url('@/assets/css/github-markdown.css');
+/*    @import url('@/assets/css/atom-one-dark.css');*/
     
     .markdown-body {
        color:var(--fontnormal);

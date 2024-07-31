@@ -7,18 +7,23 @@
       <svg-icon :class="{'text-button':true,'action':compareDate(management.date,1)}" name="tomorrow" size="16" @click="getManagementDate(1)"></svg-icon>
     </div>
     <div class="line-content-center">
+      <label>截止时间:</label>
+      <input type="datetime-local" style="width:150px" v-model="management.deadline"/>
+      <svg-icon class="text-button" name="delete02" size="16" @click="management.deadline=null"></svg-icon>
+    </div>
+    <div class="line-content-center">
       <input class="form-input" type="radio" name="repeat" value="0" v-model="management.repeat"/>
       <label>不重复</label>
       <label></label>
       <input class="form-input" type="radio" name="repeat" value="1" v-model="management.repeat" checked/>
       <label>每天</label>
-      <input class="form-input" type="radio" name="repeat" value="2" v-model="management.repeat"/>
+      <input class="form-input" type="radio" name="repeat" value="7" v-model="management.repeat"/>
       <label>每周</label>
-      <input class="form-input" type="radio" name="repeat" value="3" v-model="management.repeat"/>
+      <input class="form-input" type="radio" name="repeat" value="30" v-model="management.repeat"/>
       <label>每月</label>
-      <input class="form-input" type="radio" name="repeat" value="4" v-model="management.repeat"/>
+      <input class="form-input" type="radio" name="repeat" value="-1" v-model="management.repeat"/>
       <label>每年</label>
-      <input class="form-input" type="radio" name="repeat" value="5" v-model="management.repeat"/>
+      <input class="form-input" type="radio" name="repeat" value="-2" v-model="management.repeat"/>
       <label>艾宾豪斯记忆法</label>
     </div>
     <div class="line-content-center">
@@ -31,7 +36,7 @@
       <input type="checkbox" class="circle form-input" v-model="management.important"/>
     </div>
     <div class="line-content-center left">
-      <button class="fill">确定</button>
+      <button class="fill" @click="addManagement()">确定</button>
     </div>
     
   </my-model>
@@ -85,11 +90,15 @@ export default {
   computed:{
     compareDate(){
         return (date1,n = 0)=>{
-          const strList = date1.split('/')
-          const a = new Date(strList[0],Number(strList[1])-1,strList[2])
-          const date = new Date()
-          date.setDate(date.getDate() + n)
-          return `${a.getYear()}${a.getMonth()}${a.getDate()}` == `${date.getYear()}${date.getMonth()}${date.getDate()}`
+          if(date1){
+            const strList = date1.split('/')
+            const a = new Date(strList[0],Number(strList[1])-1,strList[2])
+            const date = new Date()
+            date.setDate(date.getDate() + n)
+            return `${a.getYear()}${a.getMonth()}${a.getDate()}` == `${date.getYear()}${date.getMonth()}${date.getDate()}`
+          }else{
+            return false
+          }
         }
       }
   },
@@ -108,45 +117,26 @@ export default {
         addPlanShow:false,
       },
       management:{
-        date:"yyyy/mm/dd",
+        date:null,
+        deadline:null,
         repeat:0,
         content:"",
         urgent:false,
-        important:false
-      }
+        important:false,
+        repeatDate:[],
+        finishedDate:[]
+      },
+      managementList:[],
     }
   },
   mounted(){
   	this.getWeekDate()
   },
   methods: {
-    initManagementDate(){
-      this.management = {
-        date:"yyyy/mm/dd",
-        repeat:0,
-        content:"",
-        urgent:false,
-        important:false
-      }
-    },
-    getManagementDate(n = 0){
-      const date = new Date()
-      date.setDate(date.getDate() + n)
-
-      this.management.date = `${date.getYear()+1900}/${(date.getMonth()+1)>10?'':0}${date.getMonth()+1}/${date.getDate()>10?'':0}${date.getDate()}`;
-    },
-    showAddPlan(){
-      this.modal_show.addPlanShow = true
-    },
-    preWeek(){
-      const firstDay = new Date(this.currentWeek[0])
-      firstDay.setDate(firstDay.getDate() - 7)
-      this.getWeekDate(firstDay)
-    },
-    nextWeek(){
-      const firstDay = new Date(this.currentWeek[0])
-      firstDay.setDate(firstDay.getDate() + 7)
-      this.getWeekDate(firstDay)
+    getDate(strDate){
+      const strList = strDate.split('/')
+      const date = new Date(strList[0],Number(strList[1])-1,strList[2])
+      return date
     },
     getFormattedDate(date, n=null) {
       const today = new Date(date);
@@ -159,6 +149,59 @@ export default {
 
       return `${year}/${month}/${day}`;
     },
+    initManagementDate(){
+      this.management = {
+        date:null,
+        deadline:null,
+        repeat:0,
+        content:"",
+        urgent:false,
+        important:false,
+        repeatDate:[],
+        finishedDate:[]
+      }
+    },
+    addManagement(){
+      const data = this.management
+      if(data.date && data.content){
+        if(data.repeat == -2){
+          const date = this.getDate(data.date)
+          const repeatList = [0,1,3,7,14,29,59]
+          data.repeatDate = []
+          repeatList.forEach((n)=>{
+            data.repeatDate.push(this.getFormattedDate(date,n))
+          })
+        }
+        this.managementList.push(this.management)
+        this.$toast.show('添加成功','success')
+        this.modal_show.addPlanShow = false 
+      }else{
+        this.$toast.show('时间或内容不得为空','error') 
+      }
+      
+
+    },
+    getManagementDate(n = 0){
+      const date = new Date()
+      date.setDate(date.getDate() + n)
+
+      this.management.date = `${date.getYear()+1900}/${(date.getMonth()+1)>10?'':0}${date.getMonth()+1}/${date.getDate()>10?'':0}${date.getDate()}`;
+    },
+    showAddPlan(){
+      this.initManagementDate()
+      this.modal_show.addPlanShow = true
+    },
+    preWeek(){
+      const firstDay = new Date(this.currentWeek[0])
+      firstDay.setDate(firstDay.getDate() - 7)
+      this.getWeekDate(firstDay)
+    },
+    nextWeek(){
+      const firstDay = new Date(this.currentWeek[0])
+      firstDay.setDate(firstDay.getDate() + 7)
+      this.getWeekDate(firstDay)
+    },
+   
     getWeekDate(firstDay = null){
       const getDateNDaysAgo = (date, n) => {
         const newDate = new Date(date);

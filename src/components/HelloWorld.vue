@@ -1,10 +1,12 @@
 <template>
   <div class="container left">
+    <highlightjs language="javascript" :code="htmlcontent"></highlightjs>
     <cpt-view name="公式组件">
       <TheLatex2Math :latex="'E = MC^{2}'" />
     </cpt-view>
     
     <cpt-view name="Json组件">
+
       <JsonModel :json-data="jsonData"></JsonModel>
     </cpt-view>
 
@@ -81,7 +83,8 @@
       <div class="content">
         <input type="date"/>
         <input type="month"/>
-        <input type="time"/>
+        <input type="time" />
+        <input type="datetime-local" style="width:150px" />
       </div>
       <h5>button</h5>
       <div class="content">

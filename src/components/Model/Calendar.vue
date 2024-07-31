@@ -1,7 +1,7 @@
 <template>
     <div  ref="calendar">
       <div v-if="type == 'input'" class="input-container">
-        <input :value="selectedDate" type="text" @input="$emit('update:modelValue', $event.target.value)">
+        <input :value="selectedDate ? selectedDate : 'yyyy/mm/dd'" type="text" @input="$emit('update:modelValue', $event.target.value)">
         <svg-icon name="calendar" class="input-icon" size="18" @click="openCalendar()"></svg-icon>
       </div>
       <div :class="{'calendar-container':true,'input':type == 'input','show':show}" style="max-width: 400px;">
@@ -20,7 +20,7 @@
               </div>
           </div>
           <div v-if="viewType == 2" class="cows">
-              <div v-for="(date, index) in currentDates" :class="{'date':true,'notCur': notCurClass(index) , 'today':!notCurClass(index) && todayClass(date)}" @click="selectDate(index)">
+              <div v-for="(date, index) in currentDates" :class="{'date':true,'notCur': notCurClass(index) , 'today':todayClass(date)}" @click="selectDate(index)">
                   <div  class="content">
                       {{ date }}
                   </div>
@@ -102,7 +102,8 @@
             return true
           return false
         }
-      }
+      },
+      
     },
     data(){
       return{
