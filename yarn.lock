@@ -1054,7 +1054,7 @@
 
 "@highlightjs/vue-plugin@^2.1.0":
   version "2.1.0"
-  resolved "https://registry.npmjs.org/@highlightjs/vue-plugin/-/vue-plugin-2.1.0.tgz"
+  resolved "https://registry.yarnpkg.com/@highlightjs/vue-plugin/-/vue-plugin-2.1.0.tgz#b7c41e3597a46975665b10cad57882cbde1d1594"
   integrity sha512-E+bmk4ncca+hBEYRV2a+1aIzIV0VSY/e5ArjpuSN9IO7wBJrzUE2u4ESCwrbQD7sAy+jWQjkV5qCCWgc+pu7CQ==
 
 "@humanwhocodes/config-array@^0.5.0":

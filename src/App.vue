@@ -74,8 +74,6 @@
 </template>
 
 <script>
-import { ref } from 'vue';
-import("highlight.js/styles/atom-one-dark.css");
 import IconWrapper from './components/IconWrapper.vue';
 
 export default {
@@ -162,6 +160,7 @@ export default {
 
 @import url('@/assets/fonts/index.css');
 @import url('@/assets/css/index.css');
+@import url('@/assets/css/hljs-atom-one.css');
 
 
 #app {

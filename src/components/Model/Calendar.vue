@@ -238,12 +238,12 @@
           this.show = true
           document.addEventListener('click',this.closeCalendar)
           console.log(offsetTop)
-          el.style.top=offsetTop+"px"
         }else{
           this.show = false
+          
           document.removeEventListener('click',this.closeCalendar)
         }
-        console.log("@@@@"+this.$refs.calendarContainer.style.top)  
+        el.style.top=offsetTop+"px"
         
       },
       closeCalendar(e){
@@ -251,7 +251,6 @@
           this.show = false
           document.removeEventListener('click',this.closeCalendar)
         }
-        console.log("@@@@"+this.$refs.calendarContainer.style.top)  
       },
       selectDate(index){
         if(index == -1){

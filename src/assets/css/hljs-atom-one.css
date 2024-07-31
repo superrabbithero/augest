@@ -1,0 +1,40 @@
+:root {
+    --color1:#383a42;
+    --bcg1:#fafafa;
+    --color2:#a0a1a7;
+    --color3:#a626a4;
+    --color4:#e45649;
+    --color5:#0184bb;
+    --color6:#50a14f;
+    --color7:#986801;
+    --color8:#4078f2;
+    --color9:#c18401;
+}
+.dark {
+    --color1:#abb2bf;
+    --bcg1:#282c34;
+    --color2:#5c6370;
+    --color3:#c678dd;
+    --color4:#e06c75;
+    --color5:#56b6c2;
+    --color6:#98c379;
+    --color7:#d19a66;
+    --color8:#61aeee;
+    --color9:#e6c07b;
+}
+
+pre code.hljs{display:block;overflow-x:auto;padding:1em}
+code.hljs{padding:3px 5px}
+.hljs{color:var(--color1);background:var(--bcg1)}
+.hljs-comment,.hljs-quote{color:var(--color2);font-style:italic}
+.hljs-doctag,.hljs-formula,.hljs-keyword{color:var(--color3)}
+.hljs-deletion,.hljs-name,.hljs-section,.hljs-selector-tag,.hljs-subst{color:var(--color4)}
+.hljs-literal{color:var(--color5)}
+.hljs-addition,.hljs-attribute,.hljs-meta .hljs-string,.hljs-regexp,.hljs-string{color:var(--color6)}
+.hljs-attr,.hljs-number,.hljs-selector-attr,.hljs-selector-class,.hljs-selector-pseudo,.hljs-template-variable,.hljs-type,.hljs-variable{color:var(--color7)}
+.hljs-bullet,.hljs-link,.hljs-meta,.hljs-selector-id,.hljs-symbol,.hljs-title{color:var(--color8)}
+.hljs-built_in,.hljs-class .hljs-title,.hljs-title.class_{color:var(--color9)}
+.hljs-emphasis{font-style:italic}
+.hljs-strong{font-weight:700}
+.hljs-link{text-decoration:underline}
+
