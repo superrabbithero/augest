@@ -75,6 +75,7 @@
 
 <script>
 import { ref } from 'vue';
+import("highlight.js/styles/atom-one-dark.css");
 import IconWrapper from './components/IconWrapper.vue';
 
 export default {
@@ -143,7 +144,7 @@ export default {
       }
     },
 
-    changeStyle(){
+    async changeStyle(){
       this.isDark = !this.isDark//点击切换模式
       localStorage.setItem('isDark',this.isDark)
       if(this.isDark){
@@ -326,6 +327,10 @@ export default {
 .head-item.home:hover > .homeicon{
   display: inline-block!important;
 }*/
+
+code{
+  border-radius: 5px;
+}
 
 
 </style>

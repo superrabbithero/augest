@@ -1,16 +1,18 @@
 <template>
-  <div class="container left">
-    <highlightjs language="javascript" :code="htmlcontent"></highlightjs>
+  <div class="container left" style="height: auto;">
+    
     <cpt-view name="公式组件">
+      <highlightjs language="html" code="<TheLatex2Math :latex=&quot;'E = MC^{2}'&quot; />"></highlightjs>
       <TheLatex2Math :latex="'E = MC^{2}'" />
     </cpt-view>
     
     <cpt-view name="Json组件">
-
-      <JsonModel :json-data="jsonData"></JsonModel>
+      <highlightjs language="html" code="<JsonModel json-data=&quot;jsonData&quot;></JsonModel>"></highlightjs>
+      <JsonModel :jsonData="jsonData"></JsonModel>
     </cpt-view>
 
     <cpt-view name="Toast">
+      <highlightjs language="javascript" code="this.$toast.show('Hello, world!','info');"></highlightjs>
       <input  type="button" value="展示toast" @click="showToast" />
     </cpt-view>
 
@@ -38,16 +40,16 @@
       </div>
     </cpt-view>
 
-    <cpt-view name="日历" defaultShow="true">
+    <cpt-view name="日历" >
       <h5>calender</h5>
       <div class="content">
         <calender language="EN" style="width: 100%;"></calender>
       </div>
       <h5>input</h5>
+      <highlightjs language="html" code="<calender language=&quot;EN&quot; type=&quot;input&quot; ></calender>"></highlightjs>
       <div class="content">
         <calender language="EN" type="input" style="width: 150px;"></calender>
       </div>
-
     </cpt-view>
     
     <cpt-view name="表单样式">
@@ -204,6 +206,7 @@ export default {
   .content > *{
     margin:0 10px 10px 0;
   }
+
 </style>
 
 

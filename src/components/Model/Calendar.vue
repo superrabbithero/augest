@@ -4,7 +4,7 @@
         <input :value="selectedDate ? selectedDate : 'yyyy/mm/dd'" type="text" @input="$emit('update:modelValue', $event.target.value)">
         <svg-icon name="calendar" class="input-icon" size="18" @click="openCalendar()"></svg-icon>
       </div>
-      <div :class="{'calendar-container':true,'input':type == 'input','show':show}" style="max-width: 400px;">
+      <div ref="calendarContainer" :class="{'calendar-container':true,'input':type == 'input','show':show}" style="max-width: 400px;">
           <div class="cows title" >
             <svg-icon name="arrow-left" @click="pre()" :size="type == 'input'?16:25"></svg-icon>
             <div style="font-family: SmileySans-Oblique;" @click="viewType = viewType ? viewType-1 : 0">
@@ -123,7 +123,8 @@
         todayIndex:null,
         viewType:2,
         show:true,
-        selectedDate: this.modelValue
+        selectedDate: this.modelValue,
+        log:""
       }
     },
     mounted(){
@@ -135,6 +136,7 @@
           this.show = false
         }
         this.init()
+        console.log("@@@@"+this.$refs.calendarContainer.style.top)
     },
     unmounted(){
       document.removeEventListener('click',this.closeCalendar)
@@ -149,7 +151,6 @@
         this.currentYear = 1900 + this.today.getYear()
         this.getDates(this.currentYear, this.currentMonth)
         this.get16Years()
-        console.log(this)
       },
       getDates(year=this.currentYear,month=this.currentMonth){
         const preLastDate = new Date(year, month, 0)
@@ -176,7 +177,6 @@
         
         const first10Year = Math.floor(year/10)*10
         const index = (first10Year-1900)%4
-        console.log(index, first10Year)
         const firstYear = first10Year - index
         for (let i = 0; i < 16; i++) {
           this.current16Years[i] = firstYear + i
@@ -221,14 +221,29 @@
         }
       },
       openCalendar(){
+        const el = this.$refs.calendarContainer
+        el.style.top=null
+        const elHeight = el.clientHeight
+        console.log("elHeight:"+elHeight)
+        const inputRect = this.$refs.calendar.getBoundingClientRect()
+        let offsetTop = this.$refs.calendar.offsetTop
+        const offsetBottom = window.innerHeight - inputRect.bottom
+        console.log("offsetBottom:"+offsetBottom)
+        if(offsetBottom > elHeight){
+          offsetTop += inputRect.height
+        }else{
+          offsetTop -= elHeight
+        }
         if(!this.show){
           this.show = true
           document.addEventListener('click',this.closeCalendar)
+          console.log(offsetTop)
+          el.style.top=offsetTop+"px"
         }else{
           this.show = false
           document.removeEventListener('click',this.closeCalendar)
         }
-          
+        console.log("@@@@"+this.$refs.calendarContainer.style.top)  
         
       },
       closeCalendar(e){
@@ -236,6 +251,7 @@
           this.show = false
           document.removeEventListener('click',this.closeCalendar)
         }
+        console.log("@@@@"+this.$refs.calendarContainer.style.top)  
       },
       selectDate(index){
         if(index == -1){
@@ -319,9 +335,6 @@
     width: 100%;
   }
 
-  
-  
-
   @media(any-hover:hover){
     .content:hover{
       background-color: var(--white-highlight);
@@ -340,6 +353,7 @@
   .calendar-container.input {
     position: absolute;
     width: 220px;
+    height: 268px;
     opacity: 0;
     z-index: 9;
     padding: 5px;

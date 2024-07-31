@@ -90,6 +90,7 @@
     --color-done-fg: #8250df;
     --color-done-emphasis: #8250df;
 
+    @import 'highlight.js/styles/atom-one-light.css';
   
 }
 
@@ -115,6 +116,7 @@ img {
   }
 
 .dark{
+    @import url("highlight.js/styles/atom-one-dark.css");
   --main-color : #c89f3d;  
   --content-bgc:#18171d;
   /*  内容的背景颜色*/

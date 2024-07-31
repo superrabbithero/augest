@@ -1,8 +1,8 @@
 <template>
     <h4 @click="openContent()">{{name}}
-      <svg-icon :class="{'component-botton':true,'open':show}" name="arrow-right" size="16"></svg-icon>
+      <svg-icon class="component-botton" name="arrow-right" size="16"></svg-icon>
     </h4>
-    <div class="component-content" ref="content">
+    <div :class="{'component-content':true,'close':!show }" ref="content">
       <div style="padding: 0 5px 8px 5px;">
         <slot></slot>
       </div>
@@ -57,9 +57,9 @@ export default {
     width: 100%;
     border-bottom: var(--box-border);
     overflow: hidden;
-/*    margin-bottom: 1rem;*/
     transition: height 0.3s ease;
   }
+
   h4 {
     flex: 0 0 auto;
     cursor: pointer;

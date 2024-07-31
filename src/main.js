@@ -14,10 +14,12 @@ import "@/icons"
 import SvgIcon from "./components/Model/svgIcon.vue"
 
 import hljs from "highlight.js/lib/core";
-// import javascript from "highlight.js/lib/languages/javascript"; //引入语言
-// hljs.registerLanguage("javascript", javascript);
+import javascript from "highlight.js/lib/languages/javascript"; //引入语言
+import html from "highlight.js/lib/languages/vbscript-html"
+hljs.registerLanguage("javascript", javascript);
+hljs.registerLanguage("html", html);
 import hljsVuePlugin from "@highlightjs/vue-plugin";
-import "highlight.js/styles/stackoverflow-light.css";
+
 import "highlight.js/lib/common";
 
 
@@ -49,7 +51,7 @@ const app = createApp(App)
 app
 	.use(router)
 	.use(ToastPlugin)
-  // .use(hljsVuePlugin)
+  .use(hljsVuePlugin)
 app
 	.component('json-model', JsonModel)
 	.component('my-model', MyModel)
@@ -57,7 +59,6 @@ app
 	.component('md-loader',MdLoader)
   .component('IconWrapper',IconWrapper)
   .component('svg-icon',SvgIcon)
-  .component('highlightjs', hljsVuePlugin.component)
 // app.config.globalProperties.$MathJax = MathJax
 
 // 将常量挂载到应用程序的全局配置中
