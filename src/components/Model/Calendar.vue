@@ -6,7 +6,7 @@
       </div>
       <div v-else-if="type == 'datetime'" class="input-container">
         <input :value="`${selectedDate ? selectedDate:'yyyy/mm/dd'} ${selectedTime ? selectedTime : '--:--'}`" type="text" @input="$emit('update:modelValue', $event.target.value)">
-        <svg-icon name="calendar" class="input-icon" size="18" @click="openCalendar()"></svg-icon>
+        <svg-icon name="calendar-datetime" class="input-icon" size="18" @click="openCalendar()"></svg-icon>
       </div>
       <div ref="calendarContainer" :class="{'calendar-container':true,'input':type != 'calendar','show':show}">
         <div class="date-select">
@@ -163,12 +163,18 @@
             hourEl.style.top = `${(index-1)*this.timeHeight}px`
             if(index == 4){
             hourEl.style.backgroundColor = "var(--main-color)"
+            let time = this.selectedTime.split(':')
+            time[0] = hourEl.innerText
+            this.selectedTime = time.join(':');
             }
           })
           this.$refs.min.forEach((minEl, index)=>{
             minEl.style.top = `${(index-1)*this.timeHeight}px`
             if(index == 4){
             minEl.style.backgroundColor = "var(--main-color)"
+            let time = this.selectedTime.split(':')
+            time[1] = minEl.innerText
+            this.selectedTime = time.join(':');
             }
           })
         }

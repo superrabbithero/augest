@@ -50,6 +50,7 @@
       <div class="content">
         <calender language="EN" type="input" style="width: 150px;"></calender>
       </div>
+      <highlightjs language="html" code="<calender language=&quot;EN&quot; type=&quot;datetime&quot; ></calender>"></highlightjs>
       <div class="content">
         <calender language="EN" type="datetime" style="width: 150px;"></calender>
       </div>
