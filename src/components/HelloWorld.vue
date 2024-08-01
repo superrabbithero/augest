@@ -50,6 +50,9 @@
       <div class="content">
         <calender language="EN" type="input" style="width: 150px;"></calender>
       </div>
+      <div class="content">
+        <calender language="EN" type="datetime" style="width: 150px;"></calender>
+      </div>
     </cpt-view>
     
     <cpt-view name="表单样式">

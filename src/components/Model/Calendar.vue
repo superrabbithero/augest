@@ -4,7 +4,12 @@
         <input :value="selectedDate ? selectedDate : 'yyyy/mm/dd'" type="text" @input="$emit('update:modelValue', $event.target.value)">
         <svg-icon name="calendar" class="input-icon" size="18" @click="openCalendar()"></svg-icon>
       </div>
-      <div ref="calendarContainer" :class="{'calendar-container':true,'input':type == 'input','show':show}" style="max-width: 400px;">
+      <div v-else-if="type == 'datetime'" class="input-container">
+        <input :value="`${selectedDate ? selectedDate:'yyyy/mm/dd'} ${selectedTime ? selectedTime : '--:--'}`" type="text" @input="$emit('update:modelValue', $event.target.value)">
+        <svg-icon name="calendar" class="input-icon" size="18" @click="openCalendar()"></svg-icon>
+      </div>
+      <div ref="calendarContainer" :class="{'calendar-container':true,'input':type != 'calendar','show':show}">
+        <div class="date-select">
           <div class="cows title" >
             <svg-icon name="arrow-left" @click="pre()" :size="type == 'input'?16:25"></svg-icon>
             <div style="font-family: SmileySans-Oblique;" @click="viewType = viewType ? viewType-1 : 0">
@@ -40,9 +45,23 @@
                   </div>
               </div>
           </div>
-          <div v-if="type == 'input'" class="rows">
+          <div v-if="type != 'calendar'" class="rows">
             <button class="input-button" @click="selectDate(-1)">今天</button>
+            <button class="input-button" @click="selectNowTime()">现在</button>
           </div>
+        </div>
+        <div v-if="type == 'datetime'" class="time-select" >
+          <div class="time-scroll" @wheel="wheelHourEvent">
+            <div v-for="hour in 24" class="time" ref="hour">
+              {{hour > 10 ? hour-1 :'0'+ (hour-1)}}
+            </div>
+          </div>
+          <div class="time-scroll" @wheel="wheelMinEvent">
+            <div v-for="min in 60" class="time" ref="min">
+              {{min > 10 ? min-1 :'0'+ (min-1)}}
+            </div>
+          </div>    
+        </div> 
       </div>
     </div>
     
@@ -122,9 +141,11 @@
         lastIndex:0,
         todayIndex:null,
         viewType:2,
-        show:true,
+        show:false,
         selectedDate: this.modelValue,
-        log:""
+        log:"",
+        timeHeight:33,
+        selectedTime:"--:--"
       }
     },
     mounted(){
@@ -132,16 +153,91 @@
           this.monthTitle = this.monthTitleEN
           this.weekTitle = this.weekDayCN
         }
-        if(this.type == 'input'){
-          this.show = false
+        if(this.type == 'calendar'){
+          this.show = true
         }
         this.init()
-        console.log("@@@@"+this.$refs.calendarContainer.style.top)
+        if(this.type == 'datetime'){
+          this.timeHeight = this.$refs.hour[0].clientHeight
+          this.$refs.hour.forEach((hourEl, index)=>{
+            hourEl.style.top = `${(index-1)*this.timeHeight}px`
+            if(index == 4){
+            hourEl.style.backgroundColor = "var(--main-color)"
+            }
+          })
+          this.$refs.min.forEach((minEl, index)=>{
+            minEl.style.top = `${(index-1)*this.timeHeight}px`
+            if(index == 4){
+            minEl.style.backgroundColor = "var(--main-color)"
+            }
+          })
+        }
     },
     unmounted(){
       document.removeEventListener('click',this.closeCalendar)
     },
     methods: {
+      wheelHourEvent(e, target = null){
+        event.preventDefault()
+        let i = target!=null ? target - Number(this.selectedTime.split(':')[0]) : 1
+        if(target!=null) console.log(`${i},${target},${Number(this.selectedTime.split(':')[0])}`)
+        let deltaY = target ? (i>0 ? 100 : -100) : event.deltaY
+        i = Math.abs(i)
+        while(i--){
+          this.$refs.hour.forEach((hourEl, index)=>{
+            let top = Number(hourEl.style.top.split('px')[0])+(deltaY==100 ? -this.timeHeight:this.timeHeight)
+            if(top < -this.timeHeight){
+              top = this.timeHeight * 22
+            }else if(top > this.timeHeight * 22){
+              top = -this.timeHeight
+            }
+            hourEl.style.top = `${top}px`
+            if(top == 3*this.timeHeight){
+              hourEl.style.backgroundColor = "var(--main-color)"
+              let time = this.selectedTime.split(':')
+              time[0] = hourEl.innerText
+              this.selectedTime = time.join(':');
+
+            }else{
+              hourEl.style.backgroundColor = "transparent"
+            }
+          })
+        }
+          
+      },
+      wheelMinEvent(e,target = null){
+        event.preventDefault()
+        let i = target!=null ? target - Number(this.selectedTime.split(':')[1]) : 1
+        if(target!=null) console.log(`${i},${target},${Number(this.selectedTime.split(':')[0])}`)
+        let deltaY = target ? (i>0 ? 100 : -100) : event.deltaY
+        i = Math.abs(i)
+        while(i--){
+          this.$refs.min.forEach((minEl, index)=>{
+            let top = Number(minEl.style.top.split('px')[0])+(deltaY==100 ? -this.timeHeight:this.timeHeight)
+            if(top < -this.timeHeight){
+              top = this.timeHeight * 58
+            }else if(top > this.timeHeight * 58){
+              top = -this.timeHeight
+            }
+            minEl.style.top = `${top}px`
+            if(top == 3*this.timeHeight){
+              minEl.style.backgroundColor = "var(--main-color)"
+              let time = this.selectedTime.split(':')
+              time[1] = minEl.innerText
+              this.selectedTime = time.join(':');
+            }else{
+              minEl.style.backgroundColor = "transparent"
+            }
+          })
+        }
+          
+      },
+      selectNowTime(e){
+        this.selectDate(-1)
+        const now = new Date()
+        this.wheelHourEvent(e,now.getHours())
+        this.wheelMinEvent(e,now.getMinutes())
+      },
       changeHandler(val){
         this.$emit('update:modelValue', val)
       },
@@ -224,11 +320,9 @@
         const el = this.$refs.calendarContainer
         el.style.top=null
         const elHeight = el.clientHeight
-        console.log("elHeight:"+elHeight)
         const inputRect = this.$refs.calendar.getBoundingClientRect()
         let offsetTop = this.$refs.calendar.offsetTop
         const offsetBottom = window.innerHeight - inputRect.bottom
-        console.log("offsetBottom:"+offsetBottom)
         if(offsetBottom > elHeight){
           offsetTop += inputRect.height
         }else{
@@ -237,7 +331,6 @@
         if(!this.show){
           this.show = true
           document.addEventListener('click',this.closeCalendar)
-          console.log(offsetTop)
         }else{
           this.show = false
           
@@ -332,6 +425,7 @@
 
   .calendar-container{
     width: 100%;
+    max-width: 400px;
   }
 
   @media(any-hover:hover){
@@ -351,18 +445,25 @@
 /*  input样式*/
   .calendar-container.input {
     position: absolute;
-    width: 220px;
     height: 268px;
     opacity: 0;
     z-index: 9;
-    padding: 5px;
+    padding: 0;
     border:var(--box-border);
     background-color: var(--box-bgc);
     border-radius: 5px;
     pointer-events: none;
     transform: translateY(10%);
     transition: 0.3s;
+    display: flex;
+    width: fit-content;
   }
+
+  .calendar-container.input .date-select {
+    padding: 5px;
+    width: 220px;
+   }
+
   .input .cows.title{
     font-size: 16px!important;
   }
@@ -398,6 +499,27 @@
     padding: 2px 3px;
     font-size: 12px;
     border: none;
+  }
+  .calendar-container.input .time-select{
+    padding: 5px;
+    border-left: var(--box-border);
+    display: flex;
+  }
+
+  .time-scroll{
+    position: relative;
+    width: 42px;
+    height: 100%;
+    overflow: hidden;
+/*    border: var(--box-border);*/
+  }
+
+  .time-scroll .time{
+    position: absolute;
+    padding: 5px 15px;
+    font-size: 20px;
+    left: 50%;
+    transform: translateX(-50%);
   }
  
   </style>
