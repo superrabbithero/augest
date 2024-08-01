@@ -7,7 +7,7 @@
       <svg-icon :class="{'text-button':true,'action':compareDate(management.date,1)}" name="tomorrow" size="16" @click="getManagementDate(1)"></svg-icon>
     </div>
     <div class="line-content-center">
-      <label>截止时间:</label>
+      <label>期限：</label>
       <calender language="EN" type="datetime" style="width: 150px;" class="form-input" v-model="management.deadline"></calender>
       <svg-icon class="text-button" name="delete02" size="16" @click="management.deadline=null"></svg-icon>
     </div>
@@ -36,7 +36,8 @@
       <input type="checkbox" class="circle form-input" v-model="management.important"/>
     </div>
     <div class="line-content-center left">
-      <button class="fill" @click="addManagement()">确定</button>
+      <button v-if="updateIndex" class="fill" @click="addManagement()">修改{{ updateIndex }}</button>
+      <button v-else class="fill" @click="addManagement()">增加</button>
     </div>
     
   </my-model>
@@ -62,11 +63,12 @@
 		</div>
     {{currentDate}}
     <div class="quadrant-container">
-      <div v-for="index in 4" class="quadrant-box">
-        <div class="quadrant-list" >
-          <div :class="[`list-item`,`item-${index-1}`]" v-for="plan in currentManagementList[index-1]">
+      <div v-for="index in 4" class="quadrant-box" >
+        <div class="quadrant-list" @click="showAddPlan(index)">
+          <div :class="[`list-item`,`item-${index-1}`]" v-for="plan in currentManagementList[index-1]" @click.stop @click="showAddPlan(plan), updateIndex = plan.index">
             <svg-icon name="dot01" size="16" className="dot" :style="{color:fourColors[index-1]}"></svg-icon>
             {{plan.content}}
+            <svg-icon name="delete02" size="16" className="dot" :style="{color:fourColors[index-1]}"></svg-icon>
           </div>
           <div v-show="false" class="list-item" style="display:flex; justify-content: center;">
             <div :class="[`list-add-button-${index-1}`]">+</div>
@@ -130,6 +132,7 @@ export default {
         finishedDate:[]
       },
       managementList,
+      updateIndex:null
     }
   },
   mounted(){
@@ -167,28 +170,29 @@ export default {
       this.currentManagementList = [[],[],[],[]]
       managementList.forEach(((management, index)=>{
         if(this.compare2Date(date,management.date) == 0){
-          this.pushCurManagement(management)
+          this.pushCurManagement(index, management)
         }else if(this.compare2Date(date,management.date) == 1){
           const repeat = Number(management.repeat)
           if(repeat > 0 && this.daysBetween(date,management.date)%repeat == 0){
-            this.pushCurManagement(management)
+            this.pushCurManagement(index, management)
           }else if(repeat == -1){
             if(date.split("/")[1] == management.date.split("/")[1] && date.split("/")[2] == management.date.split("/")[2]){
-              this.pushCurManagement(management)
+              this.pushCurManagement(index, management)
             }
           }else if(repeat == -2){
             if(management.repeatDate.includes(date)){
-              this.pushCurManagement(management)
+              this.pushCurManagement(index, management)
             }
           }
         }
       }))
     },
-    pushCurManagement(management){
-      const index =[2,0,3,1]
+    pushCurManagement(index, management){
+      const indexList =[2,0,3,1]
       const u = management.urgent ? 1 : 0
       const i = management.important ? 1 : 0
-      this.currentManagementList[index[2*i+u]].push(management)
+      management.index = index
+      this.currentManagementList[indexList[2*i+u]].push(management)
     },
     getDate(strDate){
       const strList = strDate.split('/')
@@ -207,6 +211,7 @@ export default {
       return `${year}/${month}/${day}`;
     },
     initManagementDate(){
+      this.updateIndex = null
       this.management = {
         date:null,
         deadline:null,
@@ -243,8 +248,33 @@ export default {
 
       this.management.date = `${date.getYear()+1900}/${(date.getMonth()+1)>10?'':0}${date.getMonth()+1}/${date.getDate()>10?'':0}${date.getDate()}`;
     },
-    showAddPlan(){
-      this.initManagementDate()
+    showAddPlan(management=null){
+      console.log(management)
+      if(management==null){
+        this.initManagementDate()
+      }else if([1,2,3,4].includes(management)){
+        this.initManagementDate()
+        switch(management){
+          case 1:
+            this.management.urgent = true
+            this.management.important = false
+            break
+          case 2:
+            this.management.urgent = true
+            this.management.important = true
+            break
+          case 3:
+            this.management.urgent = false
+            this.management.important = false
+            break
+          case 4:
+            this.management.urgent = false
+            this.management.important = true
+            break
+        }
+      }else{
+        this.management = management
+      }
       this.modal_show.addPlanShow = true
     },
     preWeek(){
@@ -326,6 +356,8 @@ export default {
   cursor: pointer;
   padding: 5px;
   border-radius: 5px;
+  display: flex;
+  align-items: center;
 }  
 
 
