@@ -66,7 +66,7 @@
         <div class="quadrant-list" >
           <div :class="[`list-item`,`item-${index-1}`]" v-for="plan in currentManagementList[index-1]">
             <svg-icon name="dot01" size="16" className="dot" :style="{color:fourColors[index-1]}"></svg-icon>
-            {{`${plan.content},${plan.date},${plan.repeat}`}}
+            {{plan.content}}
           </div>
           <div v-show="false" class="list-item" style="display:flex; justify-content: center;">
             <div :class="[`list-add-button-${index-1}`]">+</div>
@@ -142,12 +142,18 @@ export default {
       this.currentDate = date
     },
     compare2Date(date1,date2){
-        let strList = date1.split('/')
-        const a = new Date(Number(strList[0]),Number(strList[1])-1,Number(strList[2]))
-        strList = date2.split('/')
-        const b = new Date(Number(strList[0]),Number(strList[1])-1,Number(strList[2]))
-        console.log(a,b,a == b)
-        return a > b ? 1 : (a == b ? 0 : -1)
+        const a = new Date(date1.split("T")[0])
+        const b = new Date(date2.split("T")[0])
+
+        const time1 = a.getTime();
+        const time2 = b.getTime();
+        if (time1 < time2) {
+          return -1;
+        } else if (time1 > time2) {
+          return 1;
+        } else {
+          return 0;
+        }
     },
     daysBetween(date1, date2) {
       let strList = date1.split('/')
@@ -160,10 +166,9 @@ export default {
     getCurManagementData(date){
       this.currentManagementList = [[],[],[],[]]
       managementList.forEach(((management, index)=>{
-        console.log(`${management.content},${date},${management.date},${this.compare2Date(date,management.date)}`)
         if(this.compare2Date(date,management.date) == 0){
           this.pushCurManagement(management)
-        }else if(this.compare2Date(date,management.date) == -1){
+        }else if(this.compare2Date(date,management.date) == 1){
           const repeat = Number(management.repeat)
           if(repeat > 0 && this.daysBetween(date,management.date)%repeat == 0){
             this.pushCurManagement(management)
