@@ -1,11 +1,11 @@
 <template>
     <div  ref="calendar">
       <div v-if="type == 'input'" class="input-container">
-        <input :value="selectedDate ? selectedDate : 'yyyy/mm/dd'" type="text" @input="$emit('update:modelValue', $event.target.value)">
+        <input :value="selectedDate ? selectedDate.split('T')[0] : 'yyyy/mm/dd'" type="text" @input="$emit('update:modelValue', $event.target.value)">
         <svg-icon name="calendar" class="input-icon" size="18" @click="openCalendar()"></svg-icon>
       </div>
       <div v-else-if="type == 'datetime'" class="input-container">
-        <input :value="`${selectedDate ? selectedDate:'yyyy/mm/dd'} ${selectedTime ? selectedTime : '--:--'}`" type="text" @input="$emit('update:modelValue', $event.target.value)">
+        <input :value="selectedDate ? selectedDate.split('T').join(' '):'yyyy/mm/dd --:--'" type="text" @input="$emit('update:modelValue', $event.target.value)">
         <svg-icon name="calendar-datetime" class="input-icon" size="18" @click="openCalendar()"></svg-icon>
       </div>
       <div ref="calendarContainer" :class="{'calendar-container':true,'input':type != 'calendar','show':show}">
@@ -45,19 +45,19 @@
                   </div>
               </div>
           </div>
-          <div v-if="type != 'calendar'" class="rows">
+          <div v-if="type != 'calendar'" class="cows title">
             <button class="input-button" @click="selectDate(-1)">今天</button>
-            <button class="input-button" @click="selectNowTime()">现在</button>
+            <button v-if="type == 'datetime'" class="input-button" @click="selectNowTime($event)">现在</button>
           </div>
         </div>
         <div v-if="type == 'datetime'" class="time-select" >
-          <div class="time-scroll" @wheel="wheelHourEvent">
-            <div v-for="hour in 24" class="time" ref="hour">
+          <div class="time-scroll" @wheel="wheelHourEvent" @pointerdown="hourDownHandler">
+            <div v-for="hour in 24" class="time hour" ref="hour">
               {{hour > 10 ? hour-1 :'0'+ (hour-1)}}
             </div>
           </div>
-          <div class="time-scroll" @wheel="wheelMinEvent">
-            <div v-for="min in 60" class="time" ref="min">
+          <div class="time-scroll" @wheel="wheelMinEvent" @pointerdown="minDownHandler">
+            <div v-for="min in 60" class="time min" ref="min">
               {{min > 10 ? min-1 :'0'+ (min-1)}}
             </div>
           </div>    
@@ -144,8 +144,10 @@
         show:false,
         selectedDate: this.modelValue,
         log:"",
-        timeHeight:33,
-        selectedTime:"--:--"
+        timeHeight:null,
+        selectedTime: "--:--",
+        startTime:null,
+        downPointer:null
       }
     },
     mounted(){
@@ -157,36 +159,50 @@
           this.show = true
         }
         this.init()
-        if(this.type == 'datetime'){
-          this.timeHeight = this.$refs.hour[0].clientHeight
-          this.$refs.hour.forEach((hourEl, index)=>{
-            hourEl.style.top = `${(index-1)*this.timeHeight}px`
-            if(index == 4){
-            hourEl.style.backgroundColor = "var(--main-color)"
-            let time = this.selectedTime.split(':')
-            time[0] = hourEl.innerText
-            this.selectedTime = time.join(':');
-            }
-          })
-          this.$refs.min.forEach((minEl, index)=>{
-            minEl.style.top = `${(index-1)*this.timeHeight}px`
-            if(index == 4){
-            minEl.style.backgroundColor = "var(--main-color)"
-            let time = this.selectedTime.split(':')
-            time[1] = minEl.innerText
-            this.selectedTime = time.join(':');
-            }
-          })
-        }
     },
     unmounted(){
       document.removeEventListener('click',this.closeCalendar)
     },
     methods: {
-      wheelHourEvent(e, target = null){
+      minDownHandler(e){
+        this.downPointer = {x:e.pageX,y:e.pageY}
+        this.startTime = this.selectedTime
+        document.addEventListener('pointermove',this.minMoveHandler)
+        document.addEventListener('pointerup',this.timeUpHandler)
+      },
+      minMoveHandler(e){
+        if(this.downPointer){
+          const deltaY = e.pageY - this.downPointer.y
+          let i = Math.floor(Math.abs(deltaY)/this.timeHeight)
+          const target = Number(this.startTime.split(':')[1]) + (deltaY < 0 ? i : -i)
+          this.wheelMinEvent(e,target)
+        }
+      },
+      hourDownHandler(e){
+        this.downPointer = {x:e.pageX,y:e.pageY}
+        this.startTime = this.selectedTime
+        document.addEventListener('pointermove',this.hourMoveHandler)
+        document.addEventListener('pointerup',this.timeUpHandler)
+      },
+      hourMoveHandler(e){
+        if(this.downPointer){
+          const deltaY = e.pageY - this.downPointer.y
+          let i = Math.floor(Math.abs(deltaY)/this.timeHeight)
+          const target = Number(this.startTime.split(':')[0]) + (deltaY < 0 ? i : -i)
+          this.wheelHourEvent(e,target)
+        }
+      },
+      timeUpHandler(){
+        if(this.downPointer){
+          this.downPointer = null
+          document.removeEventListener('pointermove',this.minMoveHandler)
+          document.removeEventListener('pointermove',this.hourMoveHandler)
+          document.removeEventListener('pointerup',this.timeUpHandler)
+        }
+      },
+      wheelHourEvent(event, target = null){
         event.preventDefault()
         let i = target!=null ? target - Number(this.selectedTime.split(':')[0]) : 1
-        if(target!=null) console.log(`${i},${target},${Number(this.selectedTime.split(':')[0])}`)
         let deltaY = target ? (i>0 ? 100 : -100) : event.deltaY
         i = Math.abs(i)
         while(i--){
@@ -203,7 +219,10 @@
               let time = this.selectedTime.split(':')
               time[0] = hourEl.innerText
               this.selectedTime = time.join(':');
-
+              let datetime = this.selectedDate.split("T")
+              datetime[1] = this.selectedTime
+              this.selectedDate = datetime.join("T")
+              this.changeHandler(this.selectedDate)
             }else{
               hourEl.style.backgroundColor = "transparent"
             }
@@ -214,7 +233,6 @@
       wheelMinEvent(e,target = null){
         event.preventDefault()
         let i = target!=null ? target - Number(this.selectedTime.split(':')[1]) : 1
-        if(target!=null) console.log(`${i},${target},${Number(this.selectedTime.split(':')[0])}`)
         let deltaY = target ? (i>0 ? 100 : -100) : event.deltaY
         i = Math.abs(i)
         while(i--){
@@ -231,6 +249,10 @@
               let time = this.selectedTime.split(':')
               time[1] = minEl.innerText
               this.selectedTime = time.join(':');
+              let datetime = this.selectedDate.split("T")
+              datetime[1] = this.selectedTime
+              this.selectedDate = datetime.join("T")
+              this.changeHandler(this.selectedDate)
             }else{
               minEl.style.backgroundColor = "transparent"
             }
@@ -343,6 +365,31 @@
           document.removeEventListener('click',this.closeCalendar)
         }
         el.style.top=offsetTop+"px"
+        if(this.type == 'datetime' && !this.timeHeight ){
+          this.timeHeight = this.$refs.hour[0].clientHeight
+          this.$refs.hour.forEach((hourEl, index)=>{
+            hourEl.style.top = `${(index-1)*this.timeHeight}px`
+            if(index == 4){
+            hourEl.style.backgroundColor = "var(--main-color)"
+            let time = this.selectedTime.split(':')
+            time[0] = hourEl.innerText
+            this.selectedTime = time.join(':');
+            }
+          })
+          this.$refs.min.forEach((minEl, index)=>{
+            minEl.style.top = `${(index-1)*this.timeHeight}px`
+            if(index == 4){
+            minEl.style.backgroundColor = "var(--main-color)"
+            let time = this.selectedTime.split(':')
+            time[1] = minEl.innerText
+            this.selectedTime = time.join(':');
+            this.selectedDate = this.selectedDate ? this.selectedDate : "yyyy/mm/ddT00:00"
+            let datetime = this.selectedDate.split("T")
+              datetime[1] = this.selectedTime
+              this.selectedDate = datetime.join("T")
+            }
+          })
+        }
         
       },
       closeCalendar(e){
@@ -352,17 +399,22 @@
         }
       },
       selectDate(index){
+        this.selectedDate = this.selectedDate ? this.selectedDate : "yyyy/mm/ddT00:00"
         if(index == -1){
           this.init()
           const date = this.today
-          this.selectedDate = `${date.getYear()+1900}/${(date.getMonth()+1)>10?'':0}${date.getMonth()+1}/${date.getDate()>10?'':0}${date.getDate()}`
+          let datetime = this.selectedDate.split("T")
+          datetime[0] = `${date.getYear()+1900}/${(date.getMonth()+1)>10?'':0}${date.getMonth()+1}/${date.getDate()>10?'':0}${date.getDate()}`
+          this.selectedDate = datetime.join("T")
           return
         }
         let month = this.currentMonth
         if(index<this.firstIndex) month-=1
         else if(index > this.lastIndex) month+=1
         const date = new Date(this.currentYear,month,this.currentDates[index])
-        this.selectedDate = `${date.getYear()+1900}/${(date.getMonth()+1)>10?'':0}${date.getMonth()+1}/${date.getDate()>10?'':0}${date.getDate()}`
+        let datetime = this.selectedDate.split("T")
+          datetime[0] = `${date.getYear()+1900}/${(date.getMonth()+1)>10?'':0}${date.getMonth()+1}/${date.getDate()>10?'':0}${date.getDate()}`
+          this.selectedDate = datetime.join("T")
         if(this.show){
           this.show = false
           document.removeEventListener('click',this.closeCalendar)
@@ -451,7 +503,7 @@
 /*  input样式*/
   .calendar-container.input {
     position: absolute;
-    height: 268px;
+/*    height: 280px;*/
     opacity: 0;
     z-index: 9;
     padding: 0;
@@ -517,15 +569,19 @@
     width: 42px;
     height: 100%;
     overflow: hidden;
+    touch-action: none;
+/*    pointer-events: none;*/
 /*    border: var(--box-border);*/
   }
 
   .time-scroll .time{
     position: absolute;
-    padding: 5px 15px;
+    padding: 5px 5px;
     font-size: 20px;
     left: 50%;
     transform: translateX(-50%);
+    border-radius: 5px;
+    cursor: pointer;
   }
  
   </style>

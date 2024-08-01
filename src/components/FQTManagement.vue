@@ -8,7 +8,7 @@
     </div>
     <div class="line-content-center">
       <label>截止时间:</label>
-      <input type="datetime-local" style="width:150px" v-model="management.deadline"/>
+      <calender language="EN" type="datetime" style="width: 150px;" class="form-input" v-model="management.deadline"></calender>
       <svg-icon class="text-button" name="delete02" size="16" @click="management.deadline=null"></svg-icon>
     </div>
     <div class="line-content-center">
@@ -43,7 +43,7 @@
 	<div class="card-content main-content" style="text-align: left;">
 		<div class="calendar-list">
       <svg-icon name="arrow-left"  className="date-item" @click="preWeek"></svg-icon>
-			<div v-for="date in currentWeek" :key="date" class="date-item">  
+			<div v-for="date in currentWeek" :key="date" class="date-item" @click="toDate(getFormattedDate(date))">  
         <div v-if="getFormattedDate(date) == getFormattedDate(today)" class="date">     
           <svg-icon name="today"></svg-icon>
         </div>
@@ -60,12 +60,13 @@
       <svg-icon name="arrow-right" className="date-item" @click="nextWeek"></svg-icon>
       <svg-icon name="plus01" className="date-item" @click="showAddPlan()"></svg-icon>
 		</div>
+    {{currentDate}}
     <div class="quadrant-container">
       <div v-for="index in 4" class="quadrant-box">
         <div class="quadrant-list" >
           <div :class="[`list-item`,`item-${index-1}`]" v-for="plan in currentManagementList[index-1]">
             <svg-icon name="dot01" size="16" className="dot" :style="{color:fourColors[index-1]}"></svg-icon>
-            {{plan}}
+            {{`${plan.content},${plan.date},${plan.repeat}`}}
           </div>
           <div v-show="false" class="list-item" style="display:flex; justify-content: center;">
             <div :class="[`list-add-button-${index-1}`]">+</div>
@@ -85,6 +86,7 @@
 
 <script>
 import calender from "./Model/Calendar.vue"
+import managementList from "@/assets/json/managementList.json"
 
 export default {
   computed:{
@@ -92,7 +94,7 @@ export default {
         return (date1,n = 0)=>{
           if(date1){
             const strList = date1.split('/')
-            const a = new Date(strList[0],Number(strList[1])-1,strList[2])
+            const a = new Date(Number(strList[0]),Number(strList[1])-1,Number(strList[2]))
             const date = new Date()
             date.setDate(date.getDate() + n)
             return `${a.getYear()}${a.getMonth()}${a.getDate()}` == `${date.getYear()}${date.getMonth()}${date.getDate()}`
@@ -110,8 +112,9 @@ export default {
       fourColors:['#f9A822','#F96635','#2bbaa5','#93d3a2'],
     	currentWeek : [],
       today : null,
+      currentDate: null,
       currentManagementList:[
-        ["在像素编辑器中添加gif动图","设计一个像素宠物，然后做一个宠物组件","完成一个四象限任务管理功能，然后把这个页面移植过去"],["编写1.29测试用例"],[],[]
+        [],[],[],[]
       ],
       modal_show:{
         addPlanShow:false,
@@ -126,16 +129,65 @@ export default {
         repeatDate:[],
         finishedDate:[]
       },
-      managementList:[],
+      managementList,
     }
   },
   mounted(){
   	this.getWeekDate()
+    this.toDate(this.getFormattedDate(this.today))
   },
   methods: {
+    toDate(date){
+      this.getCurManagementData(date)
+      this.currentDate = date
+    },
+    compare2Date(date1,date2){
+        let strList = date1.split('/')
+        const a = new Date(Number(strList[0]),Number(strList[1])-1,Number(strList[2]))
+        strList = date2.split('/')
+        const b = new Date(Number(strList[0]),Number(strList[1])-1,Number(strList[2]))
+        console.log(a,b,a == b)
+        return a > b ? 1 : (a == b ? 0 : -1)
+    },
+    daysBetween(date1, date2) {
+      let strList = date1.split('/')
+      const a = new Date(Number(strList[0]),Number(strList[1])-1,Number(strList[2]))
+      strList = date2.split('/')
+      const b = new Date(Number(strList[0]),Number(strList[1])-1,Number(strList[2]))
+      const oneDay = 24 * 60 * 60 * 1000; // 一天的毫秒数
+      return Math.round(Math.abs((a - b) / oneDay));
+    },
+    getCurManagementData(date){
+      this.currentManagementList = [[],[],[],[]]
+      managementList.forEach(((management, index)=>{
+        console.log(`${management.content},${date},${management.date},${this.compare2Date(date,management.date)}`)
+        if(this.compare2Date(date,management.date) == 0){
+          this.pushCurManagement(management)
+        }else if(this.compare2Date(date,management.date) == -1){
+          const repeat = Number(management.repeat)
+          if(repeat > 0 && this.daysBetween(date,management.date)%repeat == 0){
+            this.pushCurManagement(management)
+          }else if(repeat == -1){
+            if(date.split("/")[1] == management.date.split("/")[1] && date.split("/")[2] == management.date.split("/")[2]){
+              this.pushCurManagement(management)
+            }
+          }else if(repeat == -2){
+            if(management.repeatDate.includes(date)){
+              this.pushCurManagement(management)
+            }
+          }
+        }
+      }))
+    },
+    pushCurManagement(management){
+      const index =[2,0,3,1]
+      const u = management.urgent ? 1 : 0
+      const i = management.important ? 1 : 0
+      this.currentManagementList[index[2*i+u]].push(management)
+    },
     getDate(strDate){
       const strList = strDate.split('/')
-      const date = new Date(strList[0],Number(strList[1])-1,strList[2])
+      const date = new Date(Number(strList[0]),Number(strList[1])-1,Number(strList[2]))
       return date
     },
     getFormattedDate(date, n=null) {
@@ -178,8 +230,7 @@ export default {
       }else{
         this.$toast.show('时间或内容不得为空','error') 
       }
-      
-
+      console.log(this.managementList)
     },
     getManagementDate(n = 0){
       const date = new Date()
@@ -210,7 +261,6 @@ export default {
       }
       this.today = new Date()
       firstDay = firstDay ? new Date(firstDay) : getDateNDaysAgo(this.today, this.today.getDay())
-      console.log(`firstDay:${firstDay.getDate()}`)
       for(var i=0; i<7 ; i++){
         this.currentWeek[i] = getDateNDaysAgo(firstDay, -i)
       }
