@@ -62,13 +62,21 @@
       <svg-icon name="plus01" className="date-item" @click="showAddPlan()"></svg-icon>
 		</div>
     {{currentDate}}
-    <div class="quadrant-container">
-      <div v-for="index in 4" class="quadrant-box" >
-        <div class="quadrant-list" @click="showAddPlan(index)">
-          <div :class="[`list-item`,`item-${index-1}`]" v-for="plan in currentManagementList[index-1]" @click.stop @click="showAddPlan(plan), updateIndex = plan.index">
-            <svg-icon name="dot01" size="16" className="dot" :style="{color:fourColors[index-1]}"></svg-icon>
-            {{plan.content}}
-            <svg-icon name="delete02" size="16" className="dot" :style="{color:fourColors[index-1]}"></svg-icon>
+    <div :class="{'quadrant-container':true,'draging':draged}">
+    <div v-show="draged" :class="dragedManagementClass" ref="dragedManagement">
+      <svg-icon name="dot01" size="16" className="dot" :style="dragedDotColor"></svg-icon>
+      {{dragedManagement ? dragedManagement.content : ""}}
+    </div>
+      <div v-for="index in 4" class="quadrant-box" @pointermove="listItemMove($event,index)">
+        <div :class="[`quadrant-list`]" @click="showAddPlan(index)" >
+          <div :class="[`list-item`,`item-${index-1}`]" v-for="plan in currentManagementList[index-1]" @click.stop @pointerdown="listItemDown($event,plan)">
+            <div class="content">
+              <svg-icon name="dot01" size="16" className="dot" :style="{color:fourColors[index-1]}"></svg-icon>
+              {{plan.content}}
+            </div>
+            <div :id="`planIndex${plan.index}`">
+              <svg-icon name="delete02" size="16" className="dot" :style="{color:fourColors[index-1]}" @click.stop @click="deleteItem(plan)"></svg-icon>
+            </div>
           </div>
           <div v-show="false" class="list-item" style="display:flex; justify-content: center;">
             <div :class="[`list-add-button-${index-1}`]">+</div>
@@ -92,19 +100,43 @@ import managementList from "@/assets/json/managementList.json"
 
 export default {
   computed:{
-    compareDate(){
-        return (date1,n = 0)=>{
-          if(date1){
-            const strList = date1.split('/')
-            const a = new Date(Number(strList[0]),Number(strList[1])-1,Number(strList[2]))
-            const date = new Date()
-            date.setDate(date.getDate() + n)
-            return `${a.getYear()}${a.getMonth()}${a.getDate()}` == `${date.getYear()}${date.getMonth()}${date.getDate()}`
-          }else{
-            return false
-          }
+    compareDate(){  
+      return (date1,n = 0)=>{
+        if(date1){
+          const strList = date1.split('/')
+          const a = new Date(Number(strList[0]),Number(strList[1])-1,Number(strList[2]))
+          const date = new Date()
+          date.setDate(date.getDate() + n)
+          return `${a.getYear()}${a.getMonth()}${a.getDate()}` == `${date.getYear()}${date.getMonth()}${date.getDate()}`
+        }else{
+          return false
         }
       }
+    },
+    dragedManagementClass(){
+      let classList = {
+          'list-item':true,
+          'draged':this.draged,
+        }
+      const indexList =[2,0,3,1]
+      if(this.dragedManagement){
+        const u = this.dragedManagement.urgent ? 1 : 0
+        const i = this.dragedManagement.important ? 1 : 0
+        const index = indexList[2*i+u]
+        const classname = `item-${index}`
+        classList[classname] = true
+      }
+      return classList
+    },
+    dragedDotColor(){
+      const indexList =[2,0,3,1]
+      if(this.dragedManagement){
+        const u = this.dragedManagement.urgent ? 1 : 0
+        const i = this.dragedManagement.important ? 1 : 0
+        const index = indexList[2*i+u]
+        return {color:this.fourColors[index]}
+      }
+    }
   },
   components: {
     calender
@@ -132,7 +164,13 @@ export default {
         finishedDate:[]
       },
       managementList,
-      updateIndex:null
+      updateIndex:null,
+      dragedManagement:null,
+      draged:false,
+      drag2Index:null,
+      pressTimer:null,
+      disx:null,
+      disy:null,
     }
   },
   mounted(){
@@ -140,6 +178,89 @@ export default {
     this.toDate(this.getFormattedDate(this.today))
   },
   methods: {
+    //计划列表点击、长按事件
+    listItemDown(event , management){
+      const refN = `planIndex${management.index}`
+      const el =  document.getElementById(refN)
+      if(el.contains(event.target)){
+        return
+      }
+      document.addEventListener('pointerup',this.listItemUp)
+      // document.addEventListener('pointermove',this.listItemMove)
+      this.dragedManagement = management
+      this.pressTimer = setTimeout(() => {
+          this.draged = true
+          const el = event.target
+          this.disx = event.pageX - el.offsetLeft
+          this.disy = event.pageY - el.offsetTop
+          const dragedEl = this.$refs.dragedManagement
+          // dragedEl.style.backgroundColor = this.myColors[this.dragedColorIndex]
+          dragedEl.style.left = `${event.pageX - this.disx}px`
+          dragedEl.style.top = `${event.pageY - this.disy}px`
+          // document.addEventListener("click",this.offColorToolsEdit)
+          clearTimeout(this.pressTimer)
+          this.pressTimer = null
+        }, 500);
+    },
+    listItemMove(event, index){
+      if(this.draged){
+        this.drag2Index = index
+        const dragedEl = this.$refs.dragedManagement
+        dragedEl.style.left = `${event.pageX - this.disx}px`
+        dragedEl.style.top = `${event.pageY - this.disy}px`
+      }
+    },
+    listItemUp(event){
+      if (this.pressTimer) {
+        //如果计时器还在说明是点击事件
+        clearTimeout(this.pressTimer);
+        this.showAddPlan(this.dragedManagement)
+        this.updateIndex = this.dragedManagement.index
+        this.dragedManagement = null
+      }
+      if(this.dragedManagement != null){
+        //修改紧急重要程度
+        switch(this.drag2Index){
+          case 1:
+            this.dragedManagement.urgent = true
+            this.dragedManagement.important = false
+            break
+          case 2:
+            this.dragedManagement.urgent = true
+            this.dragedManagement.important = true
+            break
+          case 3:
+            this.dragedManagement.urgent = false
+            this.dragedManagement.important = false
+            break
+          case 4:
+            this.dragedManagement.urgent = false
+            this.dragedManagement.important = true
+            break
+        }
+        console.log(this.dragedManagement.index)
+        this.updateManagement(this.dragedManagement)
+      }
+      this.draged = false
+      this.dragedManagement = null
+      this.drag2Index = null
+      this.getCurManagementData(this.currentDate)
+      document.removeEventListener('pointerup',this.listItemUp)
+      // document.removeEventListener('pointermove',this.listItemMove)
+    },
+    deleteItem(management){
+      this.deleteManagement(management)
+      this.getCurManagementData(this.currentDate)
+    },
+    updateManagement(management){
+      const index = management.index
+      delete management.index
+      this.managementList[index] = management
+    },
+    deleteManagement(management){
+      const index = management.index
+      this.managementList.splice(index,1)
+    },
     toDate(date){
       this.getCurManagementData(date)
       this.currentDate = date
@@ -249,6 +370,9 @@ export default {
       this.management.date = `${date.getYear()+1900}/${(date.getMonth()+1)>10?'':0}${date.getMonth()+1}/${date.getDate()>10?'':0}${date.getDate()}`;
     },
     showAddPlan(management=null){
+      if(this.draged){
+        return
+      }
       console.log(management)
       if(management==null){
         this.initManagementDate()
@@ -334,6 +458,12 @@ export default {
   display: flex;
   flex-wrap: wrap;
   position: relative;
+  user-select: none;
+}
+.quadrant-container.draging {
+/*  opacity: 0.5;*/
+/*  pointer-events: none;*/
+  user-select: none;
 }
 .quadrant-box {
   box-sizing: border-box;
@@ -344,20 +474,34 @@ export default {
 }
 .quadrant-list {
   height: calc( 100% - 12px);
-/*  border: var(--box-border);*/
   padding: 5px;
-  border-radius: 1rem;
+  border-radius: 8px;
   overflow-y: auto;
   overflow-x: hidden;
 }
 
+.quadrant-list.item-0:active {
+  outline: 2px solid #f9A82230;
+}
+.quadrant-list.item-1:active {
+  outline: 2px solid #F9663530;
+}
+.quadrant-list.item-2:active {
+  outline: 2px solid #2bbaa530;
+}
+.quadrant-list.item-3:active {
+  outline: 2px solid #93d3a230;
+}
 
-.quadrant-list .list-item{
+
+
+.quadrant-container .list-item{
   cursor: pointer;
   padding: 5px;
   border-radius: 5px;
   display: flex;
   align-items: center;
+  justify-content: space-between
 }  
 
 
@@ -442,19 +586,36 @@ export default {
     color: var(--main-color);
   }
 
-  .quadrant-list .list-item.item-0:hover{
+  .quadrant-container .list-item.item-0:hover{
     background-color: #f9A82230;
   }  
-  .quadrant-list .list-item.item-1:hover{
+  .quadrant-container .list-item.item-1:hover{
     background-color: #F9663530;
   }  
-  .quadrant-list .list-item.item-2:hover{
+  .quadrant-container .list-item.item-2:hover{
     background-color: #2bbaa530;
   }  
-  .quadrant-list .list-item.item-3:hover{
+  .quadrant-container .list-item.item-3:hover{
     background-color: #93d3a230;
   }  
-
 }
+
+.list-item.draged {
+  position: absolute;
+  pointer-events: none;
+}
+
+.list-item.draged.item-0{
+  background-color: #f9A82230;
+}  
+.list-item.draged.item-1{
+  background-color: #F9663530;
+}  
+.list-item.draged.item-2{
+  background-color: #2bbaa530;
+}  
+.list-item.draged.item-3{
+  background-color: #93d3a230;
+}  
 
 </style>
