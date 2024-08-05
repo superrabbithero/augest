@@ -1,5 +1,6 @@
 <template>
     <div class="markdown-body" ref="markdownRef">
+        <div v-show="markdownContent == null">加载中...</div>
         <component :is="markdownContent" />
     </div>
 </template>
@@ -33,12 +34,8 @@ export default {
         var that = this
         import('@/assets/docs/' + this.mdFileName + '.md').then( async module => {
             const markdownContent = module.default; // 获取默认导出的组件
-            
             that.markdownContent = markdownContent;
         })
-
-        
-        
     },
     methods: {
     findMarkdownHeadings() {

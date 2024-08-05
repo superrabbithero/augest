@@ -4,8 +4,11 @@
       <div class="home-title">
         <div v-if="currentTag">
           <IconWrapper  iconName="PoundSign" fill="#ffc848" theme="outline" :strokeWidth='2' size="25" />{{currentTag}} <sup>{{tagIndexJson[currentTag].length}}</sup></div>
-        <div v-else>
-          <IconWrapper  iconName="DocumentFolder" fill="#ffc848" theme="outline" :strokeWidth='2' size="25" />  文 章  <sup>{{docsListJson.length}}</sup></div>
+        <div v-else style="display:flex;align-items: center;">
+          <!-- <IconWrapper  iconName="DocumentFolder" fill="#ffc848" theme="outline" :strokeWidth='2' size="25" /> -->
+          <svg-icon name="book01" fill="#ffc848" size="30"></svg-icon>  
+          <div>文章  <sup>{{docsListJson.length}}</sup></div>
+        </div>
       </div>
       <div v-for="(docfile, index) in filteredJson" class="card-content">
         <div class="md-card-item">

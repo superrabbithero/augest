@@ -14,10 +14,6 @@ import "@/icons"
 import SvgIcon from "./components/Model/svgIcon.vue"
 
 import hljs from "highlight.js/lib/core";
-import javascript from "highlight.js/lib/languages/javascript"; //引入语言
-import html from "highlight.js/lib/languages/vbscript-html"
-hljs.registerLanguage("javascript", javascript);
-hljs.registerLanguage("html", html);
 import hljsVuePlugin from "@highlightjs/vue-plugin";
 
 import "highlight.js/lib/common";

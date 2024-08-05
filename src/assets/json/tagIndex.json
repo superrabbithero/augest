@@ -78,6 +78,15 @@
       "date": "2024-07-18 02:02:35"
     },
     {
+      "title": "vue3中使用highlight.js",
+      "path": "/post/vue3中使用highlight.js",
+      "tags": [
+        "Vue",
+        "highlightjs"
+      ],
+      "date": "2024-08-02 03:30:58"
+    },
+    {
       "title": "做了一个基于canvas的像素图片画板",
       "path": "/post/做了一个基于canvas的像素图片画板",
       "tags": [
@@ -175,6 +184,17 @@
         "webpack"
       ],
       "date": "2024-5-12 23:00:00"
+    }
+  ],
+  "highlightjs": [
+    {
+      "title": "vue3中使用highlight.js",
+      "path": "/post/vue3中使用highlight.js",
+      "tags": [
+        "Vue",
+        "highlightjs"
+      ],
+      "date": "2024-08-02 03:30:58"
     }
   ],
   "canvas": [

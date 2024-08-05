@@ -36,12 +36,11 @@
       <input type="checkbox" class="circle form-input" v-model="management.important"/>
     </div>
     <div class="line-content-center left">
-      <button v-if="updateIndex" class="fill" @click="addManagement()">修改{{ updateIndex }}</button>
-      <button v-else class="fill" @click="addManagement()">增加</button>
+      <button class="fill" @click="addManagement()">{{ updateIndex ? '修改计划' : '新增计划' }}</button>
     </div>
     
   </my-model>
-	<div class="card-content main-content" style="text-align: left;">
+	<div class="card-content main-content" style="text-align: left;" ref="fqtMain">
 		<div class="calendar-list">
       <svg-icon name="arrow-left"  className="date-item" @click="preWeek"></svg-icon>
 			<div v-for="date in currentWeek" :key="date" class="date-item" @click="toDate(getFormattedDate(date))">  
@@ -67,15 +66,18 @@
       <svg-icon name="dot01" size="16" className="dot" :style="dragedDotColor"></svg-icon>
       {{dragedManagement ? dragedManagement.content : ""}}
     </div>
-      <div v-for="index in 4" class="quadrant-box" @pointermove="listItemMove($event,index)">
-        <div :class="[`quadrant-list`]" @click="showAddPlan(index)" >
+      <div v-for="index in 4" class="quadrant-box" :id = "`quadrantList${index}`">
+        <div :class="[`quadrant-list`]" @click="showAddPlan(index)">
           <div :class="[`list-item`,`item-${index-1}`]" v-for="plan in currentManagementList[index-1]" @click.stop @pointerdown="listItemDown($event,plan)">
-            <div class="content">
+            <div class="content" :style="{textDecoration:itemFinished(plan) ? 'line-through':'none'}">
               <svg-icon name="dot01" size="16" className="dot" :style="{color:fourColors[index-1]}"></svg-icon>
               {{plan.content}}
             </div>
-            <div :id="`planIndex${plan.index}`">
+            <div :id="`planIndex${plan.index}`" class="line-content-center">
+              <!-- <input type="checkbox" class="circle" :style="{color:fourColors[index-1]}"> -->
+              <svg-icon name="flag01" size="16" className="dot" :style="{color:fourColors[index-1]}" @click.stop @click="finishItem(plan)"></svg-icon>
               <svg-icon name="delete02" size="16" className="dot" :style="{color:fourColors[index-1]}" @click.stop @click="deleteItem(plan)"></svg-icon>
+              
             </div>
           </div>
           <div v-show="false" class="list-item" style="display:flex; justify-content: center;">
@@ -136,6 +138,11 @@ export default {
         const index = indexList[2*i+u]
         return {color:this.fourColors[index]}
       }
+    },
+    itemFinished(){
+      return (management)=>{
+        return management.finishedDate.includes(this.currentDate)
+      }
     }
   },
   components: {
@@ -186,7 +193,7 @@ export default {
         return
       }
       document.addEventListener('pointerup',this.listItemUp)
-      // document.addEventListener('pointermove',this.listItemMove)
+      document.addEventListener('pointermove',this.listItemMove)
       this.dragedManagement = management
       this.pressTimer = setTimeout(() => {
           this.draged = true
@@ -202,8 +209,22 @@ export default {
           this.pressTimer = null
         }, 500);
     },
-    listItemMove(event, index){
+    listItemMove(){
       if(this.draged){
+        const el4th = document.getElementById(`quadrantList4`).getBoundingClientRect()
+        const left = el4th.left
+        const top = el4th.top
+        // event.pageX
+        let index = 4
+        if(event.clientX < left){
+          if(event.clientY < top){
+            index = 1
+          }else{
+            index = 3
+          }
+        }else if(event.clientY < top){
+          index = 2
+        }
         this.drag2Index = index
         const dragedEl = this.$refs.dragedManagement
         dragedEl.style.left = `${event.pageX - this.disx}px`
@@ -238,7 +259,7 @@ export default {
             this.dragedManagement.important = true
             break
         }
-        console.log(this.dragedManagement.index)
+        // console.log(this.dragedManagement.index)
         this.updateManagement(this.dragedManagement)
       }
       this.draged = false
@@ -246,10 +267,28 @@ export default {
       this.drag2Index = null
       this.getCurManagementData(this.currentDate)
       document.removeEventListener('pointerup',this.listItemUp)
-      // document.removeEventListener('pointermove',this.listItemMove)
+      document.removeEventListener('pointermove',this.listItemMove)
     },
     deleteItem(management){
       this.deleteManagement(management)
+      this.getCurManagementData(this.currentDate)
+    },
+    finishItem(management){
+      // console.log(management.finishedDate,this.currentDate)
+      let index = null
+      management.finishedDate.forEach((date,i)=>{
+        if(this.currentDate == date){
+          index = i
+          return
+        }
+      })
+      console.log(index)
+      if(index == null){
+        management.finishedDate.push(this.currentDate)
+      }else{
+        management.finishedDate.splice(index,1)
+      }
+      this.updateManagement(management)
       this.getCurManagementData(this.currentDate)
     },
     updateManagement(management){
@@ -355,13 +394,22 @@ export default {
             data.repeatDate.push(this.getFormattedDate(date,n))
           })
         }
-        this.managementList.push(this.management)
-        this.$toast.show('添加成功','success')
-        this.modal_show.addPlanShow = false 
+        if(this.updateIndex){
+          this.managementList[this.updateIndex] = this.management
+          this.$toast.show('修改成功','success')
+          this.updateIndex = null
+          this.modal_show.addPlanShow = false 
+
+        }else{
+          this.managementList.push(this.management)
+          this.$toast.show('添加成功','success')
+          this.modal_show.addPlanShow = false 
+        }
+       
       }else{
         this.$toast.show('时间或内容不得为空','error') 
       }
-      console.log(this.managementList)
+      // console.log(this.managementList)
     },
     getManagementDate(n = 0){
       const date = new Date()
@@ -373,7 +421,7 @@ export default {
       if(this.draged){
         return
       }
-      console.log(management)
+      // console.log(management)
       if(management==null){
         this.initManagementDate()
       }else if([1,2,3,4].includes(management)){
@@ -478,6 +526,7 @@ export default {
   border-radius: 8px;
   overflow-y: auto;
   overflow-x: hidden;
+  touch-action: none;
 }
 
 .quadrant-list.item-0:active {

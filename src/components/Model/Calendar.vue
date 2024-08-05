@@ -25,7 +25,7 @@
               </div>
           </div>
           <div v-if="viewType == 2" class="cows">
-              <div v-for="(date, index) in currentDates" :class="{'date':true,'notCur': notCurClass(index) , 'today':todayClass(date)}" @click="selectDate(index)">
+              <div v-for="(date, index) in currentDates" :class="{'date':true,'notCur': notCurClass(index) , 'today':todayClass(date) && !notCurClass(index)}" @click="selectDate(index)">
                   <div  class="content">
                       {{ date }}
                   </div>
@@ -46,8 +46,8 @@
               </div>
           </div>
           <div v-if="type != 'calendar'" class="cows title">
-            <button class="input-button" @click="selectDate(-1)">今天</button>
-            <button v-if="type == 'datetime'" class="input-button" @click="selectNowTime($event)">现在</button>
+            <button class="input-button text" @click="selectDate(-1)">今天</button>
+            <button v-if="type == 'datetime'" class="text input-button" @click="selectNowTime($event)">现在</button>
           </div>
         </div>
         <div v-if="type == 'datetime'" class="time-select" >

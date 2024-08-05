@@ -2,7 +2,10 @@
   {
     "title": "vue3中使用highlight.js",
     "path": "/post/vue3中使用highlight.js",
-    "tags": [],
+    "tags": [
+      "Vue",
+      "highlightjs"
+    ],
     "date": "2024-08-02 03:30:58"
   },
   {
@@ -29,12 +32,6 @@
       "repost"
     ],
     "date": "2024-07-20 17:57:24"
-  },
-  {
-    "title": "IDEA LIST",
-    "path": "/post/IDEA LIST",
-    "tags": [],
-    "date": "2024-07-20 17:05:49"
   },
   {
     "title": "利用css实现按父元素宽度等比例缩放的正方形(圆形)",

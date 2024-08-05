@@ -95,7 +95,7 @@
       <h5>button</h5>
       <div class="content">
         <button>button</button>
-        <button class="fill">fill</button>
+        <button class="fill">button</button>
         <button class="circle">circle</button>
         <button class="circle fill" >circle fill</button>
       </div>
@@ -176,9 +176,8 @@ export default {
       .catch((err) => console.log('Typeset failed: ' + err.message))
       
       return window.MathJax.startup.promise
-    }
-  
-  }
+    },  
+  },
 
 }
 </script>

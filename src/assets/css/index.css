@@ -683,13 +683,25 @@ button.fill:active {
     color: #bbb19b;
 }
 
+button.text {
+    border-color: none;
+    background-color: transparent;
+    opacity: 1;
+}
+
+button.text:active {
+    border-color: none;
+    background-color: transparent;
+    opacity: 1;
+}
+
 button:focus{
     outline:none;
 }
 
 
 button:active {
-   /* background-color: var(--main-color);  */
+   background-color: var(--main-color);  
    color: white;
    transition: 0s;
 }
@@ -718,7 +730,7 @@ textarea:active, textarea:focus{
 
     input:hover{
         border: var(--box-border);
-        outline: 2px  solid var(--main-color); /* 移除默认的蓝色轮廓 */
+        outline: 2px solid var(--main-color); /* 移除默认的蓝色轮廓 */
     }
 
     button:hover{
@@ -748,11 +760,11 @@ textarea:active, textarea:focus{
 
     input[type="radio"]:hover,input[type="checkbox"]:hover{
         outline: none;
-        border: 2px solid var(--main-color);
+        border: 2px solid currentColor;
     }
 
     input[type="checkbox"]:checked:hover{
         outline: none;
-        border: 1px solid var(--main-color);
+        border: 1px solid currentColor;
     }
   }

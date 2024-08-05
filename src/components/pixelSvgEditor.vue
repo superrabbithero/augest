@@ -168,7 +168,7 @@ export default {
       tool:1,
       rows:13,
       cols:13,
-      gridSize:100,
+      gridSize:30,
       coordinate:'x:0,y:0',
       currentColor:'#000',
       bkgColor:"#fff",
