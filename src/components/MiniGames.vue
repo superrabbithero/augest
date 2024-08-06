@@ -24,6 +24,12 @@
         <p>有空再做...</p>
       </div>
     </div>
+    <div class="box-ratio">
+      <div class="box-content" @click="goto('/gameDemo')">
+        <div class="content-title">GAME DEMO</div>
+        <p>有空再做...</p>
+      </div>
+    </div>
   </div>
 </template>
 

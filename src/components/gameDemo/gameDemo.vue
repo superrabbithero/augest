@@ -9,18 +9,33 @@
       <div class="button-item">
         <label>动画控制：</label>
         <button class="fill" @click="startAnimate">开始</button>
-        <button class="fill">停止</button>{{animateId}}
+        <button class="fill" @click="stopAnimate">停止</button>
       </div>
       <div class="button-item">
         <label>测试方法的按钮：</label>
         <button class="fill" @click="test">test</button>
+      </div>
+      <div class="button-item">
+        <label>方向：</label>
+        <div class="dir-contorl">
+          <div style="margin-bottom: 10px;">
+            <button @click="startJump"><svg-icon name="arrow-up"></svg-icon></button>
+          </div>
+          <div>
+            <button @pointerdown="startMove(-1)" @pointerup="stopMove" @pointerleave="stopMove"><svg-icon name="arrow-left"></svg-icon></button>  
+            <button><svg-icon name="arrow-down"></svg-icon></button>      
+            <button @pointerdown="startMove(1)" @pointerup="stopMove" @pointerleave="stopMove"><svg-icon name="arrow-right"></svg-icon></button>
+          </div>
+        </div>
+      </div>
+      <div class="button-item log">
+        速度：{{ Math.abs(moveV.toFixed(2)) }}
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import drawingPng from '@/assets/game-img/test/drawing.png'
 export default {
 
   data(){
@@ -32,7 +47,13 @@ export default {
       ctx:null,
       srcMap:{},
       objectMap:{},
-      srcPath:'@/assets/game-img/test/'
+      srcPath:'@/assets/game-img/test/',
+      startX:null,
+      startY:null,
+      jumpTime:null,
+      moveTime:null,
+      moveV:0,
+      moveDir:0
     }
   },
   created(){
@@ -44,7 +65,7 @@ export default {
   },
   methods:{
     test(){
-      this.pushObject(1,'drawing.svg',{x:50,y:50})
+      this.pushObject('user','drawing.svg',{x:50,y:320})
       console.log(this.objectMap)
       console.log(this.srcMap)
     },
@@ -53,15 +74,97 @@ export default {
       this.ctx = this.maincanvas.getContext('2d');
       this.ctx.lineWidth = 1
     },
+    startMove(dir){
+      this.moveTime = new Date().getTime()
+      this.moveDir = dir
+      console.log(this.moveTime, this.moveDir)
+    },
+    stopMove(){
+      this.moveDir = 0
+      console.log(this.moveTime, this.moveDir)
+    },
+
+    move(){
+      const starta = this.jumpTime ? 0 : 0.05
+      const fa = this.jumpTime ? 0.001 : 0.01
+      const maxV = 5
+      if(this.moveTime){
+        const t = ((new Date().getTime()-this.moveTime))/100
+        if(this.moveDir > 0){
+          this.moveV = this.moveV + this.moveDir*(starta - fa)*t
+          this.moveV = Math.min(this.moveV,maxV)
+          let userObject = this.objectMap.get("user")
+          userObject.position.x += this.moveV
+          this.objectMap.set('user', userObject)
+        }else if(this.moveDir < 0){
+          this.moveV = this.moveV + this.moveDir*(starta - fa)*t
+          this.moveV = Math.max(this.moveV,-maxV)
+          let userObject = this.objectMap.get("user")
+          userObject.position.x += this.moveV
+          
+          this.objectMap.set('user', userObject)
+        }else{
+          if(this.moveV > 0){
+            this.moveV -= fa*t
+            if(this.moveV < 0){
+              this.moveTime = null
+              this.moveV = 0
+            }else{
+              let userObject = this.objectMap.get("user")
+              userObject.position.x += this.moveV
+              this.objectMap.set('user', userObject)
+            }
+          }else{
+            this.moveV += fa*t
+            if(this.moveV > 0){
+              this.moveTime = null
+              this.moveV = 0
+            }else{
+              let userObject = this.objectMap.get("user")
+              userObject.position.x += this.moveV
+              this.objectMap.set('user', userObject)
+            }
+          }
+        }
+        
+
+      }
+      
+      
+    },
+    startJump(){
+      if(!this.jumpTime){
+        this.startY = this.objectMap.get("user").position.y
+        this.jumpTime = new Date().getTime()
+      }
+    },
+
+    jump(){
+      const v = -100 //跳跃初速度
+      const a = 10 //重力加速度
+      let userObject = this.objectMap.get("user")
+      const y1 = this.startY
+      const t = ((new Date().getTime()-this.jumpTime))/100
+      const y = y1 + v*t + a * t * t
+      if(y > y1){
+        userObject.position.y = y1
+        this.objectMap.set('user', userObject)
+        this.jumpTime = null
+      }else{
+        userObject.position.y = y
+        this.objectMap.set('user', userObject)
+      }
+    },
+
     pushObject(id,url,position){
       if(this.srcMap.has(url)){
         this.objectMap.set(id,{url,position})
       }else{
         this.getImage(url).then((rs)=>{
-          console.log(rs)
+          // console.log(rs)
           this.objectMap.set(id,{url,position})
         }).catch((err)=>{
-          console.log(err)
+          // console.log(err)
         })
       }
     },
@@ -73,10 +176,18 @@ export default {
         this.animateId = requestAnimationFrame(this.updateMainCanvasAnimate)
       }
     },
+    stopAnimate(){
+      cancelAnimationFrame(this.animateId)
+      this.animateId = 0
+    },
     updateMainCanvasAnimate(){
       this.ctx.clearRect(0,0,720,480)
+      if(this.jumpTime){
+        this.jump()
+      }
+      this.move()
       this.objectMap.forEach((value, key) => {
-        this.ctx.drawImage(this.srcMap.get(value.url),value.position.x,value.position.y)
+        this.ctx.drawImage(this.srcMap.get(value.url),value.position.x,value.position.y,160,160)
       })
       this.animateId = requestAnimationFrame(this.updateMainCanvasAnimate)
     },
@@ -108,7 +219,8 @@ export default {
 
         // 假设你的PNG文件在assets目录中
       }
-    }
+    },
+
   },
 }
   
@@ -149,7 +261,10 @@ export default {
   }
 
   .button-groups {
+    width: 720px;
     display: flex;
+    flex-wrap: wrap;
+    /* justify-content: center; */
   }
 
   .button-item{
@@ -157,8 +272,15 @@ export default {
     display: flex;
     align-items: center;
   }
+  .button-item.log{
+    width: 100%;
+  }
   .button-item button{
     margin-right:10px;
+  }
+
+  .dir-contorl button{
+    padding: 5px;
   }
 </style>
 
