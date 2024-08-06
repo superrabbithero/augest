@@ -774,7 +774,7 @@ export default {
       const x3 = {x:pixel.x + pixelSize, y:pixel.y + pixelSize}
       const x4 = {x:pixel.x, y:pixel.y + pixelSize}
       const point2Num = (x,y)=>{
-        return x + y*this.rows
+        return x + y*this.cols
       }
       //定义了正方形的4个边向量[向量起点，向量终点，向量右边的颜色]
       return [[point2Num(x1.x,x1.y),point2Num(x2.x,x2.y),color],
@@ -915,8 +915,8 @@ export default {
       let pathContent = ``
       let colorWithPath = new Map() //保存颜色-路径的映射，用于合并相同颜色的路径
       const num2Point = (num)=>{
-        const x = num%(this.rows*30)
-        return {x,y:Math.floor((num-x)/this.rows)}
+        const x = num%(this.cols*30)
+        return {x,y:Math.floor((num-x)/this.cols)}
       }
 
       pathLists.forEach((pathList)=>{
@@ -1000,13 +1000,13 @@ export default {
 
           // 只保存非透明像素
           if (a > 0) {
-            pixelData.push({ x:x*0.3, y:y*0.3, r, g, b, a });
+            pixelData.push({ x:x/this.gridSize*30, y:y/this.gridSize*30, r, g, b, a });
           }
         } 
       }
     
       //生成svg文件,gpt生成代码
-      let svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width*0.3} ${height*0.3}">`;
+      let svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${this.cols*30} ${this.rows*30}">`;
       
       if(false){
         pixelData.forEach(pixel => {

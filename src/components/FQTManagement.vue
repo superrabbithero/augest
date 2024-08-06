@@ -59,6 +59,7 @@
       </div>
       <svg-icon name="arrow-right" className="date-item" @click="nextWeek"></svg-icon>
       <svg-icon name="plus01" className="date-item" @click="showAddPlan()"></svg-icon>
+      <svg-icon name="refresh02" class="update-icon" className="date-item" @click="getCurManagementData(currentDate)"></svg-icon>
 		</div>
     {{currentDate}}
     <div :class="{'quadrant-container':true,'draging':draged}">
@@ -409,7 +410,7 @@ export default {
       }else{
         this.$toast.show('时间或内容不得为空','error') 
       }
-      // console.log(this.managementList)
+      console.log(this.managementList)
     },
     getManagementDate(n = 0){
       const date = new Date()
@@ -666,5 +667,15 @@ export default {
 .list-item.draged.item-3{
   background-color: #93d3a230;
 }  
+
+.update-icon{
+  transition: transform 1s;
+
+}
+
+.update-icon:active{
+  transform: rotate(-360deg);
+  transition: transform 0s;
+}
 
 </style>

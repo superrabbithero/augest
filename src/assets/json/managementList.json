@@ -27,7 +27,8 @@
         "urgent": false,
         "important": true,
         "repeatDate": [],
-        "finishedDate": []
+        "finishedDate": [],
+        "index": 2
     },
     {
         "date": "2024/08/02T00:00",
@@ -75,6 +76,16 @@
             "2024/8/30",
             "2024/9/29"
         ],
+        "finishedDate": []
+    },
+    {
+        "date": "2024/08/06",
+        "deadline": "2024/08/06T17:00",
+        "repeat": "0",
+        "content": "1.29 识别客户端+赋分分析回归（换班）",
+        "urgent": true,
+        "important": true,
+        "repeatDate": [],
         "finishedDate": []
     }
 ]
