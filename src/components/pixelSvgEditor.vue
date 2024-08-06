@@ -150,7 +150,6 @@ export default {
       }
     },
     canvasStyle(){
-      
       const scale = this.scaleCount/100
       const size = this.gridSize*scale
       return {

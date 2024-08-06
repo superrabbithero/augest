@@ -122,6 +122,15 @@ const routes = [
             footerHidden: true
         }
     },
+    {
+        path: '/gameDemo',
+        name: 'gameDemo',
+        component: () => import("@/components/gameDemo/gameDemo"),
+        meta:{
+            title: 'gameDemo',
+            footerHidden: true
+        }
+    },
 
 ]
 
