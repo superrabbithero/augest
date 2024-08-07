@@ -768,3 +768,14 @@ textarea:active, textarea:focus{
         border: 1px solid currentColor;
     }
   }
+
+
+/*  flex样式类*/
+.center-h{
+    display: flex;
+    align-items: center;
+}
+
+.left {
+    justify-content: flex-end;
+}

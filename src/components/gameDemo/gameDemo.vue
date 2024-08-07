@@ -62,12 +62,46 @@ export default {
   },
   mounted(){
     this.init()
+    window.addEventListener('keydown', this.handleKeyDown)
+    window.addEventListener('keyup', this.handleKeyUp)
+  },
+  unmounted(){
+    window.removeEventListener('keydown', this.handleKeyDown)
+    window.removeEventListener('keyup', this.handleKeyUp)
   },
   methods:{
     test(){
       this.pushObject('user','drawing.svg',{x:50,y:320})
       console.log(this.objectMap)
       console.log(this.srcMap)
+    },
+    
+    handleKeyDown(event){
+      console.log(`down:${event.key}`)
+      switch(event.key){
+        case ' ': 
+          this.startJump();
+          break;
+        case 'ArrowRight': 
+          if(this.moveDir != 1)
+            this.startMove(1) ;
+          break;
+        case 'ArrowLeft':
+          if(this.moveDir != -1) 
+            this.startMove(-1) ;
+          break;
+      }
+    },
+    handleKeyUp(event){
+      console.log(`up:${event.key}`)
+      switch(event.key){
+        case 'ArrowRight': 
+          this.stopMove() ;
+          break;
+        case 'ArrowLeft': 
+          this.stopMove() ;
+          break;
+      }
     },
     init(){
       this.maincanvas = this.$refs.mainCanvas;

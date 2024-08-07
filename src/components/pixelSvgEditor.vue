@@ -1,14 +1,44 @@
 <template>
-  
+  <my-model :show="modal_show.newFileModalShow" :modeless="false" modalKey="newFileModalShow">
+    <div class="center-h">
+      <labal>画布大小：</labal>
+      <div class="size">
+        <input type="text" v-model="newFileForm.rows"  >
+        <span>x</span>
+        <input type="text" v-model="newFileForm.cols"  >
+      </div>
+    </div>
+    <div class="center-h">
+      <div v-for="size in [16,32,64]" @click="newFileForm.rows = size,newFileForm.cols = size" :style="{width: `${size}px`,height: `${size}px`,fontSize: `${size*0.5}px`,border: `1px solid var(--fontNormal)`,marginRight: `4px`,cursor: `pointer`}">
+        {{size}}<sup>2</sup>
+      </div>
+    </div>
+    <div class="center-h"> 
+      <labal>网格大小:</labal>
+      <input type="text" v-model="newFileForm.gridSize"  >
+    </div>
+    <div class="center-h">
+      <labal>导出网格大小:</labal>
+      <input type="text" v-model="newFileForm.outputSize"  >
+    </div>
+    <div class="center-h left">
+      <button class="fill" @click="newFile()">新  建</button>
+    </div>
+  </my-model>
   <div class="tool-setting-bar">
     <div class="left">
+      <div class="tool-option" @click="modal_show.newFileModalShow = true">
+        <svg-icon name="file-create01"></svg-icon>
+      </div>
       <div class="tool-option">
         <div class="label" style="width: 91px">画笔大小({{penSize}}):</div>
         <input type="range" style="color: currentColor" v-model="penSize" min="1" max="20">
       </div>
-
     </div>
     <div class="right">
+      <div class="icon-item" @click="gifToolsShow=!gifToolsShow">
+        <svg-icon name="file-gif"></svg-icon>
+      </div>
       <div class="icon-item" @click="toolsShow=!toolsShow">
         <svg-icon name="phone"></svg-icon>
       </div>
@@ -43,87 +73,148 @@
     </div>
   </div>
   <div class="work-area">
-    <div class="left" v-show="toolsShow">
-      <div class="tools-bar">
-        <div :class="{'tool-item':true,'active':tool == 1}" @click="switchTool(1)">
-          <svg-icon name="pencil" className="tool-item-svg"></svg-icon>
+    <div style="display: flex;flex-grow: 1;overflow: hidden;">
+      <div class="left" v-show="toolsShow">
+        <div class="tools-bar">
+          <div :class="{'tool-item':true,'active':tool == 1}" @click="switchTool(1)">
+            <svg-icon name="pencil" className="tool-item-svg"></svg-icon>
+          </div>
+          <div :class="{'tool-item':true,'active':tool == 2}" @click="switchTool(2)">
+            <svg-icon name="eraser" className="tool-item-svg"></svg-icon>
+          </div>
+          <div :class="{'tool-item':true,'active':tool == 3}" @click="switchTool(3)">
+            <svg-icon name="line" className="tool-item-svg"></svg-icon> 
+          </div>
+          <div :class="{'tool-item':true,'active':tool == 4}" @click="switchTool(4)">
+            <svg-icon name="rect" className="tool-item-svg"></svg-icon>
+          </div>
+          <div :class="{'tool-item':true,'active':tool == 5}" @click="switchTool(5)">
+            <svg-icon name="circle" className="tool-item-svg"></svg-icon>
+          </div>
+          <div :class="{'tool-item':true,'active':tool == 6}" @click="switchTool(6)">
+            <svg-icon name="paintBuckets" className="tool-item-svg"></svg-icon>
+          </div>
+          <div :class="{'tool-item':true,'active':tool == 7}" @click="switchTool(7)">
+            <svg-icon name="select" className="tool-item-svg"></svg-icon>
+          </div>
+          <div class="tool-item" @click="clearAll">
+            <svg-icon name="delete02" className="tool-item-svg"></svg-icon>
+          </div>
+          <div class="tool-item-fullscreen">
+            <div class="color back" :style="{backgroundColor:bkgColor}" @click="[currentColor,bkgColor] = [bkgColor,currentColor]"></div>
+            <div class="color front" :style="{backgroundColor:currentColor}">
+              <input type="color" class="colorInput-hidden" ref="addColor1" @change="addColor($event)">
+            </div>
+          </div>
         </div>
-        <div :class="{'tool-item':true,'active':tool == 2}" @click="switchTool(2)">
-          <svg-icon name="eraser" className="tool-item-svg"></svg-icon>
+      </div>
+      <div class="middle" 
+                          @pointermove="handlePointerMove"
+                          @pointerup="handlePointerUp" ref="realViewport" @wheel="zoomWheel">
+        <div style="position: absolute;left: 1rem">{{coordinate}}</div>
+          <div class="drawing-area" @pointerdown="handlePointerDown">
+            <canvas :width="width" :height="height"  class="gridsytle" :style="canvasStyle" ref="canvas">
+              
+            </canvas>
+          </div>
+        
+      </div>
+      <div class="right" v-show="toolsShow">
+        <div class="overview" @pointermove="dragViewportMove" @pointerup="dragViewportUp" @wheel="zoomWheel">
+          <canvas class="gridsytle" ref="canvas_overview" :style="overviewStyle" :width="overviewSize.width" :height="overviewSize.height"></canvas>
+          <div class="viewport" ref="viewport" @pointerdown="dragViewportDown"></div>
         </div>
-        <div :class="{'tool-item':true,'active':tool == 3}" @click="switchTool(3)">
-          <svg-icon name="line" className="tool-item-svg"></svg-icon> 
+        <div class="overview-tools">
+          <div class="icon-item" @click="zoomIn">
+            <svg-icon name="zoomIn"></svg-icon>
+          </div>
+          <div class="icon-item" @click="zoomOut">
+            <svg-icon name="zoomOut"></svg-icon>
+          </div>
+          <input type="range" style="width: 80px; color: currentColor;" min="10" max="100" v-model="scaleCount" @input="resizeViewport">
+          <div class="icon-item" @click="zoomFit">
+            <svg-icon name="fit01"></svg-icon>
+          </div>
         </div>
-        <div :class="{'tool-item':true,'active':tool == 4}" @click="switchTool(4)">
-          <svg-icon name="rect" className="tool-item-svg"></svg-icon>
-        </div>
-        <div :class="{'tool-item':true,'active':tool == 5}" @click="switchTool(5)">
-          <svg-icon name="circle" className="tool-item-svg"></svg-icon>
-        </div>
-        <div :class="{'tool-item':true,'active':tool == 6}" @click="switchTool(6)">
-          <svg-icon name="paintBuckets" className="tool-item-svg"></svg-icon>
-        </div>
-        <div :class="{'tool-item':true,'active':tool == 7}" @click="switchTool(7)">
-          <svg-icon name="select" className="tool-item-svg"></svg-icon>
-        </div>
-        <div class="tool-item" @click="clearAll">
-          <svg-icon name="delete02" className="tool-item-svg"></svg-icon>
-        </div>
-        <div class="tool-item-fullscreen">
-          <div class="color back" :style="{backgroundColor:bkgColor}" @click="[currentColor,bkgColor] = [bkgColor,currentColor]"></div>
-          <div class="color front" :style="{backgroundColor:currentColor}">
-            <input type="color" class="colorInput-hidden" ref="addColor1" @change="addColor($event)">
+        <div class="color-tools" ref="colorTools" @pointermove="handleMove($event,index)">
+          <div class="color-item draged" v-show="dragedColorIndex != null" ref="dragedColor"></div>
+          <div v-for="(color,index) in myColors" class="color-item" ref="colorItem" :style="{backgroundColor:color}" 
+                @pointerdown="handleStart($event,index)"
+                
+                @pointerup="handleEnd($event,index)"
+                ></div>
+          <div class="color-item">+
+            <input type="color" class="colorInput-hidden" ref="addColor2" @change="addColor($event)">
+          </div>
+          <div :class="{'color-item delete':true,'show':dragedColorIndex!=null }" @pointerup="handleEnd(event,-1)">
+            <svg-icon name="delete02" className="color-item-svg"></svg-icon>
           </div>
         </div>
       </div>
     </div>
-    <div class="middle" 
-                        @pointermove="handlePointerMove"
-                        @pointerup="handlePointerUp" ref="realViewport" @wheel="zoomWheel">
-      <div style="position: absolute;left: 1rem">{{coordinate}}</div>
-      <div class="drawing-area" @pointerdown="handlePointerDown">
-        <canvas :width="width" :height="height"  class="gridsytle" :style="canvasStyle" ref="canvas">
-          
-        </canvas>
-      </div>
+    <div style="flex-shrink: 0;overflow: hidden;height: 80px;">
+      <div v-show="gifToolsShow" class="gif-tools">
     </div>
-    <div class="right" v-show="toolsShow">
-      <div class="overview" @pointermove="dragViewportMove" @pointerup="dragViewportUp" @wheel="zoomWheel">
-        <canvas class="gridsytle" ref="canvas_overview" :style="overviewStyle" :width="overviewSize.width" :height="overviewSize.height"></canvas>
-        <div class="viewport" ref="viewport" @pointerdown="dragViewportDown"></div>
-      </div>
-      <div class="overview-tools">
-        <div class="icon-item" @click="zoomIn">
-          <svg-icon name="zoomIn"></svg-icon>
-        </div>
-        <div class="icon-item" @click="zoomOut">
-          <svg-icon name="zoomOut"></svg-icon>
-        </div>
-        <input type="range" style="width: 80px; color: currentColor;" min="10" max="100" v-model="scaleCount" @input="resizeViewport">
-        <div class="icon-item" @click="zoomFit">
-          <svg-icon name="fit01"></svg-icon>
-        </div>
-      </div>
-      <div class="color-tools" ref="colorTools" @pointermove="handleMove($event,index)">
-        <div class="color-item draged" v-show="dragedColorIndex != null" ref="dragedColor"></div>
-        <div v-for="(color,index) in myColors" class="color-item" ref="colorItem" :style="{backgroundColor:color}" 
-              @pointerdown="handleStart($event,index)"
-              
-              @pointerup="handleEnd($event,index)"
-              ></div>
-        <div class="color-item">+
-          <input type="color" class="colorInput-hidden" ref="addColor2" @change="addColor($event)">
-        </div>
-        <div :class="{'color-item delete':true,'show':dragedColorIndex!=null }" @pointerup="handleEnd(event,-1)">
-          <svg-icon name="delete02" className="color-item-svg"></svg-icon>
-        </div>
-      </div>
-    </div>
+  </div>
   </div>
 </template>
 
 <script>
 export default {
+  data() {
+    return {
+      tool:1,
+      rows:13,
+      cols:13,
+      gridSize:30,
+      outputSize:30,
+      coordinate:'x:0,y:0',
+      currentColor:'#000',
+      bkgColor:"#fff",
+      // colorToolsEdited:false,
+      myColors:['#000000','#ffffff','#F96635','#f9A822','#FAEC86','#93d3a2','#2bbaa5','#008080'],
+      colorIndex:0,
+      dragedColorIndex:null,
+      isDrawing: false,
+      pixels: [],
+      endPoints:{x:0,y:0},
+      maincanvas:null,
+      ctx:null,
+      ovCtx:null,
+      historys:[],
+      log:"",
+      shiftdown:false,
+      dropDownBox:null,
+      dropDownBoxShow:{
+        sizeSettingShow:false,
+        downloadShow:false
+      },
+      penSize:1,
+      scaleCount:30,
+      minScaleCount:30,
+      viewport:null,
+      disx:0,
+      disy:0,
+      selectedRect:{x:0,y:0,width:0,height:0},
+      offscreenCanvas:null,
+      selectedImgData:null,
+      selectedBgData:null,
+      isDragingSelectRect:false,
+      selectRectAnimateId:0,
+      pressTimer:null,
+      toolsShow:true,
+      modal_show:{
+        newFileModalShow:false,
+      },
+      newFileForm:{
+        cols:13,
+        rows:13,
+        gridSize:100,
+        outputSize:30
+      },
+      gifToolsShow:true
+    };
+  },
   computed: {
     width() {
       return this.cols*this.gridSize;
@@ -161,50 +252,8 @@ export default {
           backgroundPosition: `0 0 , ${size}px ${size}px`
       }
     },
- },
-  data() {
-    return {
-      tool:1,
-      rows:13,
-      cols:13,
-      gridSize:30,
-      coordinate:'x:0,y:0',
-      currentColor:'#000',
-      bkgColor:"#fff",
-      // colorToolsEdited:false,
-      myColors:['#000000','#ffffff','#F96635','#f9A822','#FAEC86','#93d3a2','#2bbaa5','#008080'],
-      colorIndex:0,
-      dragedColorIndex:null,
-      isDrawing: false,
-      pixels: [],
-      endPoints:{x:0,y:0},
-      maincanvas:null,
-      ctx:null,
-      ovCtx:null,
-      historys:[],
-      log:"",
-      shiftdown:false,
-      dropDownBox:null,
-      dropDownBoxShow:{
-        sizeSettingShow:false,
-        downloadShow:false
-      },
-      penSize:1,
-      scaleCount:30,
-      minScaleCount:30,
-      viewport:null,
-      disx:0,
-      disy:0,
-      selectedRect:{x:0,y:0,width:0,height:0},
-      offscreenCanvas:null,
-      selectedImgData:null,
-      selectedBgData:null,
-      isDragingSelectRect:false,
-      selectRectAnimateId:0,
-      pressTimer:null,
-      toolsShow:true
-    };
   },
+  
   mounted() {
     this.init()
     window.addEventListener('keydown', this.handleKeyDown);
@@ -222,6 +271,17 @@ export default {
     document.removeEventListener('click',this.closeDropDownBox)
   },
   methods: {
+    newFile(){
+      this.cols = Math.floor(this.newFileForm.cols)
+      this.gridSize = Math.floor(this.newFileForm.gridSize)
+      this.rows = Math.floor(this.newFileForm.rows)
+      this.outputSize = Math.floor(this.newFileForm.outputSize)
+      this.historys = []
+      this.clearAll()
+      if(this.modal_show.newFileModalShow){
+        this.modal_show.newFileModalShow = false
+      }
+    },
     //颜色卡片长按事件
     handleStart(event,index){
         
@@ -766,7 +826,7 @@ export default {
       this.selectRectAnimateId = 0
     },
     getPixelVector(pixel){
-      const pixelSize = 30
+      const pixelSize = this.outputSize
       const color = `rgba(${pixel.r},${pixel.g},${pixel.b},${pixel.a})`
       const x1 = {x:pixel.x, y:pixel.y}
       const x2 = {x:pixel.x + pixelSize, y:pixel.y}
@@ -999,13 +1059,13 @@ export default {
 
           // 只保存非透明像素
           if (a > 0) {
-            pixelData.push({ x:x/this.gridSize*30, y:y/this.gridSize*30, r, g, b, a });
+            pixelData.push({ x:x/this.gridSize*this.outputSize, y:y/this.gridSize*this.outputSize, r, g, b, a });
           }
         } 
       }
     
       //生成svg文件,gpt生成代码
-      let svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${this.cols*30} ${this.rows*30}">`;
+      let svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${this.cols*this.outputSize} ${this.rows*this.outputSize}">`;
       
       if(false){
         pixelData.forEach(pixel => {
@@ -1013,7 +1073,7 @@ export default {
           if(color =='rgba(0,0,0,255)'){
             color = "currentColor"
           }
-          svgContent += `<rect x="${pixel.x}" y="${pixel.y}" width="30" height="30" fill="${color}" />`;
+          svgContent += `<rect x="${pixel.x}" y="${pixel.y}" width="${this.outputSize}" height="${this.outputSize}" fill="${color}" />`;
         });
       }else{
         svgContent += this.getpathContent(pixelData)
@@ -1141,16 +1201,16 @@ export default {
 
 <style scoped>
 .drawing-area {
-  border: 0.5px solid #d9d9d9;
-  width: fit-content;
+/*  border: 0.5px solid #d9d9d9;*/
+/*  width: 100%;*/
   font-size: 0;
-
-  height: fit-content;
+  height: 100%;
 }
 canvas {
   position: relative;
   z-index: 1;
   touch-action: none;
+  border: 0.5px solid #d9d9d9;
 }
 .canvas-grid {
   position: absolute;
@@ -1229,9 +1289,14 @@ canvas {
 }
 .work-area{
   display: flex;
+  flex-direction: column;
   width: 100%;
   overflow: hidden;
   height: calc(100vh - 91px);
+}
+
+.work-area > div{
+  padding: 0;
 }
 
 .work-area .middle{
@@ -1243,6 +1308,7 @@ canvas {
   border-left: var(--box-border);
   user-select: none;
   padding: 0;
+
 }
 
 .work-area .right{
@@ -1276,9 +1342,6 @@ canvas {
   width: 100%;
   display: flex;
   justify-content: space-between;
-}
-.work-area > div{
-  padding: 5px;
 }
 
 .icon-item-box{
@@ -1438,6 +1501,13 @@ canvas {
   height: 100%;
   opacity: 0;
 /*  display: none;*/
+
+}
+
+.gif-tools{
+  width: 100%;
+  border-top: var(--box-border);
+
 }
 
 </style>
