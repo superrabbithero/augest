@@ -152,10 +152,12 @@
         </div>
       </div>
     </div>
-    <div style="flex-shrink: 0;overflow: hidden;height: 80px;">
-      <div v-show="gifToolsShow" class="gif-tools">
+    <div :class="{'gif-tools-box':true,'show':gifToolsShow}">
+      <div class="gif-tools">
+        <canvas ref="gifCanvas" width="100" height="100" v-for="index in gifImageDataList.length"></canvas>
+        <div @click="pushGifImgList()"><svg-icon name="plus01"></svg-icon></div>
+      </div>
     </div>
-  </div>
   </div>
 </template>
 
@@ -212,7 +214,8 @@ export default {
         gridSize:100,
         outputSize:30
       },
-      gifToolsShow:true
+      gifToolsShow:true,
+      gifImageDataList:[]
     };
   },
   computed: {
@@ -331,12 +334,6 @@ export default {
         }
       }
     },
-    // offColorToolsEdit(e){
-    //   if(!this.$refs.colorTools.contains(e.target) && this.colorToolsEdited){
-    //     this.colorToolsEdited = false
-    //     document.removeEventListener('click', this.offColorToolsEdit)
-    //   }
-    // },
     selectColor(index){
       this.currentColor = this.myColors[index]
     },
@@ -428,10 +425,10 @@ export default {
     },
     getMinScale(){
       const realViewport = this.$refs.realViewport
-      let width = realViewport.clientWidth
+      let width = realViewport.clientWidth - 5
       let height = width/this.cols*this.rows
       if(height > realViewport.clientHeight){
-        height = realViewport.clientHeight
+        height = realViewport.clientHeight - 2
         width = height/this.rows*this.cols
       }
       this.minScaleCount = Math.floor(100*width/this.width)
@@ -1195,6 +1192,21 @@ export default {
         this.$refs.viewport.style.left = `${viewportLeft}px`
       })
     },
+    pushGifImgList(){
+      const imageData= this.ctx.getImageData(0, 0, this.width, this.height)
+      this.gifImageDataList.push(imageData)
+      const length = this.gifImageDataList.length
+      const that = this
+      this.$nextTick(()=>{
+        const canvas = that.$refs.gifCanvas[length-1]
+        const ctx = canvas.getContext("2d")
+        ctx.drawImage(
+        that.maincanvas,
+          0,0,this.width,this.height,
+          0,0,100,100
+        )
+      })
+    }
   },
 };
 </script>
@@ -1504,10 +1516,31 @@ canvas {
 
 }
 
+.gif-tools-box {
+  flex-shrink: 0;
+  overflow: hidden;
+  height: 0px;
+  border-top: var(--box-border);
+  display: flex;
+  align-items: center;
+  transition: 0.3s ease;
+  opacity: 0;
+}
+
+.gif-tools-box.show {
+  opacity: 1;
+  height: 100px;
+}
+
 .gif-tools{
   width: 100%;
-  border-top: var(--box-border);
-
+  display: flex;
+  align-items: center;
+  overflow: auto;
+}
+.gif-tools > canvas{
+  margin: 0 5px;
+  width: 60px;
 }
 
 </style>
