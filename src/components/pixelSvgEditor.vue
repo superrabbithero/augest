@@ -1,7 +1,7 @@
 <template>
   <my-model :show="modal_show.newFileModalShow" :modeless="false" modalKey="newFileModalShow">
     <div class="center-h">
-      <labal>画布大小：</labal>
+      <label>画布大小：</label>
       <div class="size">
         <input type="text" v-model="newFileForm.rows"  >
         <span>x</span>
@@ -14,11 +14,11 @@
       </div>
     </div>
     <div class="center-h"> 
-      <labal>网格大小:</labal>
+      <label>网格大小:</label>
       <input type="text" v-model="newFileForm.gridSize"  >
     </div>
     <div class="center-h">
-      <labal>导出网格大小:</labal>
+      <label>导出网格大小:</label>
       <input type="text" v-model="newFileForm.outputSize"  >
     </div>
     <div class="center-h left">
@@ -67,6 +67,7 @@
           <div class="drop-down-option" @click="saveAsSvg">保存成 svg</div>
           <div class="drop-down-option" @click="copySvgCode">复制 svg 代码</div>
           <div class="drop-down-option" @click="saveAsPng">保存成 png</div>
+          <div class="drop-down-option" @click="saveAsGif">保存成 gif</div>
         </div>
       </div>
         
@@ -157,17 +158,21 @@
         <svg-icon name="replay01" @click="gifImageDataIndex=0,startAnimate()"></svg-icon>
         <svg-icon name="play01" @click="startAnimate"></svg-icon>
         <svg-icon name="pause01" @click="stopAnimate"></svg-icon>
-        <input type="range" v-model="animateSpeed" min="20" max="300" step="20">
+        <svg-icon name="play-slower01" @click="changeSpeed(-1)"></svg-icon>
+        <svg-icon name="play-faster01" @click="changeSpeed(1)"></svg-icon>
+        {{`${animateFps[animateFpsIndex]}fps`}}
+        <svg-icon @click="pushGifImgList()" name="letter-plus01"></svg-icon>
+        <svg-icon @click="deleteGifImgList()" name="letter-minus01"></svg-icon>
       </div>
       <div class="gif-tools">
         <canvas ref="gifCanvas" :width="100*cols/rows" height="100" v-for="index in gifImageDataList.length" :style="{outline:`${index-1 == gifImageDataIndex ?'2px solid var(--main-color)':'none'}`}" @click="putGifImage2MainCanvas(index-1)"></canvas>
-        <div @click="pushGifImgList()"><svg-icon name="plus01"></svg-icon></div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import GIF from 'gif.js'
 export default {
   data() {
     return {
@@ -177,10 +182,10 @@ export default {
       gridSize:30,
       outputSize:30,
       coordinate:'x:0,y:0',
-      currentColor:'#000',
+      currentColor:'#000001',
       bkgColor:"#fff",
       // colorToolsEdited:false,
-      myColors:['#000000','#ffffff','#F96635','#f9A822','#FAEC86','#93d3a2','#2bbaa5','#008080'],
+      myColors:['#000001','#ffffff','#F96635','#f9A822','#FAEC86','#93d3a2','#2bbaa5','#008080'],
       colorIndex:0,
       dragedColorIndex:null,
       isDrawing: false,
@@ -223,9 +228,11 @@ export default {
       gifToolsShow:true,
       gifImageDataList:[],
       animateId:0,
-      gifImageDataIndex:0,
+      gifImageDataIndex:-1,
       animateStartTime:null,
-      animateSpeed:100
+      animateFps:[3,4,5,10,30,60],
+      animateFpsIndex:0,
+      animateSpeed:300,
     };
   },
   computed: {
@@ -397,13 +404,13 @@ export default {
         document.removeEventListener('click',this.closeDropDownBox)
       }
     },
-    switchColor(point){
-      const color = this.getColorAtPixel(point)
-      const currentColor = 'rgba('+color.r+','+color.g+','+color.b+','+color.a+')'
-      if(currentColor != 'rgba(0,0,0,0)'){
-        this.currentColor = currentColor
-      }
-    },
+    // switchColor(point){
+    //   const color = this.getColorAtPixel(point)
+    //   const currentColor = 'rgba('+color.r+','+color.g+','+color.b+','+color.a+')'
+    //   if(currentColor != 'rgba(0,0,0,0)'){
+    //     this.currentColor = currentColor
+    //   }
+    // },
     handleKeyDown(event) {
       if (event.key === 'Shift') {
         this.shiftdown = true;
@@ -1043,7 +1050,7 @@ export default {
           // console.log(key,path)
           colorPath += path
         })
-        colorPath += `" fill="${key=='rgba(0,0,0,255)'?'currentColor':key}"/>`
+        colorPath += `" fill="${key=='rgba(0,0,0,255)' || key=='rgba(0,0,1,255)' ?'currentColor':key}"/>`
         pathContent += colorPath
       }
       console.log(pathContent)
@@ -1079,7 +1086,7 @@ export default {
       if(false){
         pixelData.forEach(pixel => {
           let color = `rgba(${pixel.r},${pixel.g},${pixel.b},${pixel.a})`
-          if(color =='rgba(0,0,0,255)'){
+          if(color =='rgba(0,0,1,255)' || color == 'rgba(0,0,0,255)'){
             color = "currentColor"
           }
           svgContent += `<rect x="${pixel.x}" y="${pixel.y}" width="${this.outputSize}" height="${this.outputSize}" fill="${color}" />`;
@@ -1115,6 +1122,43 @@ export default {
       link.download = 'drawing.png';
       link.click();
       URL.revokeObjectURL(url);
+    },
+    saveAsGif(){
+      if(this.gifImageDataIndex == -1){
+        this.$toast.show('没有创建gif图片数据序列','error')
+        return
+      }
+
+      // 假设你已经有一个数组保存了所有的 ImageData 对象
+      const imageDataArray = this.gifImageDataList
+
+      // 创建一个 GIF 对象
+      const gif = new GIF({
+        workers: 2,
+        quality: 10,
+        workerScript: `${process.env.BASE_URL}js/gifjs/gif.worker.js`,
+        transparent: 'rgba(0,0,0,0)',
+      });
+
+      
+
+      // 遍历 ImageData 数组，并将每个 ImageData 添加为一帧
+      imageDataArray.forEach(imageData => {
+        gif.addFrame(imageData, {delay: Math.floor(this.animateSpeed)});
+      });
+
+      // 生成并导出 GIF
+      gif.on('finished', function(blob) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'output.gif';
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+
+      gif.render();
+
     },
     async copyToClipboard(content) {
       try {
@@ -1206,23 +1250,48 @@ export default {
     },
     pushGifImgList(){
       const imageData= this.ctx.getImageData(0, 0, this.width, this.height)
-      this.gifImageDataList.push(imageData)
-      this.gifImageDataIndex = this.gifImageDataList.length - 1
+      this.gifImageDataList.splice(this.gifImageDataIndex,0,imageData)
+      this.gifImageDataIndex++
       const that = this
       this.$nextTick(()=>{
+        for(var i = that.gifImageDataList.length-1 ; i > that.gifImageDataIndex ; i--){
+          const canvas = that.$refs.gifCanvas[i]
+          const canvasBefore = that.$refs.gifCanvas[i-1]
+          const ctx = canvas.getContext("2d")
+          ctx.clearRect(0,0,100*that.cols/that.rows,100)
+          ctx.drawImage(canvasBefore,0,0)
+        }
         const canvas = that.$refs.gifCanvas[that.gifImageDataIndex]
         const ctx = canvas.getContext("2d")
+        ctx.clearRect(0,0,100*that.cols/that.rows,100)
         ctx.drawImage(
-        that.maincanvas,
-          0,0,this.width,this.height,
-          0,0,100*this.cols/this.rows,100
+          that.maincanvas,
+          0,0,that.width,that.height,
+          0,0,100*that.cols/that.rows,100
         )
       })
     },
+    deleteGifImgList(){
+      for(var i = this.gifImageDataIndex ; i < this.gifImageDataList.length-1 ; i++){
+        const canvas = this.$refs.gifCanvas[i]
+        const canvasNext = this.$refs.gifCanvas[i+1]
+        const ctx = canvas.getContext("2d")
+        ctx.clearRect(0,0,100*this.cols/this.rows,100)
+        ctx.drawImage(canvasNext,0,0)
+      }
+      this.gifImageDataList.splice(this.gifImageDataIndex,1)
+      if(this.gifImageDataIndex >= this.gifImageDataList.length){
+        this.gifImageDataIndex = this.gifImageDataList.length-1
+      }else if(this.gifImageDataList.length < 1){
+        this.gifImageDataIndex = -1
+      }
+    },
     startAnimate(){
       if(this.animateId == 0){
-        this.animateStartTime = new Date().getTime()
-        this.animateId = requestAnimationFrame(this.updateMainCanvasAnimate)
+        if(this.gifImageDataList.length > 0){
+          this.animateStartTime = new Date().getTime()
+          this.animateId = requestAnimationFrame(this.updateMainCanvasAnimate)
+        }
       }
     },
     stopAnimate(){
@@ -1258,11 +1327,15 @@ export default {
         const ctx = canvas.getContext("2d")
         ctx.clearRect(0,0,100*this.cols/this.rows,100)
         ctx.drawImage(
-        that.maincanvas,
+          that.maincanvas,
           0,0,this.width,this.height,
           0,0,100*this.cols/this.rows,100
         )
       })
+    },
+    changeSpeed(num){
+      this.animateFpsIndex = ((this.animateFpsIndex+num)<0 ? 5 : this.animateFpsIndex+num)%6
+      this.animateSpeed = 1000/this.animateFps[this.animateFpsIndex]
     }
   },
 };
