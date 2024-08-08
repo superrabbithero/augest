@@ -3,7 +3,7 @@
     <div class="home-left col">
       <div class="home-title">
         <div v-if="currentTag">
-          <IconWrapper  iconName="PoundSign" fill="#ffc848" theme="outline" :strokeWidth='2' size="25" />{{currentTag}} <sup>{{tagIndexJson[currentTag].length}}</sup></div>
+          <svg-icon name="letter-hashtag01" size="25" fill="#ffc848"></svg-icon>{{currentTag}} <sup>{{tagIndexJson[currentTag].length}}</sup></div>
         <div v-else style="display:flex;align-items: center;">
           <!-- <IconWrapper  iconName="DocumentFolder" fill="#ffc848" theme="outline" :strokeWidth='2' size="25" /> -->
           <svg-icon name="book01" fill="#ffc848" size="30"></svg-icon>  
@@ -16,7 +16,7 @@
           <div class="md-card-info">
             <div class="tags">
               <div class="tags-item" @click="goTagList(tag)" v-for="tag in docfile.tags">
-                <IconWrapper  iconName="PoundSign" theme="outline" :strokeWidth='2' size="16" />
+                <svg-icon name="letter-hashtag01" size="16" fill="#ffc848"></svg-icon>
                 {{tag}}
               </div>
             </div>

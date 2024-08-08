@@ -53,12 +53,18 @@ export default {
       jumpTime:null,
       moveTime:null,
       moveV:0,
-      moveDir:0
+      moveDir:0,
+      
+      idleFrames:[],//暂时保存一下帧动画
+      currentIdleFrame:0,
+      lastIdleFrameTime:0,
+      idleFrameDuration: 200, 
     }
   },
   created(){
     this.objectMap = new Map()
     this.srcMap = new Map()
+    this.loadIdleFrames();
   },
   mounted(){
     this.init()
@@ -192,11 +198,11 @@ export default {
 
     pushObject(id,url,position){
       if(this.srcMap.has(url)){
-        this.objectMap.set(id,{url,position})
+        this.objectMap.set(id,{url,position,animationName:"blink01",animationIndex:1})
       }else{
         this.getImage(url).then((rs)=>{
           // console.log(rs)
-          this.objectMap.set(id,{url,position})
+          this.objectMap.set(id,{url,position,animationName:"blink01",animationIndex:1})
         }).catch((err)=>{
           // console.log(err)
         })
@@ -214,15 +220,22 @@ export default {
       cancelAnimationFrame(this.animateId)
       this.animateId = 0
     },
-    updateMainCanvasAnimate(){
+    updateMainCanvasAnimate(timestamp){
       this.ctx.clearRect(0,0,720,480)
       if(this.jumpTime){
         this.jump()
       }
       this.move()
-      this.objectMap.forEach((value, key) => {
-        this.ctx.drawImage(this.srcMap.get(value.url),value.position.x,value.position.y,160,160)
-      })
+      if (timestamp - this.lastIdleFrameTime > this.idleFrameDuration) {
+        this.currentIdleFrame = (this.currentIdleFrame + 1) % this.idleFrames.length;
+        this.lastIdleFrameTime = timestamp;
+      }
+      // 绘制当前帧
+      let userObject = this.objectMap.get("user");
+      this.ctx.drawImage(this.idleFrames[this.currentIdleFrame], userObject.position.x, userObject.position.y, 160, 160);
+      // this.objectMap.forEach((value, key) => {
+      //   this.ctx.drawImage(this.srcMap.get(value.url),value.position.x,value.position.y,160,160)
+      // })
       this.animateId = requestAnimationFrame(this.updateMainCanvasAnimate)
     },
     async getImage(url) {
@@ -238,7 +251,7 @@ export default {
         const svgImg = new Image();
         const that = this
         svgImg.onload = function() {
-          that.srcMap.set(url, svgImg); // 在指定位置绘制SVG图像
+          that.srcMap.set(url, svgImg); 
           URL.revokeObjectURL(svgUrl);
         };
         svgImg.src = svgUrl;
@@ -247,14 +260,23 @@ export default {
         const pngImg = new Image();
         const that = this
         pngImg.onload = function() {
-          that.srcMap.set(url, pngImg) // 在指定位置绘制PNG图像
+          that.srcMap.set(url, pngImg) 
         };
         pngImg.src = require(`@/assets/game-img/test/${url}`); 
-
-        // 假设你的PNG文件在assets目录中
       }
     },
-
+    loadIdleFrames(){
+      const context = require.context('@/assets/game-img/test/blink01', false, /\.png$/);
+      this.idleFrames = [];
+      context.keys().forEach((key) => {
+        const img = new Image();
+        const that = this
+        img.onload = () => {
+          that.idleFrames.push(img);
+        };
+        img.src = context(key);
+      });
+    }
   },
 }
   

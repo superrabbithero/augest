@@ -163,6 +163,7 @@
         {{`${animateFps[animateFpsIndex]}fps`}}
         <svg-icon @click="pushGifImgList()" name="letter-plus01"></svg-icon>
         <svg-icon @click="deleteGifImgList()" name="letter-minus01"></svg-icon>
+        <svg-icon @click="saveGifNPngToFolder(gifImageDataList)" name="export01"></svg-icon>
       </div>
       <div class="gif-tools">
         <canvas ref="gifCanvas" :width="100*cols/rows" height="100" v-for="index in gifImageDataList.length" :style="{outline:`${index-1 == gifImageDataIndex ?'2px solid var(--main-color)':'none'}`}" @click="putGifImage2MainCanvas(index-1)"></canvas>
@@ -1336,7 +1337,54 @@ export default {
     changeSpeed(num){
       this.animateFpsIndex = ((this.animateFpsIndex+num)<0 ? 5 : this.animateFpsIndex+num)%6
       this.animateSpeed = 1000/this.animateFps[this.animateFpsIndex]
+    },
+    async saveGifNPngToFolder(imageDataArray) {
+        if(imageDataArray.length < 1){
+          this.$toast.show('没有可以导出的帧','error')
+          return
+        }
+        //利用 Canvas 元素将 ImageData 转换为图像的 Blob 对象。
+        const imageDataToBlob = (imageData) => {
+            return new Promise((resolve) => {
+                const canvas = document.createElement('canvas');
+                canvas.width = imageData.width;
+                canvas.height = imageData.height;
+
+                const ctx = canvas.getContext('2d');
+                ctx.putImageData(imageData, 0, 0);
+
+                canvas.toBlob((blob) => {
+                    resolve(blob);
+                });
+            });
+        }
+        try {
+            // 请求选择文件夹的权限
+            const dirHandle = await window.showDirectoryPicker();
+
+            // 遍历图片并保存到文件夹
+            for (let i = 0; i < imageDataArray.length; i++) {
+                const imageData = imageDataArray[i];
+                const blob = await imageDataToBlob(imageData);
+
+                // 创建文件名（可根据需要调整）
+                const fileName = `image_${i + 1}.png`;
+
+                // 在指定文件夹中创建文件
+                const fileHandle = await dirHandle.getFileHandle(fileName, { create: true });
+
+                // 写入 Blob 到文件
+                const writable = await fileHandle.createWritable();
+                await writable.write(blob);
+                await writable.close();
+            }
+            
+            console.log("图片已保存到文件夹中");
+        } catch (err) {
+            console.error("保存图片时出错：", err);
+        }
     }
+
   },
 };
 </script>

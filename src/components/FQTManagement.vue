@@ -58,7 +58,7 @@
         </div>
       </div>
       <svg-icon name="arrow-right" className="date-item" @click="nextWeek"></svg-icon>
-      <svg-icon name="plus01" className="date-item" @click="showAddPlan()"></svg-icon>
+      <svg-icon name="letter-plus01" className="date-item" @click="showAddPlan()"></svg-icon>
       <svg-icon name="refresh02" class="update-icon" className="date-item" @click="getCurManagementData(currentDate)"></svg-icon>
 		</div>
     {{currentDate}}
