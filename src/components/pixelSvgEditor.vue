@@ -154,7 +154,13 @@
     </div>
     <div :class="{'gif-tools-box':true,'show':gifToolsShow}">
       <div class="gif-tools">
-        <canvas ref="gifCanvas" width="100" height="100" v-for="index in gifImageDataList.length"></canvas>
+        <svg-icon name="replay01" @click="gifImageDataIndex=0,startAnimate()"></svg-icon>
+        <svg-icon name="play01" @click="startAnimate"></svg-icon>
+        <svg-icon name="pause01" @click="stopAnimate"></svg-icon>
+        <input type="range" v-model="animateSpeed" min="20" max="300" step="20">
+      </div>
+      <div class="gif-tools">
+        <canvas ref="gifCanvas" :width="100*cols/rows" height="100" v-for="index in gifImageDataList.length" :style="{outline:`${index-1 == gifImageDataIndex ?'2px solid var(--main-color)':'none'}`}" @click="putGifImage2MainCanvas(index-1)"></canvas>
         <div @click="pushGifImgList()"><svg-icon name="plus01"></svg-icon></div>
       </div>
     </div>
@@ -215,7 +221,11 @@ export default {
         outputSize:30
       },
       gifToolsShow:true,
-      gifImageDataList:[]
+      gifImageDataList:[],
+      animateId:0,
+      gifImageDataIndex:0,
+      animateStartTime:null,
+      animateSpeed:100
     };
   },
   computed: {
@@ -806,6 +816,8 @@ export default {
         data: this.ctx.getImageData(0, 0, this.width, this.height)
       })
       this.updateOverview()
+      if(this.gifImageDataList.length > 0)
+        this.updateGifImage(this.gifImageDataIndex)
     },
     undo(){
       var history = this.historys;
@@ -1195,15 +1207,60 @@ export default {
     pushGifImgList(){
       const imageData= this.ctx.getImageData(0, 0, this.width, this.height)
       this.gifImageDataList.push(imageData)
-      const length = this.gifImageDataList.length
+      this.gifImageDataIndex = this.gifImageDataList.length - 1
       const that = this
       this.$nextTick(()=>{
-        const canvas = that.$refs.gifCanvas[length-1]
+        const canvas = that.$refs.gifCanvas[that.gifImageDataIndex]
         const ctx = canvas.getContext("2d")
         ctx.drawImage(
         that.maincanvas,
           0,0,this.width,this.height,
-          0,0,100,100
+          0,0,100*this.cols/this.rows,100
+        )
+      })
+    },
+    startAnimate(){
+      if(this.animateId == 0){
+        this.animateStartTime = new Date().getTime()
+        this.animateId = requestAnimationFrame(this.updateMainCanvasAnimate)
+      }
+    },
+    stopAnimate(){
+      cancelAnimationFrame(this.animateId)
+      this.animateId = 0
+    },
+    updateMainCanvasAnimate(){
+      this.ctx.clearRect(0,0,this.width,this.height)
+      const data = this.gifImageDataList[this.gifImageDataIndex]
+      this.ctx.putImageData(data,0,0)
+      const nowTime = new Date().getTime()
+      const deltaTime = nowTime - this.animateStartTime
+      if(deltaTime > this.animateSpeed){
+        this.animateStartTime = nowTime
+        this.gifImageDataIndex = (this.gifImageDataIndex+1)%(this.gifImageDataList.length)
+      }
+      
+      this.animateId = requestAnimationFrame(this.updateMainCanvasAnimate)
+    },
+    putGifImage2MainCanvas(index){
+      this.stopAnimate()
+      this.gifImageDataIndex = index
+      const data = this.gifImageDataList[this.gifImageDataIndex]
+      this.ctx.putImageData(data,0,0)
+      this.addHistory()
+    },
+    updateGifImage(index){
+      const imageData= this.ctx.getImageData(0, 0, this.width, this.height)
+      this.gifImageDataList[index] = imageData
+      const that = this
+      this.$nextTick(()=>{
+        const canvas = that.$refs.gifCanvas[index]
+        const ctx = canvas.getContext("2d")
+        ctx.clearRect(0,0,100*this.cols/this.rows,100)
+        ctx.drawImage(
+        that.maincanvas,
+          0,0,this.width,this.height,
+          0,0,100*this.cols/this.rows,100
         )
       })
     }
@@ -1308,7 +1365,7 @@ canvas {
 }
 
 .work-area > div{
-  padding: 0;
+  padding: 0 5px;
 }
 
 .work-area .middle{
@@ -1522,9 +1579,11 @@ canvas {
   height: 0px;
   border-top: var(--box-border);
   display: flex;
+  flex-direction: column;
   align-items: center;
   transition: 0.3s ease;
   opacity: 0;
+  padding: 0 20px;
 }
 
 .gif-tools-box.show {
@@ -1537,10 +1596,11 @@ canvas {
   display: flex;
   align-items: center;
   overflow: auto;
+  padding: 2px 0;
 }
 .gif-tools > canvas{
-  margin: 0 5px;
-  width: 60px;
+  margin-right: 5px;
+  height: 60px;
 }
 
 </style>
