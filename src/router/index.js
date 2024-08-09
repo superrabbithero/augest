@@ -131,6 +131,15 @@ const routes = [
             footerHidden: true
         }
     },
+    {
+        path: '/minigames/theTurtleFamily',
+        name: 'theTurtleFamily',
+        component: () => import("@/components/gameDemo/theTurtleFamily"),
+        meta:{
+            title: '乌龟家族',
+            footerHidden: true
+        }
+    },
 
 ]
 

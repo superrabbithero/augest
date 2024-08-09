@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <canvas ref="mainCanvas" width="720" height="480" :class="{'game-canvas':true, 'gridsytle':showGrid}" ></canvas>
+    <canvas ref="mainCanvas" width="470" height="720" :class="{'game-canvas':true, 'gridsytle':showGrid}" ></canvas>
     <div class="button-groups">
       <div class="button-item">
         <label>显示网格：</label>
@@ -339,8 +339,8 @@ export default {
 
   .game-canvas{
     border: var(--box-border);
-    width: 720px;
-    height: 480px;
+    width: 480px;
+    height: 720px;
     
   }
 

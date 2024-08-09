@@ -30,6 +30,12 @@
         <p>有空再做...</p>
       </div>
     </div>
+    <div class="box-ratio">
+      <div class="box-content" @click="goto('/minigames/theTurtleFamily')">
+        <div class="content-title">乌龟家族</div>
+        <p>有空再做...</p>
+      </div>
+    </div>
   </div>
 </template>
 

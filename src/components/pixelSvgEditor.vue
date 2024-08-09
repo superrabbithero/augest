@@ -101,6 +101,11 @@
           <div class="tool-item" @click="clearAll">
             <svg-icon name="delete02" className="tool-item-svg"></svg-icon>
           </div>
+          <div class="tool-item" @click="openFileInput">
+            <svg-icon name="picture-add" className="tool-item-svg"></svg-icon>
+            <!-- 文件上传按钮 -->
+            <input v-show="false" type="file" id="fileInput" @change="importImg" accept="image/*">
+          </div>
           <div class="tool-item-fullscreen">
             <div class="color back" :style="{backgroundColor:bkgColor}" @click="[currentColor,bkgColor] = [bkgColor,currentColor]"></div>
             <div class="color front" :style="{backgroundColor:currentColor}">
@@ -141,7 +146,6 @@
           <div class="color-item draged" v-show="dragedColorIndex != null" ref="dragedColor"></div>
           <div v-for="(color,index) in myColors" class="color-item" ref="colorItem" :style="{backgroundColor:color}" 
                 @pointerdown="handleStart($event,index)"
-                
                 @pointerup="handleEnd($event,index)"
                 ></div>
           <div class="color-item">+
@@ -178,9 +182,9 @@ export default {
   data() {
     return {
       tool:1,
-      rows:13,
-      cols:13,
-      gridSize:30,
+      rows:60,
+      cols:60,
+      gridSize:20,
       outputSize:30,
       coordinate:'x:0,y:0',
       currentColor:'#000001',
@@ -610,8 +614,8 @@ export default {
       }
       
     },
-    drawPixel(point, size=this.penSize){
-      this.ctx.fillStyle = this.currentColor
+    drawPixel(point, size=this.penSize, color = this.currentColor){
+      this.ctx.fillStyle = color
       const x = point.x/this.gridSize - Math.floor(size/2)
       const y = point.y/this.gridSize - Math.floor(size/2)
       this.ctx.fillRect(this.gridSize*x,this.gridSize*y,this.gridSize*size,this.gridSize*size)
@@ -1383,6 +1387,73 @@ export default {
         } catch (err) {
             console.error("保存图片时出错：", err);
         }
+    },
+    openFileInput(){
+      document.getElementById('fileInput').click()
+    },
+    importImg(){
+      const file = event.target.files[0];
+      const that = this
+      if (file && file.type.startsWith('image/')) {
+          const reader = new FileReader();
+
+          // 当文件读取完成时
+          reader.onload = function(e) {
+              const img = new Image();
+              img.src = e.target.result;
+
+              // 在图像加载完成后绘制到canvas上
+              img.onload = function() {
+                  that.ctx.drawImage(img, 0, 0);
+                  that.imgToPixel()
+                  that.addHistory()
+              }
+          }
+
+          // 读取文件为Data URL
+          reader.readAsDataURL(file);
+      } else {
+          alert('请选择一个有效的图像文件。');
+      }
+    },
+    imgToPixel(){
+      const width = this.width;
+      const height = this.height;
+      const imageData = this.ctx.getImageData(0, 0, width, height)
+
+      //解析像素数据，gpt生成代码
+      const pixels = imageData.data;
+      let r = 0;
+      let g = 0;
+      let b = 0;
+      let a = 0;
+      let count = 0
+      for (let y = 0; y < height; y+=this.gridSize) {
+        for (let x = 0; x < width; x+=this.gridSize) {
+          for(let i = 0;i < this.gridSize;i++){
+            for(let j = 0;j < this.gridSize;j++){
+              const index = ((y+i) * width + x+j) * 4;
+              r += pixels[index];
+              g += pixels[index + 1];
+              b += pixels[index + 2];
+              a += pixels[index + 3];
+              count++
+            }
+          }
+          r = Math.floor(r/count)
+          g = Math.floor(g/count)
+          b = Math.floor(b/count)
+          a = Math.floor(a/count)
+          this.ctx.clearRect(x,y,this.gridSize,this.gridSize)
+          this.drawPixel({x,y},1,`rgba(${r},${g},${b},${a})`)
+          r = 0;
+          g = 0;
+          b = 0;
+          a = 0;
+          count = 0
+        } 
+      }
+      // this.addHistory()
     }
 
   },
