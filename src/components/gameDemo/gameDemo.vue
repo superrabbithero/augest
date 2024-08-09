@@ -55,16 +55,20 @@ export default {
       moveV:0,
       moveDir:0,
       
-      idleFrames:[],//暂时保存一下帧动画
+      idleFrames:{},//暂时保存一下帧动画
       currentIdleFrame:0,
       lastIdleFrameTime:0,
-      idleFrameDuration: 200, 
+      idleFrameDuration: 100, 
+
+      IdleIndexFlag:false,
     }
   },
   created(){
     this.objectMap = new Map()
     this.srcMap = new Map()
-    this.loadIdleFrames();
+    this.idleFrames = new Map()
+    this.loadIdleFrames('paopao','idle01');
+    this.loadIdleFrames('pigcoin','idle01');
   },
   mounted(){
     this.init()
@@ -77,9 +81,8 @@ export default {
   },
   methods:{
     test(){
-      this.pushObject('user','drawing.svg',{x:50,y:320})
-      console.log(this.objectMap)
-      console.log(this.srcMap)
+      this.pushObject('user','drawing.svg',{x:50,y:320},'paopao')
+      this.pushObject('coin1','drawing.svg',{x:50,y:50},'pigcoin')
     },
     
     handleKeyDown(event){
@@ -123,7 +126,6 @@ export default {
       this.moveDir = 0
       console.log(this.moveTime, this.moveDir)
     },
-
     move(){
       const starta = this.jumpTime ? 0 : 0.05
       const fa = this.jumpTime ? 0.001 : 0.01
@@ -178,7 +180,6 @@ export default {
         this.jumpTime = new Date().getTime()
       }
     },
-
     jump(){
       const v = -100 //跳跃初速度
       const a = 10 //重力加速度
@@ -196,13 +197,13 @@ export default {
       }
     },
 
-    pushObject(id,url,position){
+    pushObject(id,url,position,name){
       if(this.srcMap.has(url)){
-        this.objectMap.set(id,{url,position,animationName:"blink01",animationIndex:1})
+        this.objectMap.set(id,{url,position,animationName:"idle01",animationIndex:0,name})
       }else{
         this.getImage(url).then((rs)=>{
           // console.log(rs)
-          this.objectMap.set(id,{url,position,animationName:"blink01",animationIndex:1})
+          this.objectMap.set(id,{url,position,animationName:"idle01",animationIndex:0,name})
         }).catch((err)=>{
           // console.log(err)
         })
@@ -227,15 +228,28 @@ export default {
       }
       this.move()
       if (timestamp - this.lastIdleFrameTime > this.idleFrameDuration) {
-        this.currentIdleFrame = (this.currentIdleFrame + 1) % this.idleFrames.length;
+        this.IdleIndexFlag = true
         this.lastIdleFrameTime = timestamp;
       }
       // 绘制当前帧
-      let userObject = this.objectMap.get("user");
-      this.ctx.drawImage(this.idleFrames[this.currentIdleFrame], userObject.position.x, userObject.position.y, 160, 160);
-      // this.objectMap.forEach((value, key) => {
-      //   this.ctx.drawImage(this.srcMap.get(value.url),value.position.x,value.position.y,160,160)
-      // })
+      // let userObject = this.objectMap.get("user");
+      // this.ctx.drawImage(this.idleFrames[this.currentIdleFrame], userObject.position.x, userObject.position.y, 160, 160);
+
+      this.objectMap.forEach((value, key) => {
+        const idleFramesList = this.idleFrames.get(value.name)[value.animationName]
+        if(value.name == 'paopao'){
+          this.ctx.drawImage(idleFramesList[value.animationIndex],value.position.x,value.position.y,160,160)
+        }else{
+          this.ctx.drawImage(idleFramesList[value.animationIndex],value.position.x,value.position.y)
+        }
+        if(this.IdleIndexFlag){
+          value.animationIndex = (value.animationIndex+1)%idleFramesList.length
+          this.objectMap.set(key,value)
+          this.IdleIndexFlag = false
+        }
+      })
+
+
       this.animateId = requestAnimationFrame(this.updateMainCanvasAnimate)
     },
     async getImage(url) {
@@ -265,17 +279,21 @@ export default {
         pngImg.src = require(`@/assets/game-img/test/${url}`); 
       }
     },
-    loadIdleFrames(){
-      const context = require.context('@/assets/game-img/test/blink01', false, /\.png$/);
-      this.idleFrames = [];
+    loadIdleFrames(objectName, animateName){
+      const context = require.context(`@/assets/game-img/test/animation/${objectName}/${animateName}/`, false, /\.png$/);
+      if(!this.idleFrames.has(objectName)){
+        this.idleFrames.set(objectName,{})
+      }
+      const objectIdles = this.idleFrames.get(objectName)
+      objectIdles[animateName] = []
       context.keys().forEach((key) => {
         const img = new Image();
-        const that = this
         img.onload = () => {
-          that.idleFrames.push(img);
+          objectIdles[animateName].push(img);
         };
         img.src = context(key);
       });
+      this.idleFrames.set(objectName,objectIdles)
     }
   },
 }
