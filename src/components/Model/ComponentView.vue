@@ -42,8 +42,12 @@ export default {
         this.height = this.$refs.content.firstChild.clientHeight+8
         const value = this.height + "px" 
         contentEl.style.height = value
+        setTimeout(()=>{
+          contentEl.style.overflow = 'unset'
+        },300)
       }else{
         contentEl.style.height = "0px"
+        contentEl.style.overflow = 'hidden'
       }
     }
   
@@ -58,6 +62,10 @@ export default {
     border-bottom: var(--box-border);
     overflow: hidden;
     transition: height 0.3s ease;
+  }
+  .component-content.close {
+/*    transition-delay: 1s;*/
+/*    overflow: hidden;*/
   }
 
   h4 {

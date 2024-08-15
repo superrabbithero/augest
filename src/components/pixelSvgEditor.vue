@@ -155,6 +155,11 @@
             <svg-icon name="delete02" className="color-item-svg"></svg-icon>
           </div>
         </div>
+        <div class="color-tools">
+          融合阈值：<input type="number" min="0" max="100" step="10" v-model="threshold" />
+          <button @click="imgToPixel">像素转换</button>
+          <button @click="adjustImg">像素融合</button>
+        </div>
       </div>
     </div>
     <div :class="{'gif-tools-box':true,'show':gifToolsShow}">
@@ -230,7 +235,7 @@ export default {
         gridSize:100,
         outputSize:30
       },
-      gifToolsShow:true,
+      gifToolsShow:false,
       gifImageDataList:[],
       animateId:0,
       gifImageDataIndex:-1,
@@ -238,6 +243,10 @@ export default {
       animateFps:[3,4,5,10,30,60],
       animateFpsIndex:0,
       animateSpeed:300,
+      imgToPixelTools:false,
+      threshold:0, //min0,max100 
+      // imgToPixelColorList
+      imgPointList:[[]]
     };
   },
   computed: {
@@ -559,6 +568,7 @@ export default {
       const y = Math.min(start.y,end.y)
       const width = Math.abs(end.x-start.x)+this.gridSize
       const height = Math.abs(end.y-start.y)+this.gridSize
+      this.imgPointList = [[]]
       this.selectedRect = {x, y, width, height}
     },
     drawDashedRect(){
@@ -1404,9 +1414,26 @@ export default {
 
               // 在图像加载完成后绘制到canvas上
               img.onload = function() {
-                  that.ctx.drawImage(img, 0, 0);
-                  that.imgToPixel()
-                  that.addHistory()
+                  that.selectedImgData = null
+                  that.selectedRect = {x:0,y:0,width:0,height:0}
+                  that.selectedBgData = that.ctx.getImageData(0,0,that.width,that.height)
+
+                  that.offscreenCanvas = document.createElement('canvas');
+                  const height = Math.floor(that.height/that.gridSize)*that.gridSize
+                  const width = Math.floor(that.height/img.height*img.width/that.gridSize)*that.gridSize
+                  that.offscreenCanvas.width = width
+                  that.offscreenCanvas.height = height
+                  
+                  const ctx = that.offscreenCanvas.getContext('2d');
+                  ctx.drawImage(img, 0, 0,img.width,img.height,0,0,width,height);
+                  that.selectedImgData = ctx.getImageData(0,0,width,height)
+                  // that.ctx.drawImage(that.offscreenCanvas,0,0)
+                  if(that.selectRectAnimateId == 0){
+                    that.selectRectAnimateId = requestAnimationFrame(that.dashedRectAnimate)
+                  }
+                  that.selectedRect={x:0,y:0,width,height}
+                  that.tool = 7
+                  // that.addHistory()
               }
           }
 
@@ -1417,45 +1444,133 @@ export default {
       }
     },
     imgToPixel(){
-      const width = this.width;
-      const height = this.height;
-      const imageData = this.ctx.getImageData(0, 0, width, height)
 
-      //解析像素数据，gpt生成代码
-      const pixels = imageData.data;
-      let r = 0;
-      let g = 0;
-      let b = 0;
-      let a = 0;
-      let count = 0
-      for (let y = 0; y < height; y+=this.gridSize) {
-        for (let x = 0; x < width; x+=this.gridSize) {
-          for(let i = 0;i < this.gridSize;i++){
-            for(let j = 0;j < this.gridSize;j++){
-              const index = ((y+i) * width + x+j) * 4;
-              r += pixels[index];
-              g += pixels[index + 1];
-              b += pixels[index + 2];
-              a += pixels[index + 3];
-              count++
+      if(this.offscreenCanvas){
+        const width = this.offscreenCanvas.width;
+        const height = this.offscreenCanvas.height; 
+        const ctx = this.offscreenCanvas.getContext("2d")
+        const imageData = ctx.getImageData(0, 0, width, height)
+
+        //解析像素数据，gpt生成代码
+        const pixels = imageData.data;
+        let r = 0;
+        let g = 0;
+        let b = 0;
+        let a = 0;
+        let count = 0
+        for (let y = 0; y < height; y+=this.gridSize) {
+          for (let x = 0; x < width; x+=this.gridSize) {
+            for(let i = 0;i < this.gridSize;i++){
+              for(let j = 0;j < this.gridSize;j++){
+                const index = ((y+i) * width + x+j) * 4;
+                r += pixels[index];
+                g += pixels[index + 1];
+                b += pixels[index + 2];
+                a += pixels[index + 3];
+                count++
+              }
+            }
+            r = Math.floor(r/count)
+            g = Math.floor(g/count)
+            b = Math.floor(b/count)
+            a = Math.floor(a/count)
+            ctx.clearRect(x,y,this.gridSize,this.gridSize)
+            ctx.fillStyle = `rgba(${r},${g},${b},${a})`
+            ctx.fillRect(x,y,this.gridSize,this.gridSize)
+            const y1 = Math.floor(y/this.gridSize)
+            const x1 = Math.floor(x/this.gridSize)
+            if(!this.imgPointList[y1])
+              this.imgPointList[y1] = []
+            this.imgPointList[y1][x1]=[r,g,b,a]
+            r = 0;
+            g = 0;
+            b = 0;
+            a = 0;
+            count = 0
+          } 
+        }
+      }
+    },
+    adjustImg(){
+      if(this.offscreenCanvas){
+        const ctx = this.offscreenCanvas.getContext('2d')
+        const result = this.processColors()
+        for(var y=0;y<result.length;y++){
+          for(var x=0;x<result[y].length;x++){
+            // console.log(result[y][x])
+            const [r,g,b,a] = result[y][x]
+            ctx.fillStyle = `rgba(${r},${g},${b},${a})`
+            ctx.fillRect(x*this.gridSize,y*this.gridSize,this.gridSize,this.gridSize)
+          }
+        }
+      }
+      
+    },
+    processColors(colorArray = this.imgPointList, threshold = this.threshold){
+      const colorList = []
+      const colorDistance = (rgba1,rgba2)=>{
+        const [r1, g1, b1, a1] = rgba1;
+        const [r2, g2, b2, a2] = rgba2;
+        return Math.sqrt(
+          Math.pow(r1 - r2, 2) +
+          Math.pow(g1 - g2, 2) +
+          Math.pow(b1 - b2, 2) +
+          Math.pow((a1 * 255) - (a2 * 255), 2)
+        );
+      }
+      const averageColor = (rgba1, rgba2)=>{
+        const [r1, g1, b1, a1] = rgba1;
+        const [r2, g2, b2, a2] = rgba2;
+        return [
+          Math.round((r1 + r2) / 2),
+          Math.round((g1 + g2) / 2),
+          Math.round((b1 + b2) / 2),
+          Math.round((a1 + a2) / 2)
+        ];
+      }
+      console.log(colorArray)
+      const rows = colorArray.length;
+      const cols = colorArray[0].length;
+
+      // Create a new array to store the processed colors
+      const resultArray = JSON.parse(JSON.stringify(colorArray));
+
+      for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < cols; j++) {
+          const currColor = colorArray[i][j]
+          let findFlag = false
+          for(let x=0; x<colorList.length; x++){
+
+            const color = colorList[x]
+
+            if(colorDistance(color, currColor) < threshold){
+              const average = averageColor(color, currColor)
+              resultArray[i][j] = x
+              console.log(resultArray[i][j])
+              colorList[x] = average
+              console.log(`find:${findFlag}`)
+              findFlag = x
+              break
             }
           }
-          r = Math.floor(r/count)
-          g = Math.floor(g/count)
-          b = Math.floor(b/count)
-          a = Math.floor(a/count)
-          this.ctx.clearRect(x,y,this.gridSize,this.gridSize)
-          this.drawPixel({x,y},1,`rgba(${r},${g},${b},${a})`)
-          r = 0;
-          g = 0;
-          b = 0;
-          a = 0;
-          count = 0
-        } 
+          
+          console.log(findFlag)
+          if(findFlag == false){
+            resultArray[i][j] = colorList.length
+            colorList.push(currColor)
+          }
+        }
       }
-      // this.addHistory()
-    }
+      console.log(colorList)
+      console.log(resultArray)
+      for (let i = 0; i < rows; i++) {
+          for (let j = 0; j < cols; j++) {
+            resultArray[i][j] = colorList[resultArray[i][j]]
+          }
+      }
 
+      return resultArray;
+    },
   },
 };
 </script>

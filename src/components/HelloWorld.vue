@@ -40,7 +40,7 @@
       </div>
     </cpt-view>
 
-    <cpt-view name="日历" >
+    <cpt-view name="日历" v-if="false">
       <h5>calender</h5>
       <div class="content">
         <calender language="EN" style="width: 100%;"></calender>
@@ -53,6 +53,13 @@
       <highlightjs language="html" code="<calender language=&quot;EN&quot; type=&quot;datetime&quot; ></calender>"></highlightjs>
       <div class="content">
         <calender language="EN" type="datetime" style="width: 150px;"></calender>
+      </div>
+    </cpt-view>
+
+    <cpt-view name="Select" >
+      <h5>select</h5>
+      <div class="content">
+        <au-select :dataList="selectList"></au-select>
       </div>
     </cpt-view>
     
@@ -119,6 +126,7 @@ import pencanvas from "./Model/PenCanvas.vue"
 import timer from "./Model/Time.vue"
 import cptView from "./Model/ComponentView.vue"
 import calender from "./Model/Calendar.vue"
+import auSelect from "./Model/auSelect.vue"
 
 
 
@@ -131,7 +139,8 @@ export default {
     pencanvas,
     timer,
     cptView,
-    calender
+    calender,
+    auSelect
   },
   data(){
     return {
@@ -140,7 +149,8 @@ export default {
       mainColor: '#ffc848',
       totalPages:6,
       helloworldtimer: null,
-      htmlcontent:"<span class=\"output\">$$\\frac{1}{2}$$</span><span class=\"output\">$$\\sqrt{3}$$</span>"
+      htmlcontent:"<span class=\"output\">$$\\frac{1}{2}$$</span><span class=\"output\">$$\\sqrt{3}$$</span>",
+      selectList:["item 1","item 2","item 3","item 4","item 5","item 6","item 7"]
     }
   },
   watch:{
