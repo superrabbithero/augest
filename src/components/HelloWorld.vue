@@ -1,6 +1,82 @@
 <template>
   <div class="container left" style="height: auto;">
-    
+    <cpt-view name="Layout">
+      <h5>基本布局</h5>
+      <div class="au-container demo">
+        <div class="rows">
+          <div class="cols s12"><div class="demo">s12</div></div>
+        </div>
+        <div class="rows">
+          <div class="cols s2"><div class="demo">s2</div></div>
+          <div class="cols s2"><div class="demo">s2</div></div>
+          <div class="cols s4"><div class="demo">s4</div></div>
+          <div class="cols s4"><div class="demo">s4</div></div>
+        </div>
+        <div class="rows">
+          <div class="cols s3"><div class="demo">s3</div></div>
+          <div class="cols s3"><div class="demo">s3</div></div>
+          <div class="cols s3"><div class="demo">s3</div></div>
+          <div class="cols s3"><div class="demo">s3</div></div>
+        </div>
+      </div>
+      <h5>列偏移</h5>
+      <div class="au-container demo">
+        <div class="rows">
+          <div class="cols s3 offset3"><div class="demo">s3 offset3</div></div>
+          <div class="cols s3 offset3"><div class="demo">s3 offset3</div></div>
+        </div>
+        <div class="rows">
+          <div class="cols s4 offset1"><div class="demo">s4 offset1</div></div>
+          <div class="cols s4 offset1"><div class="demo">s4 offset1</div></div>
+        </div>
+      </div>
+      <h5>分栏间隔</h5>
+      <div class="au-container demo">
+        <div class="rows gutter">
+          <div class="cols s3"><div class="demo">s3</div></div>
+          <div class="cols s3"><div class="demo">s3</div></div>
+          <div class="cols s3"><div class="demo">s3</div></div>
+          <div class="cols s3"><div class="demo">s3</div></div>
+        </div>
+        <div class="rows gutter">
+          <div class="cols s3 offset3"><div class="demo">s3 offset3</div></div>
+          <div class="cols s3 offset3"><div class="demo">s3 offset3</div></div>
+        </div>
+      </div>
+      <h5>对齐方式</h5>
+      <div class="au-container demo">
+        <div class="rows start">
+          <div class="cols s3"><div class="demo">s3</div></div>
+          <div class="cols s3"><div class="demo">s3</div></div>
+          <div class="cols s3"><div class="demo">s3</div></div>
+        </div>
+        <div class="rows center">
+          <div class="cols s3"><div class="demo">s3</div></div>
+          <div class="cols s3"><div class="demo">s3</div></div>
+          <div class="cols s3"><div class="demo">s3</div></div>
+        </div>
+        <div class="rows end">
+          <div class="cols s3"><div class="demo">s3</div></div>
+          <div class="cols s3"><div class="demo">s3</div></div>
+          <div class="cols s3"><div class="demo">s3</div></div>
+        </div>
+        <div class="rows space-between">
+          <div class="cols s3"><div class="demo">s3</div></div>
+          <div class="cols s3"><div class="demo">s3</div></div>
+          <div class="cols s3"><div class="demo">s3</div></div>
+        </div>
+        <div class="rows space-around">
+          <div class="cols s3"><div class="demo">s3</div></div>
+          <div class="cols s3"><div class="demo">s3</div></div>
+          <div class="cols s3"><div class="demo">s3</div></div>
+        </div>
+        <div class="rows space-evenly">
+          <div class="cols s3"><div class="demo">s3</div></div>
+          <div class="cols s3"><div class="demo">s3</div></div>
+          <div class="cols s3"><div class="demo">s3</div></div>
+        </div>
+      </div>
+    </cpt-view>
     <cpt-view name="公式组件">
       <highlightjs language="html" code="<TheLatex2Math :latex=&quot;'E = MC^{2}'&quot; />"></highlightjs>
       <TheLatex2Math :latex="'E = MC^{2}'" />
@@ -40,7 +116,7 @@
       </div>
     </cpt-view>
 
-    <cpt-view name="日历" v-if="false">
+    <cpt-view name="日历">
       <h5>calender</h5>
       <div class="content">
         <calender language="EN" style="width: 100%;"></calender>

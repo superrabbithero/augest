@@ -32,9 +32,9 @@ export default {
   },
   mounted(){
   	this.iconCountStr = svgIconResult.length + ''
-  	// for(var i of this.iconCountStr){
-  	// 	console.log(i)
-  	// }
+  	svgIconResult.forEach((icon)=>{
+  		console.log(icon)
+  	})
   },
   methods: {
     async copyToClipboard(content) {

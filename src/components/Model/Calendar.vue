@@ -347,6 +347,7 @@
       openCalendar(){
         const el = this.$refs.calendarContainer
         el.style.top=null
+        el.style.display = 'flex'
         const elHeight = el.clientHeight
         const inputRect = this.$refs.calendar.getBoundingClientRect()
         let offsetTop = this.$refs.calendar.offsetTop
@@ -360,11 +361,13 @@
           this.show = true
           document.addEventListener('click',this.closeCalendar)
         }else{
+          setTimeout(()=>{
+            this.$refs.calendarContainer.style.display="none"
+          },300)
           this.show = false
-          
           document.removeEventListener('click',this.closeCalendar)
         }
-        el.style.top=offsetTop+"px"
+        el.style.top = offsetTop+"px"
         if(this.type == 'datetime' && !this.timeHeight ){
           this.timeHeight = this.$refs.hour[0].clientHeight
           this.$refs.hour.forEach((hourEl, index)=>{
@@ -394,6 +397,9 @@
       },
       closeCalendar(e){
         if(!this.$refs.calendar.contains(e.target)){
+          setTimeout(()=>{
+            this.$refs.calendarContainer.style.display="none"
+          },300)
           this.show = false
           document.removeEventListener('click',this.closeCalendar)
         }
@@ -416,6 +422,9 @@
           datetime[0] = `${date.getYear()+1900}/${(date.getMonth()+1)>10?'':0}${date.getMonth()+1}/${date.getDate()>10?'':0}${date.getDate()}`
           this.selectedDate = datetime.join("T")
         if(this.show){
+          setTimeout(()=>{
+            this.$refs.calendarContainer.style.display="none"
+          },300)
           this.show = false
           document.removeEventListener('click',this.closeCalendar)
         }
@@ -502,6 +511,7 @@
 
 /*  input样式*/
   .calendar-container.input {
+    user-select: none;
     position: absolute;
 /*    height: 280px;*/
     opacity: 0;
@@ -511,10 +521,18 @@
     background-color: var(--box-bgc);
     border-radius: 5px;
     pointer-events: none;
-    transform: translateY(10%);
-    transition: 0.3s;
-    display: flex;
+    transform: translateY(-10%);
+    transition: transform 0.3s ease,opacity 0.3s ease;
     width: fit-content;
+    display:none;
+  }
+
+  .input.show{
+/*    display: flex;*/
+    opacity: 1;
+    height: auto;
+    transform: translateY(0);
+    pointer-events: auto;
   }
 
   .calendar-container.input .date-select {
@@ -533,11 +551,7 @@
     border-radius: 50%;
   }
 
-  .input.show{
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-  }
+  
 
   .input-container{
     position: relative;
