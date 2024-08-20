@@ -780,6 +780,42 @@ textarea:active, textarea:focus{
     }
   }
 
+/*container布局*/
+.au-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.au-container .demo{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+}
+
+.au-container .au-header{
+    background-color: #273746
+}
+
+.au-container .au-header.fixed{
+/*    top: 0;*/
+    width: 100%;
+/*    z-index: 999;*/
+    position: absolute;
+}
+
+.au-container .au-aside{
+
+}
+
+.au-container .au-main{
+    background-color: #566573
+}
+
+.au-container .au-footer{
+    background-color: #273746;
+}
+
 
 /*  flex样式类*/
 .center-h{
@@ -793,44 +829,56 @@ textarea:active, textarea:focus{
 
 
 /*layout*/
-.au-container .cols .demo{
-    height: 2rem;
+.au-layout .cols .demo{
+    min-height: 1rem;
+    line-height: 1rem;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: start;
     border-radius: 5px;
-    padding: 0 20px;
+    padding: 8px 0;
     background-color: var(--layout-bgc)
 }
 
-.au-container {
+.au-layout {
     display: flex;
     flex-direction: column;
     padding: 5px;
 }
 
-.au-container.demo {
+.au-layout.demo {
     background-color: var(--bcg1);
     padding: 1rem;
     border-radius: 5px;
 }
 
-.au-container .rows{
+.au-layout .rows{
     display: flex;
     align-items: center;
     margin-bottom: 1rem;
 }
 
-.au-container .rows:last-child{
+.au-layout .rows:last-child{
     margin-bottom: 0;
 }
 
-.au-container .rows .cols{
+.au-layout .rows .cols{
+    overflow: hidden;
+    box-sizing: border-box;
 }
 
-.rows.gutter {
-    margin-left: -0.5rem;
-    margin-right: -0.5rem;
+.rows.gutter-l {
+    margin-left: -8px;
+    margin-right: -8px;
+}
+.rows.gutter-m {
+    margin-left: -2px;
+    margin-right: -2px;
+}
+.rows.gutter-s {
+    margin-left: -1px;
+    margin-right: -1px;
 }
 .rows.start {
     justify-content: flex-start;
@@ -851,52 +899,58 @@ textarea:active, textarea:focus{
     justify-content: space-evenly;
 }
 
-.rows.gutter .cols{
-    padding: 0 0.5rem;
+.rows.gutter-l .cols{
+    padding: 0 8px;
+}
+.rows.gutter-m .cols{
+    padding: 0 4px;
+}
+.rows.gutter-s .cols{
+    padding: 0 2px;
 }
 
-/*.au-container .rows .cols:first-child{
+/*.au-layout .rows .cols:first-child{
     padding-left: 0;
 }
-.au-container .rows .cols:last-child{
+.au-layout .rows .cols:last-child{
     padding-right: 0;
 }*/
 
 .cols.s1{
-    flex-basis: 8.33%;
+    width: 8.33%;
 }
 .cols.s2{
-    flex-basis: 16.66%;
+    width: 16.66%;
 }
 .cols.s3{
-    flex-basis: 25%;
+    width: 25%;
 }
 .cols.s4{
-    flex-basis: 33.33%;
+    width: 33.33%;
 }
 .cols.s5{
-    flex-basis: 41.67%;
+    width: 41.67%;
 }
 .cols.s6{
-    flex-basis: 50%;
+    width: 50%;
 }
 .cols.s7{
-    flex-basis: 58.33%;
+    width: 58.33%;
 }
 .cols.s8{
-    flex-basis: 66.66%;
+    width: 66.66%;
 }
 .cols.s9{
-    flex-basis: 75%;
+    width: 75%;
 }
 .cols.s10{
-    flex-basis: 83.33%;
+    width: 83.33%;
 }
 .cols.s11{
-    flex-basis: 91.66%;
+    width: 91.66%;
 }
 .cols.s12{
-    flex-basis: 100%;
+    width: 100%;
 }
 .cols.offset1{
     margin-left: 8.33%;
@@ -934,3 +988,6 @@ textarea:active, textarea:focus{
 .cols.offset12{
     margin-left: 100%;
 }
+
+
+/*color*/

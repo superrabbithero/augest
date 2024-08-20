@@ -1,79 +1,116 @@
 <template>
   <div class="container left" style="height: auto;">
-    <cpt-view name="Layout">
+    <cpt-view name="Container布局">
       <h5>基本布局</h5>
-      <div class="au-container demo">
+      <div class="au-layout demo">
+        <div class="au-container">
+          <div class="au-header demo" style="height:4rem">Header</div>
+          <div class="au-main demo" style="height: 12rem;">Main</div>
+          <div class="au-footer demo" style="height:4rem">Footer</div>
+        </div>
+      </div>
+      <h5>固定Header</h5>
+      <div class="au-layout demo" >
+        <div style="height:20rem;overflow: auto;position: relative;">
+          <div class="au-container">
+            <div class="au-header fixed demo" style="height:4rem">Header</div>
+            <div class="au-main demo" style="height: 30rem;">Main</div>
+            <div class="au-footer demo" style="height:4rem">Footer</div>
+          </div>
+        </div>
+      </div>
+    </cpt-view>
+    <cpt-view name="Layout">
+      <h5>12列布局</h5>
+      <div class="au-layout demo">
         <div class="rows">
-          <div class="cols s12"><div class="demo">s12</div></div>
+          <div class="cols s12"><div class="demo"></div></div>
         </div>
         <div class="rows">
-          <div class="cols s2"><div class="demo">s2</div></div>
-          <div class="cols s2"><div class="demo">s2</div></div>
-          <div class="cols s4"><div class="demo">s4</div></div>
-          <div class="cols s4"><div class="demo">s4</div></div>
+          <div class="cols s6"><div class="demo"></div></div>
+          <div class="cols s6"><div class="demo"></div></div>
         </div>
         <div class="rows">
-          <div class="cols s3"><div class="demo">s3</div></div>
-          <div class="cols s3"><div class="demo">s3</div></div>
-          <div class="cols s3"><div class="demo">s3</div></div>
-          <div class="cols s3"><div class="demo">s3</div></div>
+          <div v-for="i in 3" class="cols s4"><div class="demo"></div></div>
+        </div>
+        <div class="rows">
+          <div v-for="i in 4" class="cols s3"><div class="demo"></div></div>
+        </div>
+        <div class="rows">
+          <div v-for="i in 6" class="cols s2"><div class="demo"></div></div>
+        </div>
+        <div class="rows">
+          <div v-for="i in 12" class="cols s1"><div class="demo"></div></div>
         </div>
       </div>
       <h5>列偏移</h5>
-      <div class="au-container demo">
+      <div class="au-layout demo">
         <div class="rows">
-          <div class="cols s3 offset3"><div class="demo">s3 offset3</div></div>
-          <div class="cols s3 offset3"><div class="demo">s3 offset3</div></div>
+          <div class="cols s3 offset3"><div class="demo"></div></div>
+          <div class="cols s3 offset3"><div class="demo"></div></div>
         </div>
         <div class="rows">
-          <div class="cols s4 offset1"><div class="demo">s4 offset1</div></div>
-          <div class="cols s4 offset1"><div class="demo">s4 offset1</div></div>
+          <div class="cols s4 offset1"><div class="demo"></div></div>
+          <div class="cols s4 offset1"><div class="demo"></div></div>
         </div>
       </div>
       <h5>分栏间隔</h5>
-      <div class="au-container demo">
-        <div class="rows gutter">
-          <div class="cols s3"><div class="demo">s3</div></div>
-          <div class="cols s3"><div class="demo">s3</div></div>
-          <div class="cols s3"><div class="demo">s3</div></div>
-          <div class="cols s3"><div class="demo">s3</div></div>
+      <div class="au-layout demo">
+        <div class="rows gutter-l">
+          <div class="cols s3"><div class="demo"></div></div>
+          <div class="cols s3"><div class="demo"></div></div>
+          <div class="cols s3"><div class="demo"></div></div>
+          <div class="cols s3"><div class="demo"></div></div>
         </div>
-        <div class="rows gutter">
-          <div class="cols s3 offset3"><div class="demo">s3 offset3</div></div>
-          <div class="cols s3 offset3"><div class="demo">s3 offset3</div></div>
+        <div class="rows gutter-l">
+          <div class="cols s3 offset3"><div class="demo"></div></div>
+          <div class="cols s3 offset3"><div class="demo"></div></div>
+        </div>
+        <div class="rows gutter-s">
+          <div class="cols s2"><div class="demo"></div></div>
+          <div class="cols s2"><div class="demo"></div></div>
+          <div class="cols s4"><div class="demo"></div></div>
+          <div class="cols s4"><div class="demo"></div></div>
+        </div>
+        <div class="rows gutter-s">
+          <div class="cols s4 offset1"><div class="demo"></div></div>
+          <div class="cols s3 offset3"><div class="demo"></div></div>
+        </div>
+        <div class="rows gutter-s">
+          <div v-for="item in 12" class="cols s1"><div class="demo"></div></div>
         </div>
       </div>
       <h5>对齐方式</h5>
-      <div class="au-container demo">
+      <div class="au-layout demo">
         <div class="rows start">
-          <div class="cols s3"><div class="demo">s3</div></div>
-          <div class="cols s3"><div class="demo">s3</div></div>
-          <div class="cols s3"><div class="demo">s3</div></div>
+          <div class="cols s3"><div class="demo"></div></div>
+          <div class="cols s3"><div class="demo"></div></div>
+          <div class="cols s3"><div class="demo"></div></div>
         </div>
         <div class="rows center">
-          <div class="cols s3"><div class="demo">s3</div></div>
-          <div class="cols s3"><div class="demo">s3</div></div>
-          <div class="cols s3"><div class="demo">s3</div></div>
+          <div class="cols s3"><div class="demo"></div></div>
+          <div class="cols s3"><div class="demo"></div></div>
+          <div class="cols s3"><div class="demo"></div></div>
         </div>
         <div class="rows end">
-          <div class="cols s3"><div class="demo">s3</div></div>
-          <div class="cols s3"><div class="demo">s3</div></div>
-          <div class="cols s3"><div class="demo">s3</div></div>
+          <div class="cols s3"><div class="demo"></div></div>
+          <div class="cols s3"><div class="demo"></div></div>
+          <div class="cols s3"><div class="demo"></div></div>
         </div>
         <div class="rows space-between">
-          <div class="cols s3"><div class="demo">s3</div></div>
-          <div class="cols s3"><div class="demo">s3</div></div>
-          <div class="cols s3"><div class="demo">s3</div></div>
+          <div class="cols s3"><div class="demo"></div></div>
+          <div class="cols s3"><div class="demo"></div></div>
+          <div class="cols s3"><div class="demo"></div></div>
         </div>
         <div class="rows space-around">
-          <div class="cols s3"><div class="demo">s3</div></div>
-          <div class="cols s3"><div class="demo">s3</div></div>
-          <div class="cols s3"><div class="demo">s3</div></div>
+          <div class="cols s3"><div class="demo"></div></div>
+          <div class="cols s3"><div class="demo"></div></div>
+          <div class="cols s3"><div class="demo"></div></div>
         </div>
         <div class="rows space-evenly">
-          <div class="cols s3"><div class="demo">s3</div></div>
-          <div class="cols s3"><div class="demo">s3</div></div>
-          <div class="cols s3"><div class="demo">s3</div></div>
+          <div class="cols s3"><div class="demo"></div></div>
+          <div class="cols s3"><div class="demo"></div></div>
+          <div class="cols s3"><div class="demo"></div></div>
         </div>
       </div>
     </cpt-view>
