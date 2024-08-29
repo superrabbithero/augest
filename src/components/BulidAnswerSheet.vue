@@ -20,7 +20,7 @@
       </div>
       <div class="modal-line">
         <label>考试/作业id：</label>
-        <input type="text" v-model="paperid"/>
+        <input type="text" v-model="paperid" />
         <button @click="linktoXuece()">关联</button>
       </div>
       <div class="modal-line" v-show="pdfUrl">
@@ -37,32 +37,56 @@
   </my-model>
 
   <my-model :show="modal_show.fill_show" :dragable="true" :modalKey="'fill_show'">
-    <div class="modal-content" >
-      <input type="radio" name="fillError" id="noError" value="0" v-model="fillError">
-      <label for="noError">自定义</label>
-    </div>
-    <div class="modal-content" v-show="fillError == 0">
-      <input type="checkbox" id="ticketNum" v-model="fillNum">
-      <label for="ticketNum">准考证</label>
-      <input type="checkbox" id="obj-q" v-model="fillObj">
-      <label for="obj-q">客观题</label>
-      <input type="checkbox" id="subj-q" v-model="fillSubj">
-      <label for="subj-q">主观题</label>
-    </div>
-    <div class="modal-content" >
-      <input type="radio" name="fillError" id="ticketNumberError" value="1" v-model="fillError">
-      <label for="ticknumberError">准考证异常</label>
-      <input type="radio" name="fillError" id="positionError" value="2" v-model="fillError">
-      <label for="positionError">识别点异常</label>
-    </div>
-    <div class="modal-content" >
-      <input type="radio" name="fillError" id="objError" value="3" v-model="fillError">
-      <label for="objError">客观题异常</label>
-      <input type="radio" name="fillError" id="subjError" value="4" v-model="fillError">
-      <label for="subjError">主观题异常</label>
-    </div>
-    <div class="modal-line">
-      <button @click="fillAnswerCard()">填涂</button>
+    <div class="au-layout">
+      <div class="rows gutter-l" >
+        <div class="cols s12">
+          <input type="radio" name="fillError" id="noError" value="0" v-model="fillError">
+          <label for="noError">自定义</label>
+        </div>
+      </div>
+      {{optionOffset}}
+      <div class="rows gutter-l" v-show="fillError == 0">
+        <div class="cols s3">
+          <input type="checkbox" id="ticketNum" v-model="fillNum">
+          <label for="ticketNum">准考证</label>
+        </div>
+        <div class="cols s3">
+          <input type="checkbox" id="obj-q" v-model="fillObj">
+          <label for="obj-q">客观题</label>
+        </div>
+        <div class="cols s3">
+          <au-select :dataList="['A','AB','ABC']" @change="changeOptionOffset"></au-select>
+        </div>
+        <div class="cols s3">
+          <input type="checkbox" id="subj-q" v-model="fillSubj">
+          <label for="subj-q">主观题</label>
+        </div>
+      </div>
+      <div class="rows gutter-l" >
+        <div class="cols s6">
+          <input type="radio" name="fillError" id="ticketNumberError" value="1" v-model="fillError">
+          <label for="ticknumberError">准考证异常</label>
+        </div>
+        <div class="cols s6">
+          <input type="radio" name="fillError" id="positionError" value="2" v-model="fillError">
+          <label for="positionError">识别点异常</label>
+        </div>
+      </div>
+      <div class="rows gutter-l" >
+        <div class="cols s6">
+          <input type="radio" name="fillError" id="objError" value="3" v-model="fillError">
+          <label for="objError">客观题异常</label>
+        </div>
+        <div class="cols s6">
+          <input type="radio" name="fillError" id="subjError" value="4" v-model="fillError">
+          <label for="subjError">主观题异常</label>
+        </div>
+      </div>
+      <div class="rows gutter-l end">
+        <div class="cols">
+          <button @click="fillAnswerCard()">填涂</button>
+        </div>
+      </div>
     </div>
   </my-model>
 
@@ -143,6 +167,7 @@ import {ApplicationTwo,Pencil,Undo,RectangleOne,LeftOne,RightOne,FilePdfOne,Clos
 import EditToolsBox from "@/components/EditToolsBox.vue";
 import key from 'keymaster'
 import {login, getanswercard} from "@/assets/js/xueceapi.js"
+import auSelect from "./Model/auSelect.vue"
 
 
 
@@ -195,14 +220,14 @@ export default {
       cutparamshow:false,
       anchorxy:{x:0,y:0},
       // cutParamJsonStr:null,
-      cutParamJsonStr:{"pageSize":{"width":1588,"height":1123},"anchorSize":{"width":26,"height":13},"panelSize":{"width":1492,"height":1044},"singlePagePartition":2,"section":[{"sectionType":"MultiChoice","pageNumber":1,"seqArr":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],"multiSelect":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],"rect":{"x":0,"y":242,"width":734,"height":160},"subsections":[{"x":44,"y":14,"rows":4,"rowGroupSize":999,"columns":5,"positions":4,"cellWidth":17.48,"cellHeight":10.31,"cellGapWidth":8,"columnGapWidth":42,"rowGapHeight":9.69,"rowGroupGapHeight":9.69,"totalSequences":4,"sequenceOption":"HorizontalFirst"},{"x":44,"y":34,"rows":4,"rowGroupSize":999,"columns":5,"positions":4,"cellWidth":17.48,"cellHeight":10.31,"cellGapWidth":8,"columnGapWidth":42,"rowGapHeight":9.69,"rowGroupGapHeight":9.69,"totalSequences":1,"sequenceOption":"HorizontalFirst"},{"x":44,"y":54,"rows":4,"rowGroupSize":999,"columns":5,"positions":4,"cellWidth":17.48,"cellHeight":10.31,"cellGapWidth":8,"columnGapWidth":42,"rowGapHeight":9.69,"rowGroupGapHeight":9.69,"totalSequences":1,"sequenceOption":"HorizontalFirst"},{"x":44,"y":74,"rows":4,"rowGroupSize":999,"columns":5,"positions":4,"cellWidth":17.48,"cellHeight":10.31,"cellGapWidth":8,"columnGapWidth":42,"rowGapHeight":9.69,"rowGroupGapHeight":9.69,"totalSequences":1,"sequenceOption":"HorizontalFirst"},{"x":44,"y":94,"rows":4,"rowGroupSize":999,"columns":5,"positions":4,"cellWidth":17.48,"cellHeight":10.31,"cellGapWidth":8,"columnGapWidth":42,"rowGapHeight":9.69,"rowGroupGapHeight":9.69,"totalSequences":13,"sequenceOption":"HorizontalFirst"}],"sectionNumber":1},{"sectionType":"ScoreBox","pageNumber":1,"seqArr":[21],"rect":{"x":0,"y":427,"width":734,"height":574},"subsections":[{"cellHeight":18,"maxIntegerScore":15,"maxSingleBoxScore":17,"useHalfPoint":false}],"sectionNumber":2},{"sectionType":"ScoreBox","pageNumber":1,"seqArr":[22],"rect":{"x":758,"y":31,"width":734,"height":970},"subsections":[{"cellHeight":18,"maxIntegerScore":15,"maxSingleBoxScore":17,"useHalfPoint":false}],"sectionNumber":3},{"sectionType":"ScoreBox","pageNumber":2,"seqArr":[23],"rect":{"x":0,"y":31,"width":734,"height":410},"subsections":[{"cellHeight":18,"maxIntegerScore":15,"maxSingleBoxScore":17,"useHalfPoint":false}],"sectionNumber":4},{"sectionType":"ScoreBox","pageNumber":2,"seqArr":[24],"rect":{"x":0,"y":441,"width":734,"height":560},"subsections":[{"cellHeight":18,"maxIntegerScore":15,"maxSingleBoxScore":17,"useHalfPoint":false}],"sectionNumber":5}],"studentIdBarcode":true,"studentIdRect":{"x":541,"y":81,"width":163,"height":83},"firstBoxRect":{"x":544,"y":1016,"width":20,"height":20},"totalPageCount":2},
+      cutParamJsonStr:null,
       pdfUrl:null,
       cutDivScale:1,
       //关联xuece考试作业先相关参数
       
       papertype:0,
-      paperid:0,
-      env:2,
+      paperid:18079,
+      env:1,
 
       //模态框
       modal_show:{
@@ -218,7 +243,10 @@ export default {
       fillError:0,
 
       //条形码图片地址
-      barcode_url:null
+      barcode_url:null,
+
+      //填图客观题时，0为A,1为B类推
+      optionOffset:[0]
     };
   },
   components: {
@@ -233,7 +261,8 @@ export default {
     CheckOne,
     SlidingHorizontal,
     FocusOne,
-    LinkThree
+    LinkThree,
+    auSelect
   },
   mounted() {
     window.onresize = () => {
@@ -262,6 +291,14 @@ export default {
   },
   
   methods: {
+    changeOptionOffset(index){
+      console.log(index)
+      switch(index){
+        case 0: this.optionOffset = [0];break;
+        case 1: this.optionOffset = [0,1];break;
+        case 2: this.optionOffset = [0,1,2];break
+      }
+    },
     watermark(text){
       for(var i=1 ; i <= this.pdfPages ; i++){
         const canvas = document.getElementById("canvas"+i)
@@ -849,6 +886,7 @@ export default {
       } 
           
       if(this.cutParamJsonStr){
+        const optionOffset = this.optionOffset
         this.cutParamJsonStr.section.forEach(function(Eachsection, index) {
           if(pageNum != Eachsection.pageNumber && Eachsection.pageNumber <= pdfPages){
             if(canvas && ctx){
@@ -869,9 +907,10 @@ export default {
           }
           if(Eachsection.sectionType.includes("Choice") && (((that.fillObj&&that.fillError==0))||(that.fillError!=3&&that.fillError!=0))){
             var sectionx = Eachsection.rect.x
-            var sectiony = Eachsection.rect.y          
-            Eachsection.subsections.forEach(function(subsection,index){     
-              var optionOffset = [0] //默认选A
+            var sectiony = Eachsection.rect.y
+            const that = this          
+            Eachsection.subsections.forEach(function(subsection,index){    
+              
               var endx = subsection.cellWidth*scale
               var endy = subsection.cellHeight*scale
               var startx = anchorxy.x + (sectionx+subsection.x)*scale

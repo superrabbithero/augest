@@ -838,7 +838,8 @@ textarea:active, textarea:focus{
     justify-content: start;
     border-radius: 5px;
     padding: 8px 0;
-    background-color: var(--layout-bgc)
+    background-color: var(--layout-bgc);
+    flex:1;
 }
 
 .au-layout {
@@ -864,8 +865,9 @@ textarea:active, textarea:focus{
 }
 
 .au-layout .rows .cols{
-    overflow: hidden;
     box-sizing: border-box;
+    display: flex;
+    align-items: center;
 }
 
 .rows.gutter-l {

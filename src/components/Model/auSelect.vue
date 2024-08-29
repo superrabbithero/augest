@@ -62,6 +62,7 @@ export default {
 
 <style scoped>
   .select-box {
+    width: 100%;
     position: relative;
   }
   .input-area {
@@ -69,7 +70,6 @@ export default {
     padding: 0 5px;
     font-size: 15px;
     border-radius: 5px;
-    width: 150px;
     height: 28px;
     line-height: 28px;
   }
