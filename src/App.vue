@@ -1,76 +1,80 @@
 <template>
-  <div class="header" >
-    <!-- <div class="head-list"> -->
-      <div class="head-item"  @click="openmenu" id="menuicon">
-        <!-- <IconWrapper iconName="ApplicationTwo" theme="filled" :strokeWidth='2' /> -->
-        <svg-icon name="menu01"></svg-icon>
-      </div>
-      <div class="head-item home" @click="goto('/')">
-        <!-- <span class="logo">{{environment}}</span> -->
-        <!-- <IconWrapper iconName="Home" theme="outline" :strokeWidth='4' /> -->
-        <svg-icon name="home01"></svg-icon>
-      </div>
-      <div class="head-item"  style="margin-left: auto;">
-        <div class="pagetitle">{{$route.meta.title?$route.meta.title:decodeURIComponent($route.path).slice(6)}}</div>
-      </div>
-      <div class="head-item" @click="changeStyle" style="margin-left: auto;">
-        <!-- <IconWrapper iconName="DarkMode" theme="outline" :strokeWidth='4' /> -->
-        <svg-icon name="dark"></svg-icon>
-      </div>  
-    <!-- </div> -->
-    <transition name="fade-slide">
-      <div class="menu" v-if="menuisshow" ref="menu">
-        <div class="menu-list">
-          <div class="menu-list-title">工具</div>
-          <div class="menu-item" @click="goto('/tools/bulidanswersheet')">
-            <svg-icon name="file-pdf01"></svg-icon>
-            答题卡生成
-          </div>
-          <div class="menu-item" @click="goto('/minigames')">
-            <!-- <IconWrapper iconName="GameThree" theme="outline" :strokeWidth='2' /> -->
-            <svg-icon name="game01"></svg-icon>
-            小游戏
-          </div>
-          <div class="menu-item" @click="goto('/examhome')">
-            <!-- <IconWrapper iconName="Pyramid" theme="outline" :strokeWidth='2' /> -->
-            <svg-icon name="exams02" style="color:red"></svg-icon>
-            考试模拟器
-          </div>
-          <div class="menu-item" @click="goto('/pixelSvgEditor')">
-            <svg-icon name="art01"></svg-icon>
-            像素编辑器
-          </div>
-          <div class="menu-item" @click="goto('/myPixelIcons')">
-            <svg-icon name="picture01"></svg-icon>
-            我的像素图标
-          </div>
-          <div class="menu-item" @click="goto('/FQTManagement')">
-            <svg-icon name="4quadrant02" ></svg-icon>
-            四象限
-          </div>
-          <div class="menu-item" >
-            <IconWrapper iconName="RoadCone" theme="outline" :strokeWidth='2' />
-            待定...
+  <div class="au-container">
+    <div class="au-header header" >
+      <!-- <div class="head-list"> -->
+        <div class="head-item"  @click="openmenu" id="menuicon">
+          <!-- <IconWrapper iconName="ApplicationTwo" theme="filled" :strokeWidth='2' /> -->
+          <svg-icon name="menu01"></svg-icon>
+        </div>
+        <div class="head-item home" @click="goto('/')">
+          <svg-icon name="home01"></svg-icon>
+        </div>
+        <div class="head-item"  style="margin-left: auto;">
+          <div class="pagetitle">{{$route.meta.title?$route.meta.title:decodeURIComponent($route.path).slice(6)}}</div>
+        </div>
+        <div class="head-item" @click="changeStyle" style="margin-left: auto;">
+          <!-- <IconWrapper iconName="DarkMode" theme="outline" :strokeWidth='4' /> -->
+          <svg-icon name="dark"></svg-icon>
+        </div>  
+      <!-- </div> -->
+      <transition name="fade-slide">
+        <div class="menu" v-if="menuisshow" ref="menu">
+          <div class="menu-list">
+            <div class="menu-list-title">工具</div>
+            <div class="menu-item" @click="goto('/tools/bulidanswersheet')">
+              <svg-icon name="file-pdf01"></svg-icon>
+              答题卡生成
+            </div>
+            <div class="menu-item" @click="goto('/minigames')">
+              <!-- <IconWrapper iconName="GameThree" theme="outline" :strokeWidth='2' /> -->
+              <svg-icon name="game01"></svg-icon>
+              小游戏
+            </div>
+            <div class="menu-item" @click="goto('/examhome')">
+              <!-- <IconWrapper iconName="Pyramid" theme="outline" :strokeWidth='2' /> -->
+              <svg-icon name="exams02" style="color:red"></svg-icon>
+              考试模拟器
+            </div>
+            <div class="menu-item" @click="goto('/pixelSvgEditor')">
+              <svg-icon name="art01"></svg-icon>
+              像素编辑器
+            </div>
+            <div class="menu-item" @click="goto('/myPixelIcons')">
+              <svg-icon name="picture01"></svg-icon>
+              我的像素图标
+            </div>
+            <div class="menu-item" @click="goto('/FQTManagement')">
+              <svg-icon name="4quadrant02" ></svg-icon>
+              四象限
+            </div>
+            <div class="menu-item" @click="goto('/myTools')">
+              <svg-icon name="toolkit01" ></svg-icon>
+              常用工具
+            </div>
+            <div class="menu-item" >
+              <IconWrapper iconName="RoadCone" theme="outline" :strokeWidth='2' />
+              待定...
+            </div>
           </div>
         </div>
-      </div>
-    </transition>
-  </div>
-  <div>
-    <div class="header-block" ></div>
-    <router-view></router-view>
-  </div>
-  <div v-if="!$route.meta.footerHidden" class="footer" >
-    <div class="footer-link">
+      </transition>
     </div>
-    <div class="footer-bar">
-      <div>©2023 - 2024 By SuperRabbitHero</div>
-      <div>
-        <svg-icon name="helloworld" size=35 @click="goto('/helloworld')"></svg-icon>
-        <svg-icon name="list01" @click="goto('/post/更新文档')"></svg-icon>
+    <div class="au-main" style="padding:0 30px">
+      <div class="header-block" ></div>
+      <router-view></router-view>
+    </div>
+    <div v-if="!$route.meta.footerHidden" class="au-footer footer" >
+      <div class="footer-link">
+      </div>
+      <div class="footer-bar">
+        <div>©2023 - 2024 By SuperRabbitHero</div>
+        <div>
+          <svg-icon name="helloworld" size=35 @click="goto('/helloworld')"></svg-icon>
+          <svg-icon name="list01" @click="goto('/post/更新文档')"></svg-icon>
+        </div>
       </div>
     </div>
-  </div>
+</div>
 </template>
 
 <script>
@@ -167,10 +171,10 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   background-color: var(--content-bgc);
   color: var(--icon-color);
-  min-height: 100vh;
-  display: flex;
+  height: 100vh;
+  /*display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-between;*/
 }
 
 

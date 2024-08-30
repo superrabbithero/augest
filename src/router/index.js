@@ -140,6 +140,22 @@ const routes = [
             footerHidden: true
         }
     },
+    {
+        path: '/myTools',
+        name: 'MyTools',
+        component: () => import("@/components/MyTools"),
+        meta:{
+            title: '我的工具箱'
+        }
+    },
+    {
+        path: '/myTools/json',
+        name: 'Json格式化',
+        component: () => import("@/components/myTools/ToolJson"),
+        meta:{
+            title: 'Json格式化'
+        }
+    },
 
 ]
 

@@ -1,5 +1,5 @@
 <template>
-    <vue-json-pretty :data="jsonData" :showLength="true" :showLine="true" :showSelectController="false" :virtual="true" :deep="1"></vue-json-pretty>
+    <vue-json-pretty :data="jsonData" :showLength="true" :showLine="true" :showSelectController="false" :virtual="false" :deep="1"></vue-json-pretty>
 </template>
 
 <script>

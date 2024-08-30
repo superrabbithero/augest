@@ -142,6 +142,7 @@
             <svg-icon name="fit01"></svg-icon>
           </div>
         </div>
+        <au-select :dataList="['default','Pixel-8']" @change="changeMyColor" style="margin-bottom: 5px;"></au-select>
         <div class="color-tools" ref="colorTools" @pointermove="handleMove($event,index)">
           <div class="color-item draged" v-show="dragedColorIndex != null" ref="dragedColor"></div>
           <div v-for="(color,index) in myColors" class="color-item" ref="colorItem" :style="{backgroundColor:color}" 
@@ -183,6 +184,8 @@
 
 <script>
 import GIF from 'gif.js'
+import auSelect from "./Model/auSelect.vue"
+
 export default {
   data() {
     return {
@@ -196,6 +199,8 @@ export default {
       bkgColor:"#fff",
       // colorToolsEdited:false,
       myColors:['#000001','#ffffff','#F96635','#f9A822','#FAEC86','#93d3a2','#2bbaa5','#008080'],
+      defaultColors:['#000001','#ffffff','#F96635','#f9A822','#FAEC86','#93d3a2','#2bbaa5','#008080'],
+      pix8Colors:['#000001','#ffffff',"#202952","#762b52","#398557",'#a1573e','#605750','#c4c3c8','#fef1eb','#eb3452','#f1a73c','#fcee5a','#67e055','#57a8f7','#807498','#ee7dab','#f6cdb1'],
       colorIndex:0,
       dragedColorIndex:null,
       isDrawing: false,
@@ -248,6 +253,9 @@ export default {
       // imgToPixelColorList
       imgPointList:[[]]
     };
+  },
+  components:{
+    auSelect
   },
   computed: {
     width() {
@@ -305,6 +313,13 @@ export default {
     document.removeEventListener('click',this.closeDropDownBox)
   },
   methods: {
+    changeMyColor(index){
+      if(index == 0){
+        this.myColors = this.defaultColors
+      }else if(index == 1){
+        this.myColors = this.pix8Colors
+      }
+    },
     newFile(){
       this.cols = Math.floor(this.newFileForm.cols)
       this.gridSize = Math.floor(this.newFileForm.gridSize)

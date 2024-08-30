@@ -275,6 +275,16 @@
       "date": "2024-07-23 03:00:05"
     }
   ],
+  "selenium": [
+    {
+      "title": "在edge WebView2中使用selenium测试",
+      "path": "/post/在edge WebView2中使用selenium测试",
+      "tags": [
+        "selenium"
+      ],
+      "date": "2024-08-30 05:39:14"
+    }
+  ],
   "pointerEvents": [
     {
       "title": "基于pointer-events的canvas编辑器",

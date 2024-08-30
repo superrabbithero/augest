@@ -92,15 +92,19 @@ export default {
     padding: 4px 0;
     top: 36px;
     position: absolute;
+    z-index: 999;
     width: 100%;
     background-color: var(--box-bgc);
-    
     font-size: 15px;
     border-radius: 5px;
+    opacity: 0;
+    pointer-events: none;
   }
 
   .select-item-group.show{
+    pointer-events: auto;
     box-shadow: var(--box-shadow);
+    opacity: 1;
   }
   .options {
     overflow: auto;

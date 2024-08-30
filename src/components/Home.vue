@@ -178,7 +178,7 @@ export default {
 }
 
 .home-title{
-  margin: 20px 30px 0 30px;
+  margin-top: 20px;
   font-size: 25px;
   font-family: SmileySans-Oblique;
 }
