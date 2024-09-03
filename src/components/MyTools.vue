@@ -4,8 +4,9 @@
       <div v-for="toolPage in toolPages" class="cols s4">
         <div class="tool-card-box">
           <div class="tool-card">
-            <div class="tool-content" @click="goto(toolPage.path)">
-              {{toolPage.name}}
+            <div class="tool-content font-SmileySans" @click="goto(toolPage.path)" >
+              <img class="tool-content-background" :src="toolPage.imgUrl"/>
+              <div class="card-text">{{toolPage.name}}</div>
             </div>
           </div>
         </div>
@@ -22,20 +23,19 @@ export default {
       toolPages:[
           {
             name:'格式化Json',
-            path:'/myTools/Json'
+            path:'/myTools/Json',
+            imgUrl:require('@/assets/imgs/background-imgs/jsonToolBcg.jpeg')
           },
           {
-            name:'格式化Json',
-            path:'/myTools/Json'
+            name:'像素艺术编辑器',
+            path:'/pixelSvgEditor',
+            imgUrl:require('@/assets/imgs/background-imgs/pixelEditBcg.webp')
           },
           {
-            name:'格式化Json',
-            path:'/myTools/Json'
+            name:'四象限计划表',
+            path:'/FQTManagement',
+            imgUrl:require('@/assets/imgs/background-imgs/fqtmanagementBcg.jpeg')
           },
-          {
-            name:'格式化Json',
-            path:'/myTools/Json'
-          }
         ]
     }
   },
@@ -68,15 +68,46 @@ export default {
 
   .tool-content{
     height: 100%;
-    border: var(--box-border);
+/*    border: var(--box-border);*/
+    background: var(--box-bgc);
     border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: 0.3s;
   }
 
-  .tool-content:hover{
-    outline: 1px solid #425aef;
+  
+
+  @media(any-hover){
+    .tool-content:hover {
+/*      outline: 1px solid #425aef;*/
+box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+    .tool-content:hover .card-text{
+      transform: scale(1.2);
+      backdrop-filter: blur(6px);
+    }
+  }
+
+  img.tool-content-background{
+    position: absolute;
+    z-index: 0;
+  }
+
+  .card-text {
+    cursor: pointer;
+    z-index: 1;
+    padding: 0.8rem 2rem;
+    border: 4px double #fff;
+    border-radius: 5px;
+    color: #fff;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    transition: 0.3s;
   }
 
 </style>

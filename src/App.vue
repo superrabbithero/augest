@@ -63,7 +63,7 @@
       <div class="header-block" ></div>
       <router-view></router-view>
     </div>
-    <div v-if="!$route.meta.footerHidden" class="au-footer footer" >
+    <div v-if="!$route.meta.footerHidden" class="au-footer footer" style="margin-top:20px" >
       <div class="footer-link">
       </div>
       <div class="footer-bar">
@@ -294,7 +294,7 @@ export default {
 
 /*  position: fixed;*/
 /*  z-index: 998;*/
-  margin-top: 20px;
+/*  margin-top: 20px;*/
   width: 100%;
   width: fill-available;
   display: flex;

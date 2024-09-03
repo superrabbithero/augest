@@ -9,16 +9,6 @@
           <div class="au-footer demo" style="height:4rem">Footer</div>
         </div>
       </div>
-      <h5>固定Header</h5>
-      <div class="au-layout demo" >
-        <div style="height:20rem;overflow: auto;position: relative;">
-          <div class="au-container">
-            <div class="au-header fixed demo" style="height:4rem">Header</div>
-            <div class="au-main demo" style="height: 30rem;">Main</div>
-            <div class="au-footer demo" style="height:4rem">Footer</div>
-          </div>
-        </div>
-      </div>
     </cpt-view>
     <cpt-view name="Layout">
       <h5>12列布局</h5>

@@ -820,9 +820,11 @@ textarea:active, textarea:focus{
 
 .au-container .au-main{
 /*    background-color: #566573*/
+    flex-grow: 1;
 }
 
 .au-container .au-footer{
+    z-index: 10;
 /*    background-color: #273746;*/
 }
 
@@ -1023,3 +1025,8 @@ textarea:active, textarea:focus{
 
 
 /*color*/
+
+
+.font-SmileySans{
+    font-family: SmileySans-Oblique;
+}
