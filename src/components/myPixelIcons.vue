@@ -50,9 +50,6 @@ export default {
 </script>
 
 <style>
-.main-content{
-	width: calc(100% - 80px);
-}
 
 .count-view {
 	margin-top: 10px;
