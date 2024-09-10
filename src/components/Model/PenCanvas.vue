@@ -290,10 +290,8 @@ export default {
         this.isScroll = null
       }
     },
-    
-    
-    
     getcanvastool(tool){
+      console.log("click")
       var ctx = this.context
       if (tool == 'pencil') {
         this.context.globalCompositeOperation = 'source-over';
@@ -307,6 +305,7 @@ export default {
 
     //处理工具栏按钮事件
     handleStart(){
+      console.log("start")
       this.pressTimer = setTimeout(() => {
         // this.editTools_show = true
         this.setting_show = true
@@ -322,6 +321,7 @@ export default {
     },
     handleEnd(){
       // 如果定时器还在，说明是点击事件
+      console.log("end")
       if (this.pressTimer) {
         clearTimeout(this.pressTimer);
         this.pressTimer = null;

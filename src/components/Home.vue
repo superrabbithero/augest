@@ -1,39 +1,41 @@
 <template>
-  <div class="home-container">
-    <div class="home-left col">
-      <div class="home-title">
-        <div v-if="currentTag">
-          <svg-icon name="letter-hashtag01" size="25" fill="#ffc848"></svg-icon>{{currentTag}} <sup>{{tagIndexJson[currentTag].length}}</sup></div>
-        <div v-else style="display:flex;align-items: center;">
-          <!-- <IconWrapper  iconName="DocumentFolder" fill="#ffc848" theme="outline" :strokeWidth='2' size="25" /> -->
-          <svg-icon name="book01" fill="#ffc848" size="30"></svg-icon>  
-          <div>文章  <sup>{{docsListJson.length}}</sup></div>
+  <div class="au-layout">
+    <div class="rows start gutter-l">
+      <div class="cols sm12 md8 lg9 xl10 list">
+        <div class="home-title">
+          <div v-if="currentTag">
+            <svg-icon name="letter-hashtag01" size="25" fill="#ffc848"></svg-icon>{{currentTag}} <sup>{{tagIndexJson[currentTag].length}}</sup></div>
+          <div v-else style="display:flex;align-items: center;">
+            <!-- <IconWrapper  iconName="DocumentFolder" fill="#ffc848" theme="outline" :strokeWidth='2' size="25" /> -->
+            <svg-icon name="book01" fill="#ffc848" size="30"></svg-icon>  
+            <div>文章  <sup>{{docsListJson.length}}</sup></div>
+          </div>
         </div>
-      </div>
-      <div v-for="(docfile, index) in filteredJson" class="card-content">
-        <div class="md-card-item">
-          <div class="title"  @click="goto(docfile.path)">{{docfile.title}}</div>
-          <div class="md-card-info">
-            <div class="tags">
-              <div class="tags-item" @click="goTagList(tag)" v-for="tag in docfile.tags">
-                <svg-icon name="letter-hashtag01" size="16" fill="#ffc848"></svg-icon>
-                {{tag}}
+        <div v-for="(docfile, index) in filteredJson" class="card-content">
+          <div class="md-card-item">
+            <div class="title"  @click="goto(docfile.path)">{{docfile.title}}</div>
+            <div class="md-card-info">
+              <div class="tags">
+                <div class="tags-item" @click="goTagList(tag)" v-for="tag in docfile.tags">
+                  <svg-icon name="letter-hashtag01" size="16" fill="#ffc848"></svg-icon>
+                  {{tag}}
+                </div>
               </div>
-            </div>
-            <div class="date">
-              {{docfile.date}}
+              <div class="date">
+                {{docfile.date}}
+              </div>
             </div>
           </div>
         </div>
+        <pagination v-if="totalPages > 1" :totalPages="totalPages" @page-change="handlePageChange"></pagination>
       </div>
-      <pagination v-if="totalPages > 1" :totalPages="totalPages" @page-change="handlePageChange"></pagination>
-    </div>
-    <div class="home-right col">
-      <div class="card-content">
-        <HealthCard></HealthCard>
-      </div>
-      <div class="card-content tagbox">
-        <div v-for="tag in tags" :class="{'tagItem':true,'active':tag == currentTag}" @click="goTagList(tag)">{{tag}} <sup>{{tagIndexJson[tag].length}}</sup></div>
+      <div class="cols sm12 md4 lg3 xl2 list">
+        <div class="card-content">
+          <HealthCard></HealthCard>
+        </div>
+        <div class="card-content tagbox">
+          <div v-for="tag in tags" :class="{'tagItem':true,'active':tag == currentTag}" @click="goTagList(tag)">{{tag}} <sup>{{tagIndexJson[tag].length}}</sup></div>
+        </div>
       </div>
     </div>
   </div>
@@ -185,6 +187,11 @@ export default {
 
 .home-title sup{
   color: #888888;
+}
+
+.list {
+  flex-direction: column!important;
+  align-items: normal!important;
 }
 
 </style>

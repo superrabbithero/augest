@@ -386,7 +386,8 @@ export default {
 	
 
 	.exampaperbox{
-		width: 100%;
+/*		width: 100%;*/
+		margin: 0 -30px;
 		display: flex;
 		overflow: hidden;
 		height: calc(100vh - 61px);
@@ -721,8 +722,9 @@ export default {
 	}
 
 .pause-screen {
-    position: absolute;
+    position: fixed;
     top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     z-index: 999;
