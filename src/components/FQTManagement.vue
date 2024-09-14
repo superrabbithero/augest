@@ -60,6 +60,7 @@
       <svg-icon name="arrow-right" className="date-item" @click="nextWeek"></svg-icon>
       <svg-icon name="letter-plus01" className="date-item" @click="showAddPlan()"></svg-icon>
       <svg-icon name="refresh02" class="update-icon" className="date-item" @click="getCurManagementData(currentDate)"></svg-icon>
+      <svg-icon name="upload01" className="date-item" @click="saveJson"></svg-icon>
 		</div>
     {{currentDate}}
     <div :class="{'quadrant-container':true,'draging':draged}">
@@ -99,7 +100,9 @@
 
 <script>
 import calender from "./Model/Calendar.vue"
-import managementList from "@/assets/json/managementList.json"
+// import managementList from "@/assets/json/managementList.json"
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { db } from "@/assets/js/firebase.js";  // 引入已初始化的 storage 实例
 
 export default {
   computed:{
@@ -171,7 +174,7 @@ export default {
         repeatDate:[],
         finishedDate:[]
       },
-      managementList,
+      managementList:[],
       updateIndex:null,
       dragedManagement:null,
       draged:false,
@@ -179,11 +182,20 @@ export default {
       pressTimer:null,
       disx:null,
       disy:null,
+      ifNeedSave:false
     }
   },
   mounted(){
+    this.fetchJson()
+    console.log(this.managementList)
   	this.getWeekDate()
     this.toDate(this.getFormattedDate(this.today))
+    // 添加监听器，当页面即将关闭时触发
+    window.addEventListener("beforeunload", this.handleBeforeUnload);
+  },
+  unmounted(){
+    // 移除监听器，防止内存泄漏
+    window.removeEventListener("beforeunload", this.handleBeforeUnload);
   },
   methods: {
     //计划列表点击、长按事件
@@ -296,10 +308,12 @@ export default {
       const index = management.index
       delete management.index
       this.managementList[index] = management
+      this.ifNeedSave = true
     },
     deleteManagement(management){
       const index = management.index
       this.managementList.splice(index,1)
+      this.ifNeedSave = true
     },
     toDate(date){
       this.getCurManagementData(date)
@@ -329,7 +343,7 @@ export default {
     },
     getCurManagementData(date){
       this.currentManagementList = [[],[],[],[]]
-      managementList.forEach(((management, index)=>{
+      this.managementList.forEach(((management, index)=>{
         if(this.compare2Date(date,management.date) == 0){
           this.pushCurManagement(index, management)
         }else if(this.compare2Date(date,management.date) == 1){
@@ -411,6 +425,7 @@ export default {
         this.$toast.show('时间或内容不得为空','error') 
       }
       console.log(this.managementList)
+      this.ifNeedSave = true
     },
     getManagementDate(n = 0){
       const date = new Date()
@@ -472,14 +487,70 @@ export default {
       for(var i=0; i<7 ; i++){
         this.currentWeek[i] = getDateNDaysAgo(firstDay, -i)
       }
+    },
+    //firebase数据存储
+    async fetchJson() {
+      try {
+        // 假设 JSON 文件存储在 Firestore 的一个集合中，叫做 "jsonFiles"
+        const docRef = doc(db, "jsonfiles", "managementjson");
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          this.managementList = docSnap.data().tasks;
+          this.getCurManagementData(this.currentDate)
+          console.log("Document data:", this.jsonData);
+        } else {
+          console.log("No such document!");
+        }
+      } catch (error) {
+        console.error("Error fetching document:", error);
+      }
+    },
+    async saveJson() {
+      const jsonDataArray = this.managementList
+
+      try {
+        // 假设你要更新/写入 Firestore 集合中的文档
+        await setDoc(doc(db, "jsonfiles", "managementjson"), { tasks:jsonDataArray });
+        this.ifNeedSave = false
+        console.log("Document successfully written!");
+      } catch (error) {
+        console.error("Error writing document:", error);
+      }
+    },
+    handleBeforeUnload(event){
+      if(this.ifNeedSave){
+        // 在这里你可以处理关闭标签页时的逻辑，例如保存状态或提示用户
+        const confirmationMessage = "你有未保存的更改，是否保存并离开";
+
+        // 设置这个消息会让浏览器显示一个确认对话框
+        event.returnValue = confirmationMessage;  // 标准兼容做法
+        return confirmationMessage;  // 对某些旧版浏览器的支持
+      }
+    },
+    confirmLeave(to, from, next) {
+      if (this.ifNeedSave) {
+        const answer = window.confirm("你有未保存的更改，确定要离开吗？");
+        if (answer) {
+          next(); // 允许导航离开
+        } else {
+          next(false); // 阻止导航
+        }
+      } else {
+        next(); // 如果没有未保存的更改，直接离开
+      }
     }
+
+  },
+  beforeRouteLeave(to, from, next) {
+    this.confirmLeave(to, from, next);
   }
 };
 </script>
 
 <style>
 .main-content{
-	width: calc(100% - 80px);
+/*	width: calc(100% - 80px);*/
 	height: calc(100vh - 120px);
 }
 

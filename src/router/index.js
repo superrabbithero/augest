@@ -155,7 +155,8 @@ const routes = [
         meta:{
             title: 'Json格式化'
         }
-    },{
+    },
+    {
         path: '/myColorPalette',
         name: '调色盘',
         component: () => import("@/components/myTools/MyColorPalette"),

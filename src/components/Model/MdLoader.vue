@@ -40,7 +40,7 @@ export default {
     methods: {
     findMarkdownHeadings() {
       // 选择class为'markdown-body'下所有的h1-6元素
-      const headings = document.querySelectorAll('.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4, .markdown-body h5, .markdown-body h6');
+      const headings = document.querySelectorAll('.markdown-body h1, .markdown-body h2, .markdown-body h3');//先找到钱3个标签
 
       // 转换成数组
       this.$parent.headingsList = Array.from(headings).map(element => {

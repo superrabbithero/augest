@@ -1,5 +1,14 @@
 [
   {
+    "title": "使用firebase为四象限提供数据存储服务",
+    "path": "/post/使用firebase为四象限提供数据存储服务",
+    "tags": [
+      "Vue",
+      "firebase"
+    ],
+    "date": "2024-09-13 05:42:25"
+  },
+  {
     "title": "在edge WebView2中使用selenium测试",
     "path": "/post/在edge WebView2中使用selenium测试",
     "tags": [

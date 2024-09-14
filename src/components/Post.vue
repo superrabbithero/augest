@@ -1,12 +1,13 @@
 <template>
-  <div class="home-container">
-    <div class="home-left">
-      <div class="card-content" style="text-align: left;">
+  <div class="au-resize">
+    <div class="left">
+      <div class="post-content" style="text-align: left;">
         <md-loader :mdFileName="postname"  ref="markdownRef"></md-loader>
       </div>
     </div>
-    <div class="home-right">
-      <div class="card-content box-fixed mobile-none">
+    <div class="right">
+      <!-- <div class="card-content box-fixed mobile-none"> -->
+      <div class="menu-content">
         <div class="card-title">
           <IconWrapper  iconName="Bill" theme="outline" :strokeWidth='4' size="20" />
           <h3 style="padding:0;margin:0 5px">目 录</h3>
@@ -15,11 +16,10 @@
           <div v-for="(heading, index) in headingsList" :key="heading.content" :class="{'markdown-menu-item':true,'active':index === targetIndex}" @click="scrollToHeading(heading.ele)">
               {{ heading.content }}
           </div>
-      </div>
+        </div>
       </div>
     </div>
   </div>
-  
 </template>
 
 <script>
@@ -84,6 +84,7 @@ export default {
   filter:blur(2px);
   cursor: pointer;
   transition: font-size 0.3s ease, background-color 0.3s ease, filter 0.3s ease;
+  white-space: nowrap;
 }
 
 .markdown-menu-item.active{
@@ -109,5 +110,61 @@ export default {
   font-family: SmileySans-Oblique;
   align-items: center
 }
+
+.post-content, .menu-content{
+  padding: 10px 10px;
+  margin-top: 10px;
+  background-color: var(--box-bgc);
+  border: var(--box-border);
+  border-radius: 12px;
+}
+
+.menu-content {
+  box-sizing: border-box;
+  position: sticky;
+  top: 70px;
+}
+
+.au-resize {
+    touch-action: none;
+    margin:0;
+    height: 100%;
+    display: flex;
+  }
+  .au-resize >*{
+    white-space: wrap;
+  }
+  .au-resize .left,.au-resize .right{
+    height: 100%;
+    box-sizing: border-box;
+    position: relative;
+  }
+  .au-resize .left {
+    width: 75%; /* 初始宽度 */
+    flex: 0 0 auto; /* 左侧宽度固定 */
+    transition: 0.5s;
+  }
+
+  .au-resize .right {
+    flex: 1;
+    margin-left: 10px;
+    transition: 0.5s;
+  }
+
+  @media (max-width: 1200px){
+    .au-resize .left {
+      width: 100%; /* 初始宽度 */
+      flex: 0 0 auto; /* 左侧宽度固定 */
+      transition: 0.5s;
+    }
+    .au-resize .right {
+      flex: 1;
+      width: 0px;
+      margin-left: 10px;
+      transition: 0.5s;
+      overflow: hidden;
+    }
+
+  }
 
 </style>
