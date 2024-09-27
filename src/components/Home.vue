@@ -15,6 +15,7 @@
           <div class="md-card-item">
             <div class="title"  @click="goto(docfile.path)">{{docfile.title}}</div>
             <div class="md-card-info">
+              
               <div class="tags">
                 <div class="tags-item" @click="goTagList(tag)" v-for="tag in docfile.tags">
                   <svg-icon name="letter-hashtag01" size="16" fill="#ffc848"></svg-icon>
@@ -22,7 +23,7 @@
                 </div>
               </div>
               <div class="date">
-                {{docfile.date}}
+                {{formatDate(docfile.date)}}
               </div>
             </div>
           </div>
@@ -30,10 +31,20 @@
         <pagination v-if="totalPages > 1" :totalPages="totalPages" @page-change="handlePageChange"></pagination>
       </div>
       <div class="cols sm12 md4 lg3 xl2 list">
+        <div class="card-content" style="align-items: center;">
+          <div class="card-item">
+            <div class="avatar">
+              <img src="@/assets/imgs/avatar.webp">
+            </div>
+          </div>
+          <div class="one-sentence" @click="getRandomSentence">
+            {{sentence.content}}
+          </div>
+        </div>
         <div class="card-content">
           <HealthCard></HealthCard>
         </div>
-        <div class="card-content tagbox">
+        <div class="card-content tagbox" style="flex-direction: row;">
           <div v-for="tag in tags" :class="{'tagItem':true,'active':tag == currentTag}" @click="goTagList(tag)">{{tag}} <sup>{{tagIndexJson[tag].length}}</sup></div>
         </div>
       </div>
@@ -46,6 +57,7 @@ import HealthCard from "./HomeComponents/HealthCard.vue"
 import docsListJson from "@/assets/json/docsList.json"
 import tagIndexJson from "@/assets/json/tagIndex.json"
 import pagination from './Model/Pagination.vue'
+import sentences from "@/assets/json/sentences.json"
 
 export default {
   name: "Home",
@@ -62,14 +74,40 @@ export default {
       currentTag:null,
       pageSize:10,
       keyword:null,
-      totalPages:0
+      totalPages:0,
+      today:null,
+      sentence:"一句话"
+    }
+  },
+  computed:{
+    formatDate(){
+      return (datetimeStr)=>{
+        console.log(datetimeStr)
+        const date = new Date(datetimeStr)
+        if(date.getFullYear() === this.today.getFullYear){
+          const formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+          return formattedDate
+        }else{
+          const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+          return formattedDate
+        }
+      }
     }
   },
   mounted(){
     this.filteredJson = this.searchPosts().results
     this.getTagsList()
+    this.today = new Date()
+    this.getRandomSentence()
   },
   methods:{
+    getRandomSentence(){
+      let index = Math.floor(Math.random()*sentences.sentences.length)
+      while(this.sentence === sentences.sentences[index]){
+        index = Math.floor(Math.random()*sentences.sentences.length)
+      }
+      this.sentence = sentences.sentences[index]
+    },
     goto(path){
       this.$router.push(path)
     },
@@ -114,8 +152,6 @@ export default {
         this.currentTag = null
         this.filteredJson = this.searchPosts().results
       }
-      
-
     }
   }
 }
@@ -145,15 +181,21 @@ export default {
 
 .md-card-info {
   display: flex;
-  justify-content: space-between
+  justify-content: space-between;
+  margin-top: 10px;
 }
 .md-card-info .tags{
   display: flex;
 }
 
 .md-card-info .date{
-  font-size: 14px;
-
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  height: 16px;
+  line-height: 16px;
+  color: #ffc848a6;
+  font-family: GoodfonT-NET-XS04;
 }
 
 .md-card-info .tags .tags-item{
@@ -161,21 +203,22 @@ export default {
   align-items: center;
   cursor: pointer;
   font-size: 14px;
-  margin: 0 5px;
+  margin-right: 5px;
   height: 16px;
   line-height: 16px;
   transition:color 0.3s ease,
 }
 .md-card-item .title{
-  margin-left: 5px;
-  margin-bottom: 8px;
+  /*margin-left: 5px;
+  margin-bottom: 8px;*/
   cursor: pointer;
-  font-size: 24px;
+  display: inline-block;
+  font-size: 1.3rem;
   font-family: SmileySans-Oblique;
-  transition:color 0.3s ease,
+  transition: color 0.3s ease;
 }
 
-.md-card-item .title:hover,.md-card-info .tags .tags-item:hover{
+.md-card-item .title:hover, .md-card-info .tags .tags-item:hover{
   color: #ffc848;
 }
 
@@ -192,6 +235,50 @@ export default {
 .list {
   flex-direction: column!important;
   align-items: normal!important;
+}
+.card-item {
+  display: flex;
+  justify-content: center;
+}
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 100px;
+  overflow: hidden;
+  position: relative;
+  border-radius: 50%;
+}
+.avatar img{
+  position: absolute;
+  max-width: 200%;
+  width: 180px;
+  left: -60px;
+  top:0;
+}
+
+.one-sentence{
+  max-height: 10px;
+  margin: 0.5rem 0;
+  max-width: 80%;
+  width: fit-content;
+  text-align: center;
+  padding: 10px 12px;
+  font-size: 14px;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: 0.5s;
+  border-bottom: 2px solid #ffc848;
+}
+
+.one-sentence:hover{
+  border-radius: 8px;
+  background-color: #ffc848;
+  white-space: normal;
+  max-height: 50px;
 }
 
 </style>

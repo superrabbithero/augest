@@ -1,6 +1,6 @@
 <template>
   <div class="au-container">
-    <div class="au-header header" >
+    <div class="au-header header clipdemo" >
       <!-- <div class="head-list"> -->
         <div class="head-item"  @click="openmenu" id="menuicon">
           <!-- <IconWrapper iconName="ApplicationTwo" theme="filled" :strokeWidth='2' /> -->
@@ -180,12 +180,11 @@ export default {
 
 
 .header {
-  background-color: var(--content-bgc);
+/*  background-color: var(--content-bgc);*/
   height: 60px;
   border-bottom: var(--box-border);
   position: fixed;
   z-index: 998;
-  width: 100%;
   width: -moz-available;          
   /* WebKit-based browsers will ignore this. */
   width: -webkit-fill-available;  
@@ -197,6 +196,12 @@ export default {
   justify-content: start;
   align-items: center;
   padding: 0 30px;
+}
+
+.header.clipdemo{
+  background-image: radial-gradient(transparent 1px, var(--content-bgc) 1px);
+  background-size: 4px 4px;
+  backdrop-filter: saturate(50%) blur(4px);
 }
 
 .head-list {
