@@ -37,7 +37,7 @@
               <img src="@/assets/imgs/avatar.webp">
             </div>
           </div>
-          <div class="one-sentence" @click="getRandomSentence">
+          <div class="one-sentence" @click="goto('/oneSentence')">
             {{sentence.content}}
             <span>{{sentence.content}}</span>
             <div class="underline"></div>
@@ -277,6 +277,7 @@ export default {
 }
 
 .one-sentence{
+  cursor: pointer;
   user-select: none;
   max-height: 19px;
   margin: 0.5rem 0;
