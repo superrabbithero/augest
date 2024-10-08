@@ -39,6 +39,9 @@
           </div>
           <div class="one-sentence" @click="getRandomSentence">
             {{sentence.content}}
+            <span>{{sentence.content}}</span>
+            <div class="underline"></div>
+            <div class="background"></div>
           </div>
         </div>
         <div class="card-content">
@@ -257,12 +260,28 @@ export default {
   left: -60px;
   top:0;
 }
+.one-sentence span{
+
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  width: 100%;
+  position: absolute;
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--fontNormal);
+  box-sizing: border-box;
+}
 
 .one-sentence{
-  max-height: 10px;
+  user-select: none;
+  max-height: 19px;
   margin: 0.5rem 0;
   max-width: 80%;
-  width: fit-content;
+/*  width: fit-content;*/
   text-align: center;
   padding: 10px 12px;
   font-size: 14px;
@@ -270,15 +289,53 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  transition: 0.5s ease;
+  position: relative;
+  color: transparent;
+  border-radius: 8px;
+}
+.one-sentence .underline{
+  left: 0;
+  position: absolute;
+  height: 2px;
+  width: 100%;
+  background-color: #ffc848;
   transition: 0.5s;
-  border-bottom: 2px solid #ffc848;
+}
+
+.one-sentence .background{
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0;
+  background-color: #ffc848;
+  transition: 0.3s;
+  transition-delay: 0.2s;
+  opacity: 0;
+}
+
+.one-sentence:hover .background{
+  opacity: 1;
+  width: 100%;
+  z-index: 0;
+}
+
+.one-sentence:hover .underline{
+  width: 0;
+/*  display: none;*/
+  z-index: 0;
 }
 
 .one-sentence:hover{
-  border-radius: 8px;
-  background-color: #ffc848;
   white-space: normal;
   max-height: 50px;
+}
+
+.one-sentence:hover span{
+  white-space: normal;
+/*  max-height: 50px;*/
+  color: #363636;
 }
 
 </style>

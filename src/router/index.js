@@ -164,6 +164,14 @@ const routes = [
             title: '调色盘'
         }
     },
+    {
+        path: '/oneSentence',
+        name: '一言',
+        component: () => import("@/components/OneSentence"),
+        meta:{
+            title: '一言'
+        }
+    },
 
 ]
 

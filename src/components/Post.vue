@@ -126,7 +126,7 @@ export default {
 }
 
 .au-resize {
-    touch-action: none;
+/*    touch-action: none;*/
     margin:0;
     height: 100%;
     display: flex;
