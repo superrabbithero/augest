@@ -1,7 +1,7 @@
 <template>
   <div class="au-layout">
     <div class="rows start gutter-l">
-      <div class="cols sm12 md8 lg9 xl10 list">
+      <div class="cols xs12 sm12 md8 lg9 xl10 list">
         <div class="home-title">
           <div v-if="currentTag">
             <svg-icon name="letter-hashtag01" size="25" fill="#ffc848"></svg-icon>{{currentTag}} <sup>{{tagIndexJson[currentTag].length}}</sup></div>
@@ -30,7 +30,7 @@
         </div>
         <pagination v-if="totalPages > 1" :totalPages="totalPages" @page-change="handlePageChange"></pagination>
       </div>
-      <div class="cols sm12 md4 lg3 xl2 list">
+      <div class="cols xs12 sm12 md4 lg3 xl2 list">
         <div class="card-content" style="align-items: center;">
           <div class="card-item">
             <div class="avatar">
