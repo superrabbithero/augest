@@ -1,22 +1,13 @@
 <template>	
 	 <div class="home-container">
     <div class="home-left col">
-      <div class="card-content">
+      <div class="card-content" v-for="paper in paperList">
         <div class="md-card-item">
-          <div class="title"  @click="goto('/zhenti/2022_js_C')">2022年江苏省公务员录用考试《行测》题（C类）（网友回忆版）</div>
+          <div class="title"  @click="goto(paper.jsonFile)">{{paper.title}}</div>
           <div class="md-card-info">
+            未完成
             <div class="date">
-              2026-6-25
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="card-content">
-        <div class="md-card-item">
-          <div class="title"  @click="goto('/zhenti/2023_gk_fs')">2023年国家公务员录用考试《行测》题（副省级网友回忆版）</div>
-          <div class="md-card-info">
-            <div class="date">
-              2026-6-27
+              4.4
             </div>
           </div>
         </div>
@@ -40,7 +31,18 @@ export default {
   },
   data(){
     return {
-    	totalPages:0
+    	totalPages:0,
+      paperList:[
+        {title:'2022年江苏省公务员录用考试《行测》题（C类）（网友回忆版）',jsonFile:'/zhenti/2022_js_C'},
+        {title:'2023年国家公务员录用考试《行测》题（副省级网友回忆版）',jsonFile:'/zhenti/2023_gk_fs'},
+        {title:"2024年江苏省公务员录用考试《行测》题（A类）（网友回忆版）",jsonFile:'/zhenti/2024_js_A'},
+        {title:"2024年江苏省公务员录用考试《行测》题（C类）（网友回忆版）",jsonFile:'/zhenti/2024_js_C'},
+        {title:"2024年江苏省公务员录用考试《行测》题（B类）（网友回忆版）",jsonFile:'/zhenti/2024_js_B'},
+        {title:"2024年国家公务员录用考试《行测》题（地市级网友回忆版）",jsonFile:'/zhenti/2024_gk_dj'},
+        {title:"2024年国家公务员录用考试《行测》题（副省级网友回忆版）",jsonFile:'/zhenti/2024_gk_fs'},
+        {title:"2024年国家公务员录用考试《行测》题（行政执法卷网友回忆版）",jsonFile:'/zhenti/2024_gk_zf'},
+        {title:"2023年江苏省公务员录用考试《行测》题（A类）（网友回忆版）",jsonFile:'/zhenti/2023_js_A'},
+        {title:"2023年江苏省公务员录用考试《行测》题（B类）（网友回忆版）",jsonFile:'/zhenti/2023_js_B'}]
     }
   },
 
