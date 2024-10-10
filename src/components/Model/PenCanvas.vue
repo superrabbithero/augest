@@ -17,10 +17,10 @@
         <div style="height: 100%;font-size: 18px;line-height: 50px;padding: 0 2px 0 2px;color:#252525" @click="editTools_show = false">&times;</div>
         <div class="edit-tools-group">
           <div :class="{'edit-tools-item':true,'active':!erasing}" @click="getcanvastool('pencil')">
-            <img src="@/assets/imgs/canvastools/pen.png"/>
+            <img draggable="false" src="@/assets/imgs/canvastools/pen.png"/>
           </div>
           <div :class="{'edit-tools-item':true,'active':erasing}" @click="getcanvastool('eraser')">
-            <img src="@/assets/imgs/canvastools/eraser.png"/>
+            <img draggable="false" src="@/assets/imgs/canvastools/eraser.png"/>
           </div>
         </div>
         <div style="width:25px;display:flex;color:#252525;margin-left:15px" @click="setting_show = true">
@@ -197,7 +197,7 @@ export default {
       this.currentPointerType = event.pointerType;
       if(this.mode == "all touch" && this.currentPointerType == 'pen'){
         this.mode = "only pen"
-        this.$toast.show("检测到正在使用触控笔，开启\"only pen\"模式，可在画板设置中关闭","info")
+        this.$toast.show(`检测到正在使用触控笔，开启"仅触控笔"模式，可在画板设置中关闭`,"info")
       }
       var id = event.pointerId
       this.multiLastPt[id] = {x:event.pageX,y:event.pageY}
@@ -350,10 +350,11 @@ export default {
 </script>
 
 <style scoped>
-  canvas{
+  canvas {
     display: block;
     touch-action: none;
     position: absolute;
+    z-index: 1;
     left: 0;
     top: 0;
   }
@@ -366,6 +367,7 @@ export default {
 
   .edit-tools-fixedbox{
     position: fixed;
+    z-index: 2;
     top: 150px;
     right:-185px;
     transition: right 0.3s ease;
@@ -451,6 +453,7 @@ export default {
     display: flex;
     flex-direction: column;
     position: fixed;
+    z-index: 2;
     width: 300px;
     top: 50%;
     left: 50%;
@@ -501,32 +504,8 @@ export default {
 
   /*自定义滑动input样式*/
   .custom-range {
-      -webkit-appearance: none; /* 去除默认样式 (适用于 Chrome, Safari, Opera) */
       width: 120px;
-      height: 10px; /* 滑动条高度 */
-      background-color: var(--card-hightlight);
-      outline: none; /* 去除聚焦时的边框 */
-      border: 2px solid;
-      opacity: 1; /* 透明度 */
+      transform: translateY(5px);
   }
-
-  .custom-range:hover {
-      opacity: 1; /* 悬停时的不透明度 */
-  }
-
-  /* 滑块样式 */
-  .custom-range::-webkit-slider-thumb {
-      -webkit-appearance: none; /* 去除默认样式 (适用于 Chrome, Safari, Opera) */
-      appearance: none;
-      width: 18px; /* 滑块宽度 */
-      height: 18px; /* 滑块高度 */
-      background-color: var(--fontNormal); /* 滑块颜色 */
-      cursor: pointer; /* 指针样式 */
-      transition: background 0.2s; /* 滑块背景颜色过渡效果 */
-  }
-
-  .custom-range::-webkit-slider-thumb:hover {
-      background-color: var(--fontNormal); /* 滑块悬停时的颜色 */
-}
   
 </style>

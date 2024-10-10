@@ -83,7 +83,7 @@ export default({
 }
 .modal {
   width:400px;
-  height: fit-content;
+  /* height: fit-content; */
 }
 
 .modal-slide-enter-active, .modal-slide-leave-active {

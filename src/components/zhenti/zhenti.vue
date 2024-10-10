@@ -3,7 +3,7 @@
 		<IconWrapper class="pause" iconName="Play" @click="examstart()" theme="filled" :size='100'/>
 	</div>	
   <div class="exampaperbox" >
-		<div class="buttonbox top" style="position:absolute;top: 71px;right: 10px;z-index: 1;">
+		<div class="buttonbox top" style="position:absolute;top: 71px;right: 10px;z-index: 2;">
   		<div class="button-items">
 	  		<div class="button-item" v-show="examstatus!=1" @click="examstart()">
 	  			<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="M10 20H8V4h2v2h2v3h2v2h2v2h-2v2h-2v3h-2v2z" fill="currentColor"/> </svg>
@@ -14,7 +14,7 @@
 	  		<div class="button-item" v-show="examstatus!=0" @click="openReport()">
 	  			<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="M3 3h18v18H3V3zm16 16V5H5v14h14z" fill="currentColor"/> </svg>
 	  		</div>
-	  		<div class="button-item" @click="pencanvas_show=!pencanvas_show">
+	  		<div class="button-item" @click="showPenCanvas()">
 	  			<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="M18 2h-2v2h2V2zM4 4h6v2H4v14h14v-6h2v8H2V4h2zm4 8H6v6h6v-2h2v-2h-2v2H8v-4zm4-2h-2v2H8v-2h2V8h2V6h2v2h-2v2zm2-6h2v2h-2V4zm4 0h2v2h2v2h-2v2h-2v2h-2v-2h2V8h2V6h-2V4zm-4 8h2v2h-2v-2z" fill="currentColor"/> </svg>
 	  		</div>
 	  		<div class="button-item" @click="exampaperboxExpand()">
@@ -41,7 +41,7 @@
 			  		<div class="button-item" v-show="examstatus!=0" @click="openReport()">
 			  			<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="M3 3h18v18H3V3zm16 16V5H5v14h14z" fill="currentColor"/> </svg>
 			  		</div>
-			  		<div class="button-item" @click="pencanvas_show=!pencanvas_show">
+			  		<div class="button-item" @click="showPenCanvas()">
 			  			<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="M18 2h-2v2h2V2zM4 4h6v2H4v14h14v-6h2v8H2V4h2zm4 8H6v6h6v-2h2v-2h-2v2H8v-4zm4-2h-2v2H8v-2h2V8h2V6h2v2h-2v2zm2-6h2v2h-2V4zm4 0h2v2h2v2h-2v2h-2v2h-2v-2h2V8h2V6h-2V4zm-4 8h2v2h-2v-2z" fill="currentColor"/> </svg>
 			  		</div>
 			  		<div class="button-item" @click="exampaperboxExpand()">
@@ -126,41 +126,41 @@
 	</div>
 	<my-model :show="modal_show.report_show" :modeless="false" :modalKey="'report_show'">
     <!-- json-view -->
-    <div class="report step1" v-show="report_step == 1">
-    	<div class="report-content center" v-if="isFinished">
-    		已完成所有题目，用时{{timer}}确认结束考试？
-    	</div>
-    	<div class="report-content center" v-else>
-    		还有题目未完成，是否确认结束考试？
-    	</div>
-    	<div class="report-content center">
-    		<div class="button" @click="modal_show.report_show = false">取消</div>
-    		<div class="button" @click="examstop()">确认</div>
-    	</div>
+		<div class="report step1" v-show="report_step == 1">
+			<div class="report-content center" v-if="isFinished">
+				已完成所有题目，用时{{timer}}确认结束考试？
+			</div>
+			<div class="report-content center" v-else>
+				还有题目未完成，是否确认结束考试？
+			</div>
+			<div class="report-content center">
+				<div class="button" @click="modal_show.report_show = false">取消</div>
+				<div class="button" @click="examstop()">确认</div>
+			</div>
 		</div>
-    <div class="report step2" v-show="report_step == 2">
-    	<div class="report-content">
-    		正确率：{{correctness}}%
-    	</div>
-    	<div class="report-content">
-    		交卷时间：{{reportDataJson.datetime}}
-    	</div>
-    	<div class="report-content">
-    		用时:{{reportDataJson.time}}
-    	</div>
-    	<div class="fillcard">
-	  		<ul class="fill-type" style="flex-basis: 100%;">
-	  			<li v-for="(type,index) in questionTypeList" :class="{'active':currQTypeIndex == index}" @click="switchType(index)">{{type}}</li>
-	  		</ul>
-  			<div v-for="(answerGroup,index) in answers" class="circle-groups" v-show="currQTypeIndex == index">
-	  			<div v-for="(key,index) in Object.keys(answerGroup)" class="circle-groups-item">
-	  				<div :class="{'circle':true,'right':answerGroup[key].mine == answerGroup[key].answer,'wrong':answerGroup[key].mine && answerGroup[key].mine != answerGroup[key].answer,'current':key == currentNum}" @click="rollTo(key)">{{key}}</div>
-	  			</div>
-	  		</div>
-	  	</div>
+		<div class="report step2" v-show="report_step == 2">
+			<div class="report-content">
+				正确率：{{correctness}}%
+			</div>
+			<div class="report-content">
+				交卷时间：{{reportDataJson.datetime}}
+			</div>
+			<div class="report-content">
+				用时:{{reportDataJson.time}}
+			</div>
+			<div class="fillcard">
+				<ul class="fill-type" style="flex-basis: 100%;">
+					<li v-for="(type,index) in questionTypeList" :class="{'active':currQTypeIndex == index}" @click="switchType(index)">{{type}}</li>
+				</ul>
+				<div v-for="(answerGroup,index) in answers" class="circle-groups" v-show="currQTypeIndex == index">
+					<div v-for="(key,index) in Object.keys(answerGroup)" class="circle-groups-item">
+						<div :class="{'circle':true,'right':answerGroup[key].mine == answerGroup[key].answer,'wrong':answerGroup[key].mine && answerGroup[key].mine != answerGroup[key].answer,'current':key == currentNum}" @click="rollTo(key)">{{key}}</div>
+					</div>
+				</div>
+			</div>
 		</div>
-		
-  </my-model>
+			
+	</my-model>
 	
 </template>
 
@@ -226,7 +226,9 @@ export default {
   			this.TypeSet([document.getElementsByClassName("output")])
   	})
   },
-
+  unmounted(){
+	// this.toggleHeader(true)
+  },
   methods:{
   	init(){
   		this.examtimer = this.$refs.examtimer
@@ -374,11 +376,24 @@ export default {
 
     openReport(){
     	if(!this.modal_show.report_show){
-				this.report_step = 1
+			this.report_step = 1
     		this.modal_show.report_show = true
     	}
+    },
+
+	showPenCanvas(){
+		// console.log(this.$parent.$refs.appHeader)
+		this.pencanvas_show=!this.pencanvas_show
+		// if(this.pencanvas_show || this.examstatus != 0){
+		// 	this.toggleHeader(false)
+		// }else{
+		// 	this.toggleHeader(true)
+		// }
+		// console.log(this.$parent.headerShow)
+	},
+    toggleHeader(visible) {
+      this.$emit('toggle-header', visible);
     }
-    
   }
 }
 </script>

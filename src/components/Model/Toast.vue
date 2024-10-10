@@ -37,7 +37,7 @@ export default {
   padding: 7px 15px;
   font-size: 16px;
   line-height: 20px;
-  height: 20px;
+  /* height: 20px; */
   border-radius: 15px;
   
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);

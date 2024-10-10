@@ -1,6 +1,6 @@
 <template>
   <div class="au-container">
-    <div class="au-header header clipdemo" >
+    <div class="au-header header clipdemo" v-if="headerShow">
       <!-- <div class="head-list"> -->
         <transition name="fade-slide">
           <div class="menu" v-if="menuisshow" ref="menu">
@@ -61,8 +61,8 @@
       
     </div>
     <div class="au-main">
-      <div class="header-block" ></div>
-      <router-view></router-view>
+      <div class="header-block"  v-show="headerShow"></div>
+      <router-view @toggle-header="setHeaderVisibility"></router-view>
     </div>
     <div v-if="!$route.meta.footerHidden" class="au-footer footer" style="margin-top:20px" >
       <div class="footer-link">
@@ -88,6 +88,7 @@ export default {
       menuisshow:false,
       isDark:false,
       pagetitle:'',
+      headerShow:true
     }
   },
   components: {
@@ -121,6 +122,9 @@ export default {
     document.removeEventListener('click',this.closemenu)
   },
   methods:{
+    setHeaderVisibility(visible){
+      this.headerShow = visible;
+    },
     goto(path){
       this.$router.push(path)
       this.menuisshow = false

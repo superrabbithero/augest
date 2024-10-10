@@ -116,6 +116,7 @@
 
     <cpt-view name="Toast">
       <highlightjs language="javascript" code="this.$toast.show('Hello, world!','info');"></highlightjs>
+      <input type="text" placeholder="请输入消息文本" v-model="toastMsg"/>
       <input  type="button" value="展示toast" @click="showToast" />
     </cpt-view>
 
@@ -253,7 +254,8 @@ export default {
       totalPages:6,
       helloworldtimer: null,
       htmlcontent:"<span class=\"output\">$$\\frac{1}{2}$$</span><span class=\"output\">$$\\sqrt{3}$$</span>",
-      selectList:["item 1","item 2","item 3","item 4","item 5","item 6","item 7"]
+      selectList:["item 1","item 2","item 3","item 4","item 5","item 6","item 7"],
+      toastMsg:null
     }
   },
   watch:{
@@ -269,7 +271,10 @@ export default {
   methods:{
     showToast(){
       var toastTypeStr = ['success','info','warn','error']
-      this.$toast.show('Hello, world!',toastTypeStr[this.toastType]);
+      if(this.toastMsg == null)
+        this.toastMsg = "Hello World!This is a message."
+      this.$toast.show(this.toastMsg,toastTypeStr[this.toastType]);
+      
       console.log(toastTypeStr[this.toastType])
       this.toastType = this.toastType>2 ? 0 : ++this.toastType
     },
