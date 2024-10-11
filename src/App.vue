@@ -1,6 +1,6 @@
 <template>
   <div class="au-container">
-    <div class="au-header header clipdemo" v-if="headerShow">
+    <div class="au-header header clipdemo" v-if="!$route.meta.headerHidden">
       <!-- <div class="head-list"> -->
         <transition name="fade-slide">
           <div class="menu" v-if="menuisshow" ref="menu">
@@ -61,7 +61,7 @@
       
     </div>
     <div class="au-main">
-      <div class="header-block"  v-show="headerShow"></div>
+      <div class="header-block"></div>
       <router-view @toggle-header="setHeaderVisibility"></router-view>
     </div>
     <div v-if="!$route.meta.footerHidden" class="au-footer footer" style="margin-top:20px" >
@@ -87,34 +87,21 @@ export default {
     return{
       menuisshow:false,
       isDark:false,
-      pagetitle:'',
-      headerShow:true
+      pagetitle:''
     }
   },
   components: {
     IconWrapper
   },
-  computed: {
-
-    iconColor() {
-      if(this.isDark){
-        const darkModeElement = document.querySelector('.dark');
-        return getComputedStyle(darkModeElement).getPropertyValue('--icon-color').trim();
-      }else{
-        return getComputedStyle(document.documentElement).getPropertyValue('--icon-color').trim()
-      }
-    }
-  },
-
   mounted() {
     document.addEventListener("touchstart",function() {},false)
     
     if(localStorage.getItem('isDark')){
-      this.isDark = localStorage.getItem('isDark')==='false' ? false :true
+      this.$constants.DARK = localStorage.getItem('isDark')==='false' ? false :true
     }else{
-      localStorage.setItem('isDark',this.isDark)
+      localStorage.setItem('isDark',this.$constants.DARK)
     }
-    if(this.isDark){
+    if(this.$constants.DARK){
       document.body.classList.add('dark')//黑夜模式时添加类名
     }
   },
@@ -152,9 +139,9 @@ export default {
     },
 
     async changeStyle(){
-      this.isDark = !this.isDark//点击切换模式
-      localStorage.setItem('isDark',this.isDark)
-      if(this.isDark){
+      this.$constants.DARK = !this.$constants.DARK//点击切换模式
+      localStorage.setItem('isDark',this.$constants.DARK)
+      if(this.$constants.DARK){
         document.body.classList.add('dark')//黑夜模式时添加类名
       }else{
         document.body.classList.remove('dark')//白天删除类名

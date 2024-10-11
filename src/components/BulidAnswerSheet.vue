@@ -1,6 +1,4 @@
 <template>
-
-
   <my-model :show="modal_show.linkxuecemodal_show" :dragable="true" :modalKey="'linkxuecemodal_show'">
     <!-- 自动填涂 -->
     <div class="modal-content">
@@ -32,8 +30,10 @@
   <my-model :show="modal_show.json_show" :dragable="true" :modalKey="'json_show'">
     <!-- json-view -->
     <div class="modal-content" >
-     <json-model :json-data="cutParamJsonStr"></json-model>
+     <json-model :json-data="cutParamJson"></json-model>
     </div>
+    <textarea v-model="cutParamJsonStr"/>
+    <button @click="formattedJsonStr">生成Json</button>
   </my-model>
 
   <my-model :show="modal_show.fill_show" :dragable="true" :modalKey="'fill_show'">
@@ -44,7 +44,6 @@
           <label for="noError">自定义</label>
         </div>
       </div>
-      {{optionOffset}}
       <div class="rows gutter-l" v-show="fillError == 0">
         <div class="cols s3">
           <input type="checkbox" id="ticketNum" v-model="fillNum">
@@ -55,7 +54,7 @@
           <label for="obj-q">客观题</label>
         </div>
         <div class="cols s3">
-          <au-select :dataList="['A','AB','ABC']" @change="changeOptionOffset"></au-select>
+          <au-select :dataList="['A','AB','ABC','ABCD']" @change="changeOptionOffset"></au-select>
         </div>
         <div class="cols s3">
           <input type="checkbox" id="subj-q" v-model="fillSubj">
@@ -113,10 +112,10 @@
         <div class="cutparameditbox">
           <link-three @click="modal_show.linkxuecemodal_show=!modal_show.linkxuecemodal_show" theme="outline" size="22" :strokeWidth="2"/>
         </div>
-        <div class="cutparameditbox" v-show="cutParamJsonStr" @click="modal_show.json_show=!modal_show.json_show">
+        <div class="cutparameditbox" v-show="cutParamJson" @click="modal_show.json_show=!modal_show.json_show">
           <div class="filename">JSON</div>
         </div>
-        <div class="cutparameditbox" v-show="cutParamJsonStr" @click="modal_show.fill_show=!modal_show.fill_show">
+        <div class="cutparameditbox" v-show="cutParamJson" @click="modal_show.fill_show=!modal_show.fill_show">
           <div class="filename">填涂</div>
         </div>
       </div>
@@ -127,13 +126,13 @@
 
          <!-- 识别点展示 -->
         <div ref="cutparampage" class="cutpage" v-show="cutparamshow">
-          <div ref="cutparampanel" class="cutpage-panel" v-if="cutParamJsonStr">
+          <div ref="cutparampanel" class="cutpage-panel" v-if="cutParamJson">
             <div class="cutpage-section" v-show="pageNum%2===1"
-            :style="{ width:cutParamJsonStr.studentIdRect ? (cutDivScale*cutParamJsonStr.studentIdRect.width + 'px') : '0',
-                      height:cutParamJsonStr.studentIdRect ? (cutDivScale*cutParamJsonStr.studentIdRect.height + 'px') : '0',
-                      top:cutParamJsonStr.studentIdRect ? (cutDivScale*cutParamJsonStr.studentIdRect.y + 'px') : '0',
-                      left:cutParamJsonStr.studentIdRect ? (cutDivScale*cutParamJsonStr.studentIdRect.x + 'px') : '0'}"></div>
-            <div class="cutpage-section"  v-for="section in cutParamJsonStr.section" v-show="section.pageNumber == pageNum"
+            :style="{ width:cutParamJson.studentIdRect ? (cutDivScale*cutParamJson.studentIdRect.width + 'px') : '0',
+                      height:cutParamJson.studentIdRect ? (cutDivScale*cutParamJson.studentIdRect.height + 'px') : '0',
+                      top:cutParamJson.studentIdRect ? (cutDivScale*cutParamJson.studentIdRect.y + 'px') : '0',
+                      left:cutParamJson.studentIdRect ? (cutDivScale*cutParamJson.studentIdRect.x + 'px') : '0'}"></div>
+            <div class="cutpage-section"  v-for="section in cutParamJson.section" v-show="section.pageNumber == pageNum"
             :style="{ width:cutDivScale*section.rect.width + 'px',
                       height:cutDivScale*section.rect.height + 'px',
                       top:cutDivScale*section.rect.y + 'px',
@@ -219,8 +218,9 @@ export default {
       //识别点信息
       cutparamshow:false,
       anchorxy:{x:0,y:0},
-      // cutParamJsonStr:null,
-      cutParamJsonStr:{"anchorSize":{"height":13,"width":26},"pageSize":{"height":1123,"width":794},"panelSize":{"height":1044,"width":696},"section":[{"pageNumber":1,"rect":{"height":26,"width":110,"x":120,"y":137},"sectionType":"IgnoreFlag","subsections":[{"cellGapWidth":0,"cellHeight":10.31,"cellWidth":17.48,"columnGapWidth":0,"columns":1,"positions":1,"rowGapHeight":0,"rowGroupGapHeight":0,"rowGroupSize":1,"rows":1,"sequenceOption":"HorizontalFirst","totalSequences":1,"x":83,"y":8}]},{"multiSelect":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],"pageNumber":1,"rect":{"height":80,"width":696,"x":0,"y":221},"sectionNumber":1,"sectionType":"MultiChoice","seqArr":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],"subsections":[{"cellGapWidth":8,"cellHeight":10.31,"cellWidth":17.48,"columnGapWidth":42,"columns":5,"positions":4,"rowGapHeight":9.6899999999999995,"rowGroupGapHeight":9.6899999999999995,"rowGroupSize":999,"rows":3,"sequenceOption":"HorizontalFirst","totalSequences":15,"x":44,"y":14}]},{"multiSelect":[false,false,false,false,false,false,false,false,false,false,false,false,false,false],"pageNumber":1,"rect":{"height":80,"width":696,"x":0,"y":383},"sectionNumber":2,"sectionType":"MultiChoice","seqArr":[16,17,18,19,20,21,22,23,24,25,26,27,28,29],"subsections":[{"cellGapWidth":8,"cellHeight":10.31,"cellWidth":17.48,"columnGapWidth":42,"columns":5,"positions":4,"rowGapHeight":9.6899999999999995,"rowGroupGapHeight":9.6899999999999995,"rowGroupSize":999,"rows":3,"sequenceOption":"HorizontalFirst","totalSequences":14,"x":44,"y":14}]},{"multiSelect":[false,false,false,false,false,false,false],"pageNumber":1,"rect":{"height":60,"width":696,"x":0,"y":554},"sectionNumber":3,"sectionType":"MultiChoice","seqArr":[30,31,32,33,34,35,36],"subsections":[{"cellGapWidth":8,"cellHeight":10.31,"cellWidth":17.48,"columnGapWidth":42,"columns":5,"positions":4,"rowGapHeight":9.6899999999999995,"rowGroupGapHeight":9.6899999999999995,"rowGroupSize":999,"rows":2,"sequenceOption":"HorizontalFirst","totalSequences":7,"x":44,"y":14}]},{"multiSelect":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],"pageNumber":1,"rect":{"height":80,"width":696,"x":0,"y":696},"sectionNumber":4,"sectionType":"MultiChoice","seqArr":[37,38,39,40,41,42,43,44,45,46,47,48,49,50,51],"subsections":[{"cellGapWidth":8,"cellHeight":10.31,"cellWidth":17.48,"columnGapWidth":42,"columns":5,"positions":4,"rowGapHeight":9.6899999999999995,"rowGroupGapHeight":9.6899999999999995,"rowGroupSize":999,"rows":3,"sequenceOption":"HorizontalFirst","totalSequences":15,"x":44,"y":14}]},{"multiSelect":[false,false,false,false,false,false,false,false,false,false,false,false,false,false],"pageNumber":1,"rect":{"height":80,"width":696,"x":0,"y":857},"sectionNumber":5,"sectionType":"MultiChoice","seqArr":[52,53,54,55,56,57,58,59,60,61,62,63,64,65],"subsections":[{"cellGapWidth":8,"cellHeight":10.31,"cellWidth":17.48,"columnGapWidth":42,"columns":5,"positions":4,"r owGapHeight":9.6899999999999995,"rowGroupGapHeight":9.6899999999999995,"rowGroupSize":999,"rows":3,"sequenceOption":"HorizontalFirst","totalSequences":14,"x":44,"y":14}]}],"singlePagePartition":1,"studentIdBarcode":true,"studentIdRect":{"height":83,"width":163,"x":503,"y":81},"totalPageCount":1}
+      // cutParamJson:null,
+      cutParamJsonStr:"",
+      cutParamJson:{"pageSize":{"width":1588,"height":1123},"anchorSize":{"width":26,"height":13},"panelSize":{"width":1492,"height":1044},"singlePagePartition":2,"section":[{"sectionType":"ClassId","pageNumber":1,"rect":{"x":480,"y":81,"width":247,"height":46},"subsections":[{"x":27,"y":5.9,"rows":2,"columns":1,"rowGroupSize":999,"positions":10,"cellWidth":18.7,"cellHeight":10.2,"cellGapWidth":3.3,"rowGapHeight":12.8,"columnGapWidth":0,"rowGroupGapHeight":0,"totalSequences":2,"sequenceOption":"HorizontalFirst"}]},{"sectionType":"StudentId","pageNumber":1,"rect":{"x":480,"y":127,"width":247,"height":46},"subsections":[{"x":27,"y":5.9,"rows":2,"columns":1,"rowGroupSize":999,"positions":10,"cellWidth":18.7,"cellHeight":10.2,"cellGapWidth":3.3,"rowGapHeight":12.8,"columnGapWidth":0,"rowGroupGapHeight":0,"totalSequences":2,"sequenceOption":"HorizontalFirst"}]},{"sectionType":"MultiChoice","pageNumber":1,"seqArr":[1,2,3,4],"multiSelect":[true,true,false,false],"rect":{"x":0,"y":187,"width":734,"height":587},"subsections":[{"x":40,"y":38,"cellWidth":12,"cellHeight":12,"sequenceOption":"FreeStyle","blankCell":true,"freeStyleCellGroups":[[{"x":0,"y":0},{"x":0,"y":40},{"x":0,"y":68},{"x":0,"y":91}]]},{"x":40,"y":174,"cellWidth":12,"cellHeight":12,"sequenceOption":"FreeStyle","blankCell":true,"freeStyleCellGroups":[[{"x":0,"y":0},{"x":0,"y":30},{"x":0,"y":58},{"x":0,"y":81}]]},{"x":40,"y":300,"cellWidth":12,"cellHeight":12,"sequenceOption":"FreeStyle","blankCell":true,"freeStyleCellGroups":[[{"x":0,"y":0},{"x":0,"y":23},{"x":0,"y":45},{"x":0,"y":68}]]},{"x":40,"y":473,"cellWidth":12,"cellHeight":12,"sequenceOption":"FreeStyle","blankCell":true,"freeStyleCellGroups":[[{"x":0,"y":0},{"x":0,"y":23},{"x":0,"y":45},{"x":0,"y":68}]]}],"sectionNumber":1},{"sectionType":"Checkbox","pageNumber":1,"seqArr":[5,5,5,6],"rect":{"x":0,"y":773,"width":734,"height":228},"subsections":[{"markLines":[[{"x":213,"y":26,"width":165,"height":18},{"x":174,"y":112,"width":162,"height":18},{"x":474,"y":112,"width":165,"height":18},{"x":446,"y":190,"width":147,"height":18}]]}],"sectionNumber":2},{"sectionType":"ScoreBox","pageNumber":1,"seqArr":[7],"rect":{"x":758,"y":31,"width":734,"height":446},"subsections":[{"x":618,"y":424,"rows":1,"columns":1,"positions":3,"cellWidth":32,"cellHeight":22,"cellGapWidth":10,"columnGapWidth":10}],"sectionNumber":3},{"sectionType":"MultiChoice","pageNumber":1,"seqArr":[8,9,10],"multiSelect":[false,false,true],"rect":{"x":758,"y":478,"width":734,"height":524},"subsections":[{"x":40,"y":41,"cellWidth":12,"cellHeight":12,"sequenceOption":"FreeStyle","blankCell":true,"freeStyleCellGroups":[[{"x":0,"y":0},{"x":0,"y":34},{"x":0,"y":69},{"x":0,"y":104}]]},{"x":40,"y":216,"cellWidth":12,"cellHeight":12,"sequenceOption":"FreeStyle","blankCell":true,"freeStyleCellGroups":[[{"x":0,"y":0},{"x":0,"y":27},{"x":0,"y":53},{"x":0,"y":79}]]},{"x":40,"y":376,"cellWidth":12,"cellHeight":12,"sequenceOption":"FreeStyle","blankCell":true,"freeStyleCellGroups":[[{"x":0,"y":0},{"x":0,"y":27},{"x":0,"y":55},{"x":0,"y":81}]]}],"sectionNumber":4},{"sectionType":"ScoreBox","pageNumber":2,"seqArr":[11],"rect":{"x":0,"y":31,"width":734,"height":458},"subsections":[{"x":618,"y":436,"rows":1,"columns":1,"positions":3,"cellWidth":32,"cellHeight":22,"cellGapWidth":10,"columnGapWidth":10}],"sectionNumber":5},{"sectionType":"Checkbox","pageNumber":2,"seqArr":[12,12],"rect":{"x":0,"y":489,"width":734,"height":512},"subsections":[{"x":660,"y":490,"rows":1,"columns":2,"positions":1,"cellWidth":32,"cellHeight":22,"cellGapWidth":10,"columnGapWidth":10}],"questionType":"QANDA","sectionNumber":6},{"sectionType":"Checkbox","pageNumber":2,"seqArr":[13,13,13],"rect":{"x":758,"y":31,"width":734,"height":402},"subsections":[{"x":618,"y":380,"rows":1,"columns":3,"positions":1,"cellWidth":32,"cellHeight":22,"cellGapWidth":10,"columnGapWidth":10}],"questionType":"QANDA","sectionNumber":7},{"sectionType":"Checkbox","pageNumber":2,"seqArr":[14,14],"rect":{"x":758,"y":433,"width":734,"height":568},"subsections":[{"x":660,"y":546,"rows":1,"columns":2,"positions":1,"cellWidth":32,"cellHeight":22,"cellGapWidth":10,"columnGapWidth":10}],"questionType":"QANDA","sectionNumber":8}],"studentIdBarcode":false,"firstBoxRect":{"x":544,"y":1016,"width":20,"height":20},"totalPageCount":2}
 ,
       pdfUrl:null,
       cutDivScale:1,
@@ -292,12 +292,21 @@ export default {
   },
   
   methods: {
+    formattedJsonStr(){
+      try{
+        this.cutParamJson = JSON.parse(this.cutParamJsonStr)
+        this.cutParamJsonStr = JSON.stringify(this.cutParamJson, null, 4);
+      }catch(error){
+        this.cutParamJson = {"code":"error","msg":error}
+      }
+    },
     changeOptionOffset(index){
       console.log(index)
       switch(index){
         case 0: this.optionOffset = [0];break;
         case 1: this.optionOffset = [0,1];break;
-        case 2: this.optionOffset = [0,1,2];break
+        case 2: this.optionOffset = [0,1,2];break;
+        case 3: this.optionOffset = [0,1,2,3];break;
       }
     },
     watermark(text){
@@ -757,7 +766,7 @@ export default {
 
     showCutParam() {
       
-      if(this.cutParamJsonStr == null){
+      if(this.cutParamJson == null){
         this.modal_show.linkxuecemodal_show = true
         // console.log(this.linkxuecemodal_show)
         return
@@ -766,7 +775,7 @@ export default {
         this.cutparamshow = false;
       }else {
         this.findfirstanchor()
-        var json = this.cutParamJsonStr
+        var json = this.cutParamJson
         // console.log(json.pageSize.width,json.pageSize.height)
         var widthTemp = this.widthTemp * parseFloat(this.scaleCount)
         var heightTemp = this.heightTemp * parseFloat(this.scaleCount)
@@ -793,9 +802,9 @@ export default {
 
     findfirstanchor(){
       
-      if(this.cutParamJsonStr.pageSize.width){
+      if(this.cutParamJson.pageSize.width){
         var widthTemp = this.widthTemp * parseFloat(this.scaleCount)
-        this.cutDivScale = widthTemp/this.cutParamJsonStr.pageSize.width
+        this.cutDivScale = widthTemp/this.cutParamJson.pageSize.width
       }     
       var ctx = this.ctx
       var canvas = this.canvas
@@ -836,7 +845,7 @@ export default {
       // console.log(this.env,this.papertype,this.paperid)
       var that = this
       getanswercard(this.env,this.papertype,this.paperid).then(data => {
-        that.cutParamJsonStr = JSON.parse(data[0])
+        that.cutParamJson = JSON.parse(data[0])
         that.pdfUrl = data[1]
       }).catch(error => {
         that.$toast.show(error,'error');
@@ -878,17 +887,17 @@ export default {
       var stuIdX = null
       var stuIdY = null
 
-      if(this.cutParamJsonStr.studentIdRect){
-        stuIdX = this.anchorxy.x + this.cutParamJsonStr.studentIdRect.x*scale
-        stuIdY = this.anchorxy.y + this.cutParamJsonStr.studentIdRect.y*scale
+      if(this.cutParamJson.studentIdRect){
+        stuIdX = this.anchorxy.x + this.cutParamJson.studentIdRect.x*scale
+        stuIdY = this.anchorxy.y + this.cutParamJson.studentIdRect.y*scale
       }else{
-        stuIdX = this.anchorxy.x + this.cutParamJsonStr.section[0].rect.x*scale
-        stuIdY = this.anchorxy.y + this.cutParamJsonStr.section[0].rect.y*scale
+        stuIdX = this.anchorxy.x + this.cutParamJson.section[0].rect.x*scale
+        stuIdY = this.anchorxy.y + this.cutParamJson.section[0].rect.y*scale
       } 
           
-      if(this.cutParamJsonStr){
+      if(this.cutParamJson){
         const optionOffset = this.optionOffset
-        this.cutParamJsonStr.section.forEach(function(Eachsection, index) {
+        this.cutParamJson.section.forEach(function(Eachsection, index) {
           if(pageNum != Eachsection.pageNumber && Eachsection.pageNumber <= pdfPages){
             if(canvas && ctx){
               ctx.closePath();

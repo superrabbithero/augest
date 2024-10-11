@@ -85,7 +85,8 @@ const routes = [
         component: () => import("@/components/zhenti/zhenti"),
         meta:{
             title: '真题',
-            footerHidden: true
+            footerHidden: true,
+            headerHidden: true
         }
     },
     {

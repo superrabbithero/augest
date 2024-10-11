@@ -1,55 +1,29 @@
 <template>
+	<div class="header" style="background:var(--content-bgc);">
+		<div class="head-item" @click="goback" id="menuicon">
+			<svg-icon name="arrow-left"></svg-icon>
+    </div>
+    <div class="head-item"  style="margin-left: auto;">
+    	<div v-show="examstatus==0" @click="examstart()"  class="pagetitle" style="cursor: pointer;">开始考试</div>
+      <div v-show="examstatus>0" @click="exampause()" class="examtimer" style="cursor: pointer;">
+      	<div class="buttonbox">
+	  			<timer ref="examtimer" class="examtimer"></timer>
+	  		</div>
+	  	</div>
+    </div>
+    <div class="head-item"  style="margin-left: auto;">
+    	<button class="button-item" v-show="examstatus!=0" @click="openReport()">交卷</button>
+    	<svg-icon class="button-item" @click="showPenCanvas" name="canvas02"></svg-icon>
+    	<svg-icon class="button-item" @click="exampaperboxExpand" name="answerCard"></svg-icon>
+      <svg-icon class="button-item" @click="changeStyle" name="dark"></svg-icon>
+    </div>   
+	</div>
 	<div :class="{'pause-screen':true,'show':examstatus==2}">
 		<IconWrapper class="pause" iconName="Play" @click="examstart()" theme="filled" :size='100'/>
 	</div>	
-  <div class="exampaperbox" >
-		<div class="buttonbox top" style="position:absolute;top: 71px;right: 10px;z-index: 2;">
-  		<div class="button-items">
-	  		<div class="button-item" v-show="examstatus!=1" @click="examstart()">
-	  			<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="M10 20H8V4h2v2h2v3h2v2h2v2h-2v2h-2v3h-2v2z" fill="currentColor"/> </svg>
-	  		</div>
-	  		<div class="button-item" v-show="examstatus==1" @click="exampause()">
-	  			<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="M10 4H5v16h5V4zm9 0h-5v16h5V4z" fill="currentColor"/> </svg>
-	  		</div>
-	  		<div class="button-item" v-show="examstatus!=0" @click="openReport()">
-	  			<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="M3 3h18v18H3V3zm16 16V5H5v14h14z" fill="currentColor"/> </svg>
-	  		</div>
-	  		<div class="button-item" @click="showPenCanvas()">
-	  			<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="M18 2h-2v2h2V2zM4 4h6v2H4v14h14v-6h2v8H2V4h2zm4 8H6v6h6v-2h2v-2h-2v2H8v-4zm4-2h-2v2H8v-2h2V8h2V6h2v2h-2v2zm2-6h2v2h-2V4zm4 0h2v2h2v2h-2v2h-2v2h-2v-2h2V8h2V6h-2V4zm-4 8h2v2h-2v-2z" fill="currentColor"/> </svg>
-	  		</div>
-	  		<div class="button-item" @click="exampaperboxExpand()">
-	  			<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="M3 3h18v18H3V3zm2 2v14h14V5H5zm2 2h4v4H7V7zm6 0h4v4h-4V7zm-6 6h4v4H7v-4zm6 0h4v4h-4v-4z" fill="currentColor"/> </svg>
-	  		</div>
-	  		
-	  	</div>
-	  	<div class="examtimer">{{timer}}</div>
-  	</div>
+  <div class="exampaperbox">
 	  <div :class="{'exampaperbox-left':true,'expand':exampaperbox_expand}" ref="left">
-	  	
 	  	<div class="answercard" style="flex: 1;">
-	  		<div class="buttonbox">
-	  			<timer ref="examtimer" class="examtimer"></timer>
-	  		</div>
-		  	<div class="buttonbox">
-		  		<div class="button-items">
-			  		<div class="button-item" v-show="examstatus!=1" @click="examstart()">
-			  			<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="M10 20H8V4h2v2h2v3h2v2h2v2h-2v2h-2v3h-2v2z" fill="currentColor"/> </svg>
-			  		</div>
-			  		<div class="button-item" v-show="examstatus==1" @click="exampause()">
-			  			<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="M10 4H5v16h5V4zm9 0h-5v16h5V4z" fill="currentColor"/> </svg>
-			  		</div>
-			  		<div class="button-item" v-show="examstatus!=0" @click="openReport()">
-			  			<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="M3 3h18v18H3V3zm16 16V5H5v14h14z" fill="currentColor"/> </svg>
-			  		</div>
-			  		<div class="button-item" @click="showPenCanvas()">
-			  			<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="M18 2h-2v2h2V2zM4 4h6v2H4v14h14v-6h2v8H2V4h2zm4 8H6v6h6v-2h2v-2h-2v2H8v-4zm4-2h-2v2H8v-2h2V8h2V6h2v2h-2v2zm2-6h2v2h-2V4zm4 0h2v2h2v2h-2v2h-2v2h-2v-2h2V8h2V6h-2V4zm-4 8h2v2h-2v-2z" fill="currentColor"/> </svg>
-			  		</div>
-			  		<div class="button-item" @click="exampaperboxExpand()">
-			  			<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path fill="currentColor" d="M4 11h16v2H4z"/> </svg>
-			  		</div>
-			  	</div>
-		  	</div>
-		  	
 		  	<div class="fillcard">
 		  		<ul class="fill-type" style="flex-basis: 100%;">
 		  			<li v-for="(type,index) in questionTypeList" :class="{'active':currQTypeIndex == index}" @click="switchType(index)">{{type}}</li>
@@ -209,7 +183,7 @@ export default {
 	  	exampaperbox_expand:true,
 	  	examtimer:null,
 	  	timer:"00:00:00",
-	  	examstatus:0,
+	  	examstatus:0,  //0：停止，1:进行中，2：暂停
 	  	answers:[{},{},{},{},{}],
 	  	canvasWidth:0,
 	  	canvasHeight:0,
@@ -225,11 +199,52 @@ export default {
   			this.init()
   			this.TypeSet([document.getElementsByClassName("output")])
   	})
+  	// 添加监听器，当页面即将关闭时触发
+    window.addEventListener("beforeunload", this.handleBeforeUnload);
   },
   unmounted(){
-	// this.toggleHeader(true)
+		// this.toggleHeader(true)
+  	// 移除监听器，防止内存泄漏
+    window.removeEventListener("beforeunload", this.handleBeforeUnload);
+  },
+  beforeRouteLeave(to, from, next) {
+    this.confirmLeave(to, from, next);
   },
   methods:{
+  	confirmLeave(to, from, next){
+  		if (this.examstatus != 0) {
+        const answer = window.confirm("考试进程中，直接离开会丢失当前草稿和答题内容");
+        if (answer) {
+          next(); // 允许导航离开
+        } else {
+          next(false); // 阻止导航
+        }
+      } else {
+        next(); // 如果没有未保存的更改，直接离开
+      }
+  	},
+  	handleBeforeUnload(event){
+      if(this.examstatus != 0){
+        // 在这里你可以处理关闭标签页时的逻辑
+        const confirmationMessage = "考试进程中，直接离开会丢失当前草稿和答题内容";
+
+        // 设置这个消息会让浏览器显示一个确认对话框
+        event.returnValue = confirmationMessage;  // 标准兼容做法
+        return confirmationMessage;  // 对某些旧版浏览器的支持
+      }
+    },
+  	async changeStyle(){
+      this.$constants.DARK = !this.$constants.DARK//点击切换模式
+      localStorage.setItem('isDark',this.$constants.DARK)
+      if(this.$constants.DARK){
+        document.body.classList.add('dark')//黑夜模式时添加类名
+      }else{
+        document.body.classList.remove('dark')//白天删除类名
+      }
+    },
+  	goback(){
+  		this.$router.back()
+  	},
   	init(){
   		this.examtimer = this.$refs.examtimer
   		this.questions = [
@@ -381,16 +396,16 @@ export default {
     	}
     },
 
-	showPenCanvas(){
-		// console.log(this.$parent.$refs.appHeader)
-		this.pencanvas_show=!this.pencanvas_show
-		// if(this.pencanvas_show || this.examstatus != 0){
-		// 	this.toggleHeader(false)
-		// }else{
-		// 	this.toggleHeader(true)
-		// }
-		// console.log(this.$parent.headerShow)
-	},
+		showPenCanvas(){
+			// console.log(this.$parent.$refs.appHeader)
+			this.pencanvas_show=!this.pencanvas_show
+			// if(this.pencanvas_show || this.examstatus != 0){
+			// 	this.toggleHeader(false)
+			// }else{
+			// 	this.toggleHeader(true)
+			// }
+			// console.log(this.$parent.headerShow)
+		},
     toggleHeader(visible) {
       this.$emit('toggle-header', visible);
     }
@@ -779,6 +794,10 @@ export default {
 	padding: 5px 20px;
 	border-radius: 6px;
 	cursor: pointer;
+}
+
+.head-item .button-item{
+	margin-left: 7px;
 }
 	
 </style>
