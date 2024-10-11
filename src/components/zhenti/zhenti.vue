@@ -13,9 +13,9 @@
     </div>
     <div class="head-item"  style="margin-left: auto;">
     	<button class="button-item" v-show="examstatus!=0" @click="openReport()">交卷</button>
-    	<svg-icon class="button-item" @click="showPenCanvas" name="canvas02"></svg-icon>
-    	<svg-icon class="button-item" @click="exampaperboxExpand" name="answerCard"></svg-icon>
-      <svg-icon class="button-item" @click="changeStyle" name="dark"></svg-icon>
+    	<svg-icon :class="{'button-item':true,'active':pencanvas_show}"  @click="showPenCanvas" name="canvas02"></svg-icon>
+    	<svg-icon :class="{'button-item':true,'active':!exampaperbox_expand}" @click="exampaperboxExpand" name="answerCard"></svg-icon>
+      	<svg-icon class="button-item" @click="changeStyle" name="dark"></svg-icon>
     </div>   
 	</div>
 	<div :class="{'pause-screen':true,'show':examstatus==2}">
@@ -158,13 +158,11 @@ export default {
   		return (correctCount/this.questionCount*100).toFixed(2)
   	},
   	isFinished(){
-  		
 			for(let i=1;i < this.questionCount; i++){
   			if(!this.stuAnswerList[i]){
   				return false
   			}
   		}
-  		
   		return true
   	}
   },
@@ -799,5 +797,10 @@ export default {
 .head-item .button-item{
 	margin-left: 7px;
 }
+
+.button-item.active {
+  color:var(--main-color)
+}
+
 	
 </style>
