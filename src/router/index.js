@@ -90,6 +90,14 @@ const routes = [
         }
     },
     {
+        path: '/zhenti/analysis/:papername',
+        name: '真题',
+        component: () => import("@/components/zhenti/ZhentiAnalysis"),
+        meta:{
+            title: '解析',
+        }
+    },
+    {
         path: '/examhome',
         name: '考试模拟器',
         component: () => import("@/components/zhenti/ExamHome"),
