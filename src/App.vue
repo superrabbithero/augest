@@ -64,7 +64,7 @@
       <div class="header-block"></div>
       <router-view @toggle-header="setHeaderVisibility"></router-view>
     </div>
-    <div v-if="!$route.meta.footerHidden" class="au-footer footer" style="margin-top:20px" >
+    <div v-if="!$route.meta.footerHidden" class="au-footer footer" >
       <div class="footer-link">
       </div>
       <div class="footer-bar">

@@ -91,7 +91,7 @@ const routes = [
     },
     {
         path: '/zhenti/analysis/:papername',
-        name: '真题',
+        name: '真题解析',
         component: () => import("@/components/zhenti/ZhentiAnalysis"),
         meta:{
             title: '解析',

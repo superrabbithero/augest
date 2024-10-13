@@ -15,6 +15,7 @@
     	<button class="button-item" v-show="examstatus!=0" @click="openReport()">交卷</button>
     	<svg-icon :class="{'button-item':true,'active':pencanvas_show}"  @click="showPenCanvas" name="canvas02"></svg-icon>
     	<svg-icon :class="{'button-item':true,'active':!exampaperbox_expand}" @click="exampaperboxExpand" name="answerCard"></svg-icon>
+		<svg-icon class="button-item" @click="gotoAnalysis" name="bulb02"></svg-icon>
       	<svg-icon class="button-item" @click="changeStyle" name="dark"></svg-icon>
     </div>   
 	</div>
@@ -169,9 +170,9 @@ export default {
   data(){
     return {
     	papername:this.$route.params.papername+'.json',
-      jsonData:null,
-      questions:[],
-      letters:['A.','B.','C.','D.'],
+		jsonData:null,
+		questions:[],
+		letters:['A.','B.','C.','D.'],
 	  	pencanvas_show:false,
 	  	stuAnswerList:[],
 	  	currentNum:1,
@@ -209,6 +210,9 @@ export default {
     this.confirmLeave(to, from, next);
   },
   methods:{
+	gotoAnalysis(){
+      this.$router.push(`/zhenti/analysis/${this.$route.params.papername}`)
+    },
   	confirmLeave(to, from, next){
   		if (this.examstatus != 0) {
         const answer = window.confirm("考试进程中，直接离开会丢失当前草稿和答题内容");
@@ -373,14 +377,14 @@ export default {
     },
 
     async loadJsonData() {
-    		try {
-    			const jsonPath = `/json/zhenti/${this.$route.params.papername}.json`;
-		      console.log(jsonPath);
+		try {
+			const jsonPath = `/json/zhenti/${this.$route.params.papername}.json`;
+			console.log(jsonPath);
 
-		      const response = await fetch(jsonPath);
-		      if (!response.ok) {
-		        throw new Error('Network response was not ok');
-		      }
+			const response = await fetch(jsonPath);
+			if (!response.ok) {
+				throw new Error('Network response was not ok');
+			}
 		      this.jsonData = await response.json();
 	      } catch (error) {
 	        console.error('Failed to load JSON data:', error);
