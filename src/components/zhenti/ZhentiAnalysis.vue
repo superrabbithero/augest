@@ -35,6 +35,10 @@
 								<div class="analysis-answer">{{currentAnalysisData.answer}}</div>
 							</div>
 							<div class="analysis-item">
+								<label>我的答案：</label>
+								<div class="analysis-answer">{{currentAnalysisData.mineAnswer}}</div>
+							</div>
+							<div class="analysis-item">
 								<label>知 识 点：</label>
 								<div class="analysis-tag" v-for="knowledge in currentAnalysisData.knowledges">{{ knowledge }}</div>
 								<svg-icon v-if="!tag_editing" name="letter-plus01" size="20" @click="tag_editing = true"></svg-icon>
@@ -123,6 +127,8 @@
 		methods:{
 			addTag(){
 				this.currentAnalysisData.knowledges.push(this.addTagName)
+				this.tag_editing = false
+				this.addTagName = ''
 			},
 			exportAnalysisDataJson(){
 				console.log(JSON.stringify(this.AnalysisData));
@@ -447,6 +453,12 @@ transition: 0.3s ease;
 }
 
 .analysis-tag{
-	height: 20px;
+	height: 25px;
+	border-radius: 5px;
+	background-color: var(--white-highlight);
+	line-height: 25px;
+	font-size: 14px;
+	padding: 0 8px;
+	margin-right: 5px;
 }
 </style>
