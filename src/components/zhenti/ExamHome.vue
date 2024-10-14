@@ -18,7 +18,6 @@
       <div class="cols sm-hidden md4 lg3 xl2 list">
         <div class="card-content">
           <calender ></calender>
-          <button @click="getPaperListJsonFromOss()">get</button>
         </div>
       </div>
     </div>
