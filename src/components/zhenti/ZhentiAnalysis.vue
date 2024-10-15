@@ -64,7 +64,7 @@
 							<label class="type">{{type}}</label>
 							<div class="circle-groups">
 								<div v-for="num in fillcardNum[index]" class="circle-groups-item">
-									<div :class="{'circle':true,'active':num.num == currentNum}" @click="showQuestion(index,num.index,num.num)">{{num.num}}</div>
+									<div :class="{'circle':true,'active':num.num == currentNum,'mistake':AnalysisData[num.num-1].mistake}" @click="showQuestion(index,num.index,num.num)">{{num.num}}</div>
 								</div>
 							</div>
 						</div>
@@ -109,6 +109,11 @@
 		mounted(){
 			console.log('mounted')
 			this.loadJsonData().then(data => {
+				
+			}).catch(error => {
+				console.log(error)
+				this.initAnalysisDataJson()
+			}).finally(()=>{
 				this.init()
 				this.showQuestion(0,0,1)
 				this.TypeSet([document.getElementsByClassName("output")])
@@ -149,10 +154,16 @@
 								mineAnswer:answer.mine,
 								knowledges:[],
 								like:false,
-								mistake:false,
+								mistake:answer.answer != answer.mine,
 								content:"",
 							};
-							this.AnalysisData.push(data)
+							if(this.AnalysisData[count-1] && this.AnAnalysisData[count-1].questionNum == count){
+								if(answer.mine){
+									this.AnalysisData[count-1].mineAnswer = answer.mine
+								}
+							}else{
+								this.AnalysisData.push(data)
+							}
 	    			}
     			})
 	    	}
@@ -213,7 +224,7 @@
     		});
     	}
     	this.answers = JSON.parse(sessionStorage.getItem("currentAnswers"));
-    	this.initAnalysisDataJson()
+    	// this.initAnalysisDataJson()
     },
     
     switchType(index){
@@ -327,6 +338,13 @@ font-size: 80%;
 .circle-groups-item .circle.active,.circle-groups-item .circle.active:hover{
 	border: 1px solid #8cb9c0;
 	background-color: #8cb9c0;
+/*		line-height: 100%;*/
+color: #fff;
+}
+
+.circle-groups-item .circle.mistake,.circle-groups-item .circle.mistake:hover{
+	border: 1px solid #f96635;
+	background-color: #f96635;
 /*		line-height: 100%;*/
 color: #fff;
 }
