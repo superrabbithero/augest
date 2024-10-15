@@ -25,9 +25,9 @@
 						</div>
 						<div class="analysis">
 							<div class="analysis-item action">
-								<svg-icon :name="currentAnalysisData.like?'like02-fill':'like02'" size="24" :fill="currentAnalysisData.like?'#f96635':''" @click="currentAnalysisData.like = !currentAnalysisData.like"></svg-icon>
-								<svg-icon :fill="currentAnalysisData.mistake?'#93d3a2':''" name="mistakes" size="24"  @click="currentAnalysisData.mistake = !currentAnalysisData.mistake"></svg-icon>
-								<svg-icon :class="{'active':edited}" name="canvas02" size="24" @click="edited = !edited"></svg-icon>
+								<svg-icon :name="currentAnalysisData.like?'like02-fill':'like02'" size="24" :fill="currentAnalysisData.like?'#ffc848':''" @click="currentAnalysisData.like = !currentAnalysisData.like"></svg-icon>
+								<svg-icon :fill="currentAnalysisData.mistake?'#f96635':''" name="mistakes" size="24"  @click="currentAnalysisData.mistake = !currentAnalysisData.mistake"></svg-icon>
+								<svg-icon :fill="edited ? '#93d3a2':''" name="canvas02" size="24" @click="edited = !edited"></svg-icon>
 								<svg-icon name="export01" size="24" @click="exportAnalysisDataJson"></svg-icon>
 							</div>
 							<div class="analysis-item">
@@ -46,7 +46,7 @@
 								<svg-icon v-show="tag_editing" name="correct01" size="20" @click="addTag()"></svg-icon>
 								<svg-icon v-show="tag_editing" name="error01" size="20" @click="tag_editing=false;addTagName=''"></svg-icon>
 							</div>
-							<div class="analysis-item" style="flex-direction: column;align-items: flex-start;">
+							<div class="analysis-item" style="flex-direction: column;align-items: unset;">
 								<label>我的解析：</label>
 								<textarea v-if="edited" class="analysis-edit" v-model="currentAnalysisData.content" rows="10"></textarea>
 								<div v-else class="analysis-content">{{currentAnalysisData.content?currentAnalysisData.content:'暂无解析'}}</div>
@@ -64,7 +64,7 @@
 							<label class="type">{{type}}</label>
 							<div class="circle-groups">
 								<div v-for="num in fillcardNum[index]" class="circle-groups-item">
-									<div :class="{'circle':true,'active':num.num == currentNum,'mistake':AnalysisData[num.num-1].mistake}" @click="showQuestion(index,num.index,num.num)">{{num.num}}</div>
+									<div :class="{'circle':true,'active':num.num == currentNum,'mistake':AnalysisData[num.num-1].mistake,'liked':AnalysisData[num.num-1].like}" @click="showQuestion(index,num.index,num.num)">{{num.num}}</div>
 								</div>
 							</div>
 						</div>
@@ -112,11 +112,12 @@
 				
 			}).catch(error => {
 				console.log(error)
-				this.initAnalysisDataJson()
+				
 			}).finally(()=>{
 				this.init()
 				this.showQuestion(0,0,1)
 				this.TypeSet([document.getElementsByClassName("output")])
+				// this.initAnalysisDataJson()
 			})
   	// 添加监听器，当页面即将关闭时触发
 			window.addEventListener("beforeunload", this.handleBeforeUnload);
@@ -154,10 +155,10 @@
 								mineAnswer:answer.mine,
 								knowledges:[],
 								like:false,
-								mistake:answer.answer != answer.mine,
+								mistake:answer.answer != answer.mine && answer.mine != '',
 								content:"",
 							};
-							if(this.AnalysisData[count-1] && this.AnAnalysisData[count-1].questionNum == count){
+							if(this.AnalysisData[count-1] && this.AnalysisData[count-1].questionNum == count){
 								if(answer.mine){
 									this.AnalysisData[count-1].mineAnswer = answer.mine
 								}
@@ -224,7 +225,7 @@
     		});
     	}
     	this.answers = JSON.parse(sessionStorage.getItem("currentAnswers"));
-    	// this.initAnalysisDataJson()
+    	this.initAnalysisDataJson()
     },
     
     switchType(index){
@@ -338,16 +339,22 @@ font-size: 80%;
 .circle-groups-item .circle.active,.circle-groups-item .circle.active:hover{
 	border: 1px solid #8cb9c0;
 	background-color: #8cb9c0;
-/*		line-height: 100%;*/
-color: #fff;
+	color: #fff;
+}
+
+.circle-groups-item .circle.liked,.circle-groups-item .circle.liked:hover{
+	border: 1px solid #ffc848;
+	background-color: #ffc848;
+	color: #fff;
 }
 
 .circle-groups-item .circle.mistake,.circle-groups-item .circle.mistake:hover{
 	border: 1px solid #f96635;
 	background-color: #f96635;
-/*		line-height: 100%;*/
-color: #fff;
+	color: #fff;
 }
+
+
 
 .circle-groups-item .circle:hover{
 	border: 1px solid #8cb9c0;
@@ -478,5 +485,9 @@ transition: 0.3s ease;
 	font-size: 14px;
 	padding: 0 8px;
 	margin-right: 5px;
+}
+
+.analysis-edit{
+	width: 100%;
 }
 </style>
