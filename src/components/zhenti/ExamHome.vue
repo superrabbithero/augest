@@ -2,6 +2,11 @@
 	 <div class="au-layout">
     <div class="rows start gutter-l">
       <div class="cols xs12 sm12 md8 lg9 xl10 list">
+        <div class='filter-content'>
+          <au-select class='filter-select' :dataList="years" @change="changeYear"></au-select>
+          <au-select class='filter-select' :dataList="Object.keys(paperType)" @change="changeProv"></au-select>
+          <au-select class='filter-select' :dataList="paperType[filterParam.prov]" @change="changeType"></au-select>
+        </div>
         <div class="card-content" v-for="paper in paperList">
           <div class="md-card-item">
             <div class="title"  @click="goto(`/zhenti/${paper.year}_${paper.prov}_${paper.type}`)">{{paper.title}}</div>
@@ -29,11 +34,13 @@
 import calender from "@/components/Model/Calendar.vue"
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "@/assets/js/firebase.js";  // 引入已初始化的 storage 实例
+import auSelect from "@/components/Model/auSelect.vue"
 
 export default {
   
   components: {
-    calender
+    calender,
+    auSelect
   },
   data(){
     return {
@@ -48,13 +55,52 @@ export default {
         {title:"2024年国家公务员录用考试《行测》题（副省级网友回忆版）",year:2024,prov:'gk',type:'fs'},
         {title:"2024年国家公务员录用考试《行测》题（行政执法卷网友回忆版）",year:2024,prov:'gk',type:'zf'},
         {title:"2023年江苏省公务员录用考试《行测》题（A类）（网友回忆版）",year:2023,prov:'js',type:'A'},
-        {title:"2023年江苏省公务员录用考试《行测》题（B类）（网友回忆版）",year:2023,prov:'js',type:'B'}]
+        {title:"2023年江苏省公务员录用考试《行测》题（B类）（网友回忆版）",year:2023,prov:'js',type:'B'},
+        {title:"2023年国家公务员录用考试《行测》题（行政执法卷网友回忆版）",year:2023,prov:'gk',type:'zf'},
+        {title:"2022年国家公务员录用考试《行测》题（行政执法卷网友回忆版）",year:2022,prov:'gk',type:'zf'}],
+
+      paperType:{'全部':['全部'],'国考':['全部','副省级','地市级','行政执法'],'江苏省考':['全部','A类','B类','C类']},
+      years:['全部',2022,2023,2024],
+      filterParam:{year:'全部',prov:'全部',type:'全部'}
     }
   },
   mounted(){
-    // this.saveJson()
+    this.paperList.sort((a, b) => {
+      // 先按照年份倒序排序
+      if (b.year !== a.year) {
+          return b.year - a.year;
+      }
+      // 再按照prov的字母顺序排序
+      let provComparison = a.prov.localeCompare(b.prov);
+      if (provComparison !== 0) {
+          return provComparison;
+      }
+      // 最后按照type的字母顺序排序
+      return a.type.localeCompare(b.type);
+    });
   },
   methods:{
+    changeYear(index){
+      this.filterParam.year = this.years[index]
+    },
+    changeProv(index){
+      this.filterParam.prov = Object.keys(this.paperType)[index]
+    },
+    changeType(index){
+      this.filterParam.type = this.paperType[this.filterParam.prov][index]
+    },
+    // filterPaperList(year, prov, type) {
+    //     this.filteredList = this.paperList.filter(paper => {
+    //         // 如果year存在，筛选year相等的
+    //         const matchYear = year ? paper.year === year : true;
+    //         // 如果prov存在，筛选prov相等的
+    //         const matchProv = prov ? paper.prov === prov : true;
+    //         // 如果type存在，筛选type相等的
+    //         const matchType = type ? paper.type === type : true;
+    //         // 只有当所有条件都满足时，才保留该项
+    //         return matchYear && matchProv && matchType;
+    //     });
+    // },
     goto(path){
       this.$router.push(path)
     },
@@ -97,5 +143,16 @@ export default {
 .list {
   flex-direction: column!important;
   align-items: normal!important;
+}
+
+.filter-content {
+  display: flex;
+  margin-top: 10px;
+}
+
+.filter-select {
+  background-color: var(--box-bgc);
+  width: 100px;
+  margin-right: 10px;
 }
 </style>
