@@ -7,11 +7,12 @@
           <au-select class='filter-select' :dataList="Object.keys(paperType)" @change="changeProv"></au-select>
           <au-select class='filter-select' :dataList="paperType[filterParam.prov]" @change="changeType"></au-select>
         </div>
-        <div class="card-content" v-for="paper in paperList">
+        <div class="card-content" v-for="paper in filteredPaperList">
           <div class="md-card-item">
             <div class="title"  @click="goto(`/zhenti/${paper.year}_${paper.prov}_${paper.type}`)">{{paper.title}}</div>
-            <div class="md-card-info">
-              未完成
+            <div class="md-card-info" @click="goto(`/zhenti/analysis/${paper.year}_${paper.prov}_${paper.type}`)">
+              <div v-if="paper.finished" class="tag analysis" >查看解析</div>
+              <div v-else class="tag"></div>
               <div class="date">
                 4.4
               </div>
@@ -53,15 +54,17 @@ export default {
         {title:"2024年江苏省公务员录用考试《行测》题（B类）（网友回忆版）",year:2024,prov:'js',type:'B'},
         {title:"2024年国家公务员录用考试《行测》题（地市级网友回忆版）",year:2024,prov:'gk',type:'dj'},
         {title:"2024年国家公务员录用考试《行测》题（副省级网友回忆版）",year:2024,prov:'gk',type:'fs'},
-        {title:"2024年国家公务员录用考试《行测》题（行政执法卷网友回忆版）",year:2024,prov:'gk',type:'zf'},
+        {title:"2024年国家公务员录用考试《行测》题（行政执法卷网友回忆版）",year:2024,prov:'gk',type:'zf',finished:true},
         {title:"2023年江苏省公务员录用考试《行测》题（A类）（网友回忆版）",year:2023,prov:'js',type:'A'},
         {title:"2023年江苏省公务员录用考试《行测》题（B类）（网友回忆版）",year:2023,prov:'js',type:'B'},
-        {title:"2023年国家公务员录用考试《行测》题（行政执法卷网友回忆版）",year:2023,prov:'gk',type:'zf'},
+        {title:"2023年国家公务员录用考试《行测》题（行政执法卷网友回忆版）",year:2023,prov:'gk',type:'zf',finished:true},
         {title:"2022年国家公务员录用考试《行测》题（行政执法卷网友回忆版）",year:2022,prov:'gk',type:'zf'}],
 
       paperType:{'全部':['全部'],'国考':['全部','副省级','地市级','行政执法'],'江苏省考':['全部','A类','B类','C类']},
       years:['全部',2022,2023,2024],
-      filterParam:{year:'全部',prov:'全部',type:'全部'}
+      filterMap:{'国考':'gk','江苏省考':'js','副省级':'fs','地市级':'dj','行政执法':'zf','A类':'A','B类':'B','C类':'C'},
+      filterParam:{year:'全部',prov:'全部',type:'全部'},
+      filteredPaperList:[]
     }
   },
   mounted(){
@@ -78,29 +81,37 @@ export default {
       // 最后按照type的字母顺序排序
       return a.type.localeCompare(b.type);
     });
+    this.filteredPaperList = this.paperList
   },
   methods:{
     changeYear(index){
       this.filterParam.year = this.years[index]
+      this.filterPaperList()
     },
     changeProv(index){
       this.filterParam.prov = Object.keys(this.paperType)[index]
+      this.filterPaperList()
     },
     changeType(index){
       this.filterParam.type = this.paperType[this.filterParam.prov][index]
+      this.filterPaperList()
     },
-    // filterPaperList(year, prov, type) {
-    //     this.filteredList = this.paperList.filter(paper => {
-    //         // 如果year存在，筛选year相等的
-    //         const matchYear = year ? paper.year === year : true;
-    //         // 如果prov存在，筛选prov相等的
-    //         const matchProv = prov ? paper.prov === prov : true;
-    //         // 如果type存在，筛选type相等的
-    //         const matchType = type ? paper.type === type : true;
-    //         // 只有当所有条件都满足时，才保留该项
-    //         return matchYear && matchProv && matchType;
-    //     });
-    // },
+    filterPaperList() {
+      const year = this.filterParam.year != '全部' ? this.filterParam.year : null
+      const prov = this.filterParam.prov != '全部' ? this.filterMap[this.filterParam.prov] : null
+      const type = this.filterParam.type != '全部' ? this.filterMap[this.filterParam.type] : null
+      console.log(year,prov,type)
+      this.filteredPaperList = this.paperList.filter(paper => {
+            // 如果year存在，筛选year相等的
+        const matchYear = year ? paper.year === year : true;
+            // 如果prov存在，筛选prov相等的
+        const matchProv = prov ? paper.prov === prov : true;
+            // 如果type存在，筛选type相等的
+        const matchType = type ? paper.type === type : true;
+            // 只有当所有条件都满足时，才保留该项
+        return matchYear && matchProv && matchType;
+      });
+    },
     goto(path){
       this.$router.push(path)
     },
@@ -143,6 +154,27 @@ export default {
 .list {
   flex-direction: column!important;
   align-items: normal!important;
+}
+
+.tag {
+  font-size: 14px;
+  height: 20px;
+  /* border: 1px solid; */
+  padding:2px 5px;
+  line-height: 20px;
+  font-weight: 100;
+  border-radius: 3px;
+/*  box-sizing: border-box;*/
+
+}
+
+.tag.analysis{
+  cursor: pointer;
+  background-color: #93d3a230;
+}
+
+.tag.analysis:hover{
+  background-color: #93d3a250;
 }
 
 .filter-content {

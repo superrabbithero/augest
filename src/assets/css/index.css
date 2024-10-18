@@ -1049,9 +1049,10 @@ textarea:active, textarea:focus{
 }
 
 .md-card-info {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    align-items: center;
 }
 .md-card-info .tags{
   display: flex;
