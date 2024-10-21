@@ -665,7 +665,7 @@
     ],
     "questions_3": [
         {
-            "content": "某单位办事大厅有3个相同的办事窗口，2天最多可以办理600笔业务，每个窗口办理单笔业务的用时均相同。现对该办事大厅进行流程优化，增设2个与以前相同的办事窗口，且每个办事窗口办理每笔业务的用时缩短到以前的<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1640265343763/d3b9c4dd45e133e11b0f8d6fac66ce80\">。问优化后的办事大厅办理6000笔业务最少需要多少天？",
+            "content": "某单位办事大厅有3个相同的办事窗口，2天最多可以办理600笔业务，每个窗口办理单笔业务的用时均相同。现对该办事大厅进行流程优化，增设2个与以前相同的办事窗口，且每个办事窗口办理每笔业务的用时缩短到以前的<span class=\"output\">$$\\frac{2}{3}$$</span>。问优化后的办事大厅办理6000笔业务最少需要多少天？",
             "options": [
                 "8",
                 "10",
@@ -711,10 +711,10 @@
         {
             "content": "一个圆柱体零件的高为1，其圆形底面上的内接正方形边长正好也为1。现将圆柱体零件切割4次，得到棱长为1的正方体，则切去部分的总表面积为：",
             "options": [
-                "<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1640265343763/0cebd9115751bdeda72681a45368c259\">",
-                "<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1640265343763/016e32f3a95b371c644722367e0c8444\">",
-                "<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1640265343763/79af26ae9fd90e6a752fe9172b0c423b\">",
-                "<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1640265343763/a81c550ff80ef827ab169cbd1810602c\">"
+                "<span class=\"output\">$$\\sqrt{2}(\\pi+2)$$</span>",
+                "<span class=\"output\">$$2\\sqrt{2}(\\pi-2)$$</span>",
+                "<span class=\"output\">$$(\\sqrt{2}+1)\\pi+2$$</span>",
+                "<span class=\"output\">$$2\\sqrt{2}\\pi-2$$</span>"
             ],
             "answer": "C",
             "no": 65
@@ -722,10 +722,10 @@
         {
             "content": "为降低碳排放，企业对生产设备进行改造，改造后日产量下降了10%，但生产每件产品的能耗成本下降了50%，其他成本和出厂价不变的情况下每天的利润提高了10%。已知单件利润=出厂价-能耗成本-其他成本，且改造前产品的出厂价是单件利润的3倍，则改造前能耗成本为其他成本的：",
             "options": [
-                "不到<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1640265343763/22600ab2e825250a447ed2cd13b17dbf\">",
-                "<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1640265343763/22600ab2e825250a447ed2cd13b17dbf\">-<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1640265343763/81dc9281d9ea5b9f850f459393d74118\">之间",
-                "<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1640265343763/81dc9281d9ea5b9f850f459393d74118\">-<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1640265343763/f3520488cf77133dbc073c6aca13556e\">之间",
-                "超过<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1640265343763/f3520488cf77133dbc073c6aca13556e\">"
+                "不到<span class=\"output\">$$\\frac{1}{4}$$</span>",
+                "<span class=\"output\">$$\\frac{1}{4}$$</span>-<span class=\"output\">$$\\frac{1}{3}$$</span>之间",
+                "<span class=\"output\">$$\\frac{1}{3}$$</span>-<span class=\"output\">$$\\frac{1}{2}$$</span>之间",
+                "超过<span class=\"output\">$$\\frac{1}{2}$$</span>"
             ],
             "answer": "B",
             "no": 66
@@ -744,10 +744,10 @@
         {
             "content": "某企业将5台不同的笔记本电脑和5台不同的平板电脑捐赠给甲、乙两所小学，每所学校分配5台电脑。如在所有可能的分配方式中随机选取一种，两所学校分得的平板电脑数量均不超过3台的概率为：",
             "options": [
-                "<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1640265343763/4358862633b42455162df307dadb1267\">",
-                "<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1640265343763/fe05631f85a333174ab161e5a274b180\">",
-                "<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1640265343763/558ea37ddad8e448cb6efe9fb438825b\">",
-                "<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1640265343763/99390e70e14e0abc0e30fcaf20d87fa9\">"
+                "<span class=\"output\">$$\\frac{50}{63}$$</span>",
+                "<span class=\"output\">$$\\frac{125}{126}$$</span>",
+                "<span class=\"output\">$$\\frac{25}{63}$$</span>",
+                "<span class=\"output\">$$\\frac{125}{252}$$</span>"
             ],
             "answer": "A",
             "no": 68
@@ -766,10 +766,10 @@
         {
             "content": "甲、乙等16人参加乒乓球淘汰赛。每轮对所有未被淘汰选手进行抽签分组两两比赛，胜者进入下一轮。已知除甲以外，其余任意两人比赛时双方胜率均为50%。甲对乙的胜率为0%，对其他14人的胜率均为100%。则甲夺冠的概率为：",
             "options": [
-                "<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1640265343763/76bcba533d58355df68747869d5a6375\">",
-                "<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1640265343763/4fd22dfd22054250b93cdfbe6b571e5f\">",
-                "<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1640265343763/864a3f3b45baab1b936985c8d449c1d4\">",
-                "<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1640265343763/c3f6d422913806972238155d17241aa1\">"
+                "<span class=\"output\">$$\\frac{3}{4}$$</span>",
+                "<span class=\"output\">$$\\frac{8}{11}$$</span>",
+                "<span class=\"output\">$$\\frac{11}{15}$$</span>",
+                "<span class=\"output\">$$\\frac{225}{256}$$</span>"
             ],
             "answer": "C",
             "no": 70

@@ -57,14 +57,20 @@
 				</div>
 			</div>
 			<div :class="{'right':true,'hidden':!right_show}">
-				<div class="right-bar" @click="right_show = !right_show">第<font size="1">{{currentNum}}</font>题</div>
+				<div class="right-bar" @click="right_show = !right_show">
+					<svg-icon size="14" name="arrow-up" @click.stop @click="preQuestion"></svg-icon>
+					第
+					<font size="1" style="margin: 5px 0">{{currentNum}}</font>
+					题
+					<svg-icon size="14" name="arrow-down" @click.stop @click="nextQuestion"></svg-icon>
+				</div>
 				<div class="answercard" style="flex: 1;">
 					<div class="fillcard">
 						<div v-for="(type,index) in questionTypeList" style="width: 100%">
 							<label class="type">{{type}}</label>
 							<div class="circle-groups">
-								<div v-for="num in fillcardNum[index]" class="circle-groups-item">
-									<div :class="{'circle':true,'active':num.num == currentNum,'mistake':AnalysisData[num.num-1].mistake,'liked':AnalysisData[num.num-1].like}" @click="showQuestion(index,num.index,num.num)">{{num.num}}</div>
+								<div v-for="(num,i) in fillcardNum[index]" class="circle-groups-item">
+									<div :class="{'circle':true,'active':num.num == currentNum,'mistake':AnalysisData[num.num-1].mistake,'liked':AnalysisData[num.num-1].like}" @click="showQuestion(index,i,num.num)">{{num.num}}</div>
 								</div>
 							</div>
 						</div>
@@ -87,6 +93,7 @@
 				questionTypeList:['常识判断','言语理解','数学运算','判推推理','资料分析'],
 				currQTypeIndex:0,
 				fillcardNum:[[],[],[],[],[]],
+				currentFillcardNumIndex:[],
 				letter:["A","B","C","D"],
 				answers:null,
 				AnalysisData:[],
@@ -131,6 +138,23 @@
 			this.confirmLeave(to, from, next);
 		},
 		methods:{
+			preQuestion(){
+				let type = this.currentFillcardNumIndex[0]
+				let i = this.currentFillcardNumIndex[1]
+				let num = this.currentFillcardNumIndex[2]
+				console.log(type,i,num)
+				if(i > 0){
+					this.showQuestion(type,this.fillcardNum[type][i-1].index,num-1)
+				}else if(type > 0){
+					this.showQuestion(type-1,this.fillcardNum[type-1].slice(-1)[0].index,num-1)
+				}
+			},
+			nextQuestion(){
+				let type = this.currentFillcardNumIndex[0]
+				let index = this.currentFillcardNumIndex[1]
+				let num = this.currentFillcardNumIndex[2]
+				console.log(type,index,num)
+			},
 			addTag(){
 				this.currentAnalysisData.knowledges.push(this.addTagName)
 				this.tag_editing = false
@@ -169,12 +193,15 @@
     			})
 	    	}
 			},
-			showQuestion(type,index,num){
+			showQuestion(type,i,num){
+				const index = this.fillcardNum[type][i].index
+				console.log("showQuestion",type,index,num)
+				this.currentFillcardNumIndex = [type,i,num]
 				if(this.currentAnalysisChanged){
 					this.AnalysisData[Number(this.currentNum)-1] = this.currentAnalysisData
 					this.currentAnalysisChanged = false
 				}
-				console.log(type,index)
+				// console.log(type,index)
 				this.currentQuestion = this.questions[type][index]
 				this.currentNum = num
 				this.currentAnalysisData = this.AnalysisData[Number(this.currentNum)-1]
@@ -423,6 +450,9 @@ transition: 0.3s ease;
 	transition-delay: 0.3s;
 	transition: opacity 0.8s ease-in-out;
 	cursor: pointer;
+	display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .right-bar {
@@ -487,7 +517,4 @@ transition: 0.3s ease;
 	margin-right: 5px;
 }
 
-.analysis-edit{
-	width: 100%;
-}
 </style>
