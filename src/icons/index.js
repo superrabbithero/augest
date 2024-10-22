@@ -6,7 +6,7 @@ const svgIconResult = requireAll(request)
 export default svgIconResult
 
 // console.log(request);
-console.log(request.keys());
+// console.log(request.keys());
 // console.log(request.id);
 // console.log(request.resolve);
 // console.log("***********result*******")

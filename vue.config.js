@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
   parallel: false,
@@ -34,5 +35,11 @@ module.exports = {
       .options({
         raw: true,
       });
+    // 定义特性标志
+    config.plugin('define').use(webpack.DefinePlugin, [{
+      'process.env': {
+        '__VUE_PROD_HYDRATION_MISMATCH_DETAILS__': JSON.stringify(true)
+      }
+    }]);
   },
 };
