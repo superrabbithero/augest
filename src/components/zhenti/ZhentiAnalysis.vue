@@ -27,7 +27,6 @@
 							<div class="analysis-item action">
 								<svg-icon :name="currentAnalysisData.like?'like02-fill':'like02'" size="24" :fill="currentAnalysisData.like?'#ffc848':''" @click="currentAnalysisData.like = !currentAnalysisData.like"></svg-icon>
 								<svg-icon :fill="currentAnalysisData.mistake?'#f96635':''" name="mistakes" size="24"  @click="currentAnalysisData.mistake = !currentAnalysisData.mistake"></svg-icon>
-								<svg-icon :fill="edited ? '#93d3a2':''" name="canvas02" size="24" @click="edited = !edited"></svg-icon>
 								<svg-icon name="export01" size="24" @click="exportAnalysisDataJson"></svg-icon>
 							</div>
 							<div class="analysis-item">
@@ -46,12 +45,15 @@
 								<svg-icon v-show="tag_editing" name="correct01" size="20" @click="addTag()"></svg-icon>
 								<svg-icon v-show="tag_editing" name="error01" size="20" @click="tag_editing=false;addTagName=''"></svg-icon>
 							</div>
-							<div class="analysis-item" style="flex-direction: column;align-items: unset;">
+							<div class="analysis-item">
 								<label>我的解析：</label>
-								<textarea v-if="edited" class="analysis-edit" v-model="currentAnalysisData.content" rows="10"></textarea>
-								<div v-else class="analysis-content">{{currentAnalysisData.content?currentAnalysisData.content:'暂无解析'}}</div>
+								<svg-icon :class="{'active':edited}" name="canvas02" size="20" @click="edited = !edited,tempAnalysisContent = currentAnalysisData.content"></svg-icon>
 							</div>
+							<div class="analysis-item">
+								<div contenteditable="true" :innerHTML="tempAnalysisContent" v-if="edited" class="analysis-edit" @input="updateAnalysisContent" rows="10"></div>
 
+								<div v-else class="analysis-content" v-html="currentAnalysisData.content?currentAnalysisData.content:'暂无解析'"></div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -101,6 +103,7 @@
 				letter:["A","B","C","D"],
 				answers:null,
 				AnalysisData:[],
+				tempAnalysisContent:"",
 				currentAnalysisData:{
 					questionNum:1,
 					answer:"",
@@ -142,6 +145,10 @@
 			this.confirmLeave(to, from, next);
 		},
 		methods:{
+			updateAnalysisContent(event){
+				const content = event.target.innerHTML.replace(/<br>\s*<\/?br>/g, '').trim();
+				this.currentAnalysisData.content = content == '<br>' ? '' : content
+			},
 			preQuestion(){
 				let type = this.currentFillcardNumIndex[0]
 				let i = this.currentFillcardNumIndex[1]
@@ -520,7 +527,7 @@ transition: 0.3s ease;
 	border-radius: 8px;
 }
 
-.analysis-item label{
+.analysis-item label, .analysis-item .analysis-answer{
 	width: 5rem;
 	font-family: SmileySans-Oblique;
 	text-align:justify;
@@ -545,7 +552,7 @@ transition: 0.3s ease;
 	margin-left: 8px
 }
 
-.analysis-item.action .active{
+.analysis-item .active{
 	color:var(--main-color)
 }
 
@@ -559,4 +566,21 @@ transition: 0.3s ease;
 	margin-right: 5px;
 }
 
+.analysis-edit:focus {
+	outline: none;
+}
+
+.analysis-edit,.analysis-content{
+	border: 2px solid transparent;
+	box-sizing: border-box;
+	border-radius: 5px;
+	padding: 5px 10px;
+	background-color: var(--color-canvas-subtle);
+	flex: 1;
+}
+.analysis-edit{
+	border: 2px solid var(--main-color);
+	min-height: 5rem;
+
+}
 </style>

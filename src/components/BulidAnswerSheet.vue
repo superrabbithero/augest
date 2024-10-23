@@ -220,7 +220,488 @@ export default {
       anchorxy:{x:0,y:0},
       // cutParamJson:null,
       cutParamJsonStr:"",
-      cutParamJson:{"pageSize":{"width":1588,"height":1123},"anchorSize":{"width":26,"height":13},"panelSize":{"width":1492,"height":1044},"singlePagePartition":2,"section":[{"sectionType":"ClassId","pageNumber":1,"rect":{"x":480,"y":81,"width":247,"height":46},"subsections":[{"x":27,"y":5.9,"rows":2,"columns":1,"rowGroupSize":999,"positions":10,"cellWidth":18.7,"cellHeight":10.2,"cellGapWidth":3.3,"rowGapHeight":12.8,"columnGapWidth":0,"rowGroupGapHeight":0,"totalSequences":2,"sequenceOption":"HorizontalFirst"}]},{"sectionType":"StudentId","pageNumber":1,"rect":{"x":480,"y":127,"width":247,"height":46},"subsections":[{"x":27,"y":5.9,"rows":2,"columns":1,"rowGroupSize":999,"positions":10,"cellWidth":18.7,"cellHeight":10.2,"cellGapWidth":3.3,"rowGapHeight":12.8,"columnGapWidth":0,"rowGroupGapHeight":0,"totalSequences":2,"sequenceOption":"HorizontalFirst"}]},{"sectionType":"MultiChoice","pageNumber":1,"seqArr":[1,2,3,4],"multiSelect":[true,true,false,false],"rect":{"x":0,"y":187,"width":734,"height":587},"subsections":[{"x":40,"y":38,"cellWidth":12,"cellHeight":12,"sequenceOption":"FreeStyle","blankCell":true,"freeStyleCellGroups":[[{"x":0,"y":0},{"x":0,"y":40},{"x":0,"y":68},{"x":0,"y":91}]]},{"x":40,"y":174,"cellWidth":12,"cellHeight":12,"sequenceOption":"FreeStyle","blankCell":true,"freeStyleCellGroups":[[{"x":0,"y":0},{"x":0,"y":30},{"x":0,"y":58},{"x":0,"y":81}]]},{"x":40,"y":300,"cellWidth":12,"cellHeight":12,"sequenceOption":"FreeStyle","blankCell":true,"freeStyleCellGroups":[[{"x":0,"y":0},{"x":0,"y":23},{"x":0,"y":45},{"x":0,"y":68}]]},{"x":40,"y":473,"cellWidth":12,"cellHeight":12,"sequenceOption":"FreeStyle","blankCell":true,"freeStyleCellGroups":[[{"x":0,"y":0},{"x":0,"y":23},{"x":0,"y":45},{"x":0,"y":68}]]}],"sectionNumber":1},{"sectionType":"Checkbox","pageNumber":1,"seqArr":[5,5,5,6],"rect":{"x":0,"y":773,"width":734,"height":228},"subsections":[{"markLines":[[{"x":213,"y":26,"width":165,"height":18},{"x":174,"y":112,"width":162,"height":18},{"x":474,"y":112,"width":165,"height":18},{"x":446,"y":190,"width":147,"height":18}]]}],"sectionNumber":2},{"sectionType":"ScoreBox","pageNumber":1,"seqArr":[7],"rect":{"x":758,"y":31,"width":734,"height":446},"subsections":[{"x":618,"y":424,"rows":1,"columns":1,"positions":3,"cellWidth":32,"cellHeight":22,"cellGapWidth":10,"columnGapWidth":10}],"sectionNumber":3},{"sectionType":"MultiChoice","pageNumber":1,"seqArr":[8,9,10],"multiSelect":[false,false,true],"rect":{"x":758,"y":478,"width":734,"height":524},"subsections":[{"x":40,"y":41,"cellWidth":12,"cellHeight":12,"sequenceOption":"FreeStyle","blankCell":true,"freeStyleCellGroups":[[{"x":0,"y":0},{"x":0,"y":34},{"x":0,"y":69},{"x":0,"y":104}]]},{"x":40,"y":216,"cellWidth":12,"cellHeight":12,"sequenceOption":"FreeStyle","blankCell":true,"freeStyleCellGroups":[[{"x":0,"y":0},{"x":0,"y":27},{"x":0,"y":53},{"x":0,"y":79}]]},{"x":40,"y":376,"cellWidth":12,"cellHeight":12,"sequenceOption":"FreeStyle","blankCell":true,"freeStyleCellGroups":[[{"x":0,"y":0},{"x":0,"y":27},{"x":0,"y":55},{"x":0,"y":81}]]}],"sectionNumber":4},{"sectionType":"ScoreBox","pageNumber":2,"seqArr":[11],"rect":{"x":0,"y":31,"width":734,"height":458},"subsections":[{"x":618,"y":436,"rows":1,"columns":1,"positions":3,"cellWidth":32,"cellHeight":22,"cellGapWidth":10,"columnGapWidth":10}],"sectionNumber":5},{"sectionType":"Checkbox","pageNumber":2,"seqArr":[12,12],"rect":{"x":0,"y":489,"width":734,"height":512},"subsections":[{"x":660,"y":490,"rows":1,"columns":2,"positions":1,"cellWidth":32,"cellHeight":22,"cellGapWidth":10,"columnGapWidth":10}],"questionType":"QANDA","sectionNumber":6},{"sectionType":"Checkbox","pageNumber":2,"seqArr":[13,13,13],"rect":{"x":758,"y":31,"width":734,"height":402},"subsections":[{"x":618,"y":380,"rows":1,"columns":3,"positions":1,"cellWidth":32,"cellHeight":22,"cellGapWidth":10,"columnGapWidth":10}],"questionType":"QANDA","sectionNumber":7},{"sectionType":"Checkbox","pageNumber":2,"seqArr":[14,14],"rect":{"x":758,"y":433,"width":734,"height":568},"subsections":[{"x":660,"y":546,"rows":1,"columns":2,"positions":1,"cellWidth":32,"cellHeight":22,"cellGapWidth":10,"columnGapWidth":10}],"questionType":"QANDA","sectionNumber":8}],"studentIdBarcode":false,"firstBoxRect":{"x":544,"y":1016,"width":20,"height":20},"totalPageCount":2}
+      cutParamJson:{
+    "pageSize": {
+        "width": 1588,
+        "height": 1123
+    },
+    "anchorSize": {
+        "width": 26,
+        "height": 13
+    },
+    "panelSize": {
+        "width": 1492,
+        "height": 1044
+    },
+    "singlePagePartition": 2,
+    "section": [
+        {
+            "sectionType": "ClassId",
+            "pageNumber": 1,
+            "rect": {
+                "x": 480,
+                "y": 81,
+                "width": 247,
+                "height": 46
+            },
+            "subsections": [
+                {
+                    "x": 27,
+                    "y": 5.9,
+                    "rows": 2,
+                    "columns": 1,
+                    "rowGroupSize": 999,
+                    "positions": 10,
+                    "cellWidth": 18.7,
+                    "cellHeight": 10.2,
+                    "cellGapWidth": 3.3,
+                    "rowGapHeight": 12.8,
+                    "columnGapWidth": 0,
+                    "rowGroupGapHeight": 0,
+                    "totalSequences": 2,
+                    "sequenceOption": "HorizontalFirst"
+                }
+            ]
+        },
+        {
+            "sectionType": "StudentId",
+            "pageNumber": 1,
+            "rect": {
+                "x": 480,
+                "y": 127,
+                "width": 247,
+                "height": 46
+            },
+            "subsections": [
+                {
+                    "x": 27,
+                    "y": 5.9,
+                    "rows": 2,
+                    "columns": 1,
+                    "rowGroupSize": 999,
+                    "positions": 10,
+                    "cellWidth": 18.7,
+                    "cellHeight": 10.2,
+                    "cellGapWidth": 3.3,
+                    "rowGapHeight": 12.8,
+                    "columnGapWidth": 0,
+                    "rowGroupGapHeight": 0,
+                    "totalSequences": 2,
+                    "sequenceOption": "HorizontalFirst"
+                }
+            ]
+        },
+        {
+            "sectionType": "MultiChoice",
+            "pageNumber": 1,
+            "seqArr": [
+                1,
+                2,
+                3,
+                4,
+                5
+            ],
+            "multiSelect": [
+                false,
+                false,
+                false,
+                false,
+                false
+            ],
+            "rect": {
+                "x": 0,
+                "y": 211,
+                "width": 734,
+                "height": 791
+            },
+            "subsections": [
+                {
+                    "x": 40,
+                    "y": 42,
+                    "cellWidth": 12,
+                    "cellHeight": 12,
+                    "sequenceOption": "FreeStyle",
+                    "blankCell": true,
+                    "freeStyleCellGroups": [
+                        [
+                            {
+                                "x": 0,
+                                "y": 0
+                            },
+                            {
+                                "x": 0,
+                                "y": 27
+                            },
+                            {
+                                "x": 0,
+                                "y": 53
+                            },
+                            {
+                                "x": 0,
+                                "y": 80
+                            }
+                        ]
+                    ]
+                },
+                {
+                    "x": 40,
+                    "y": 175,
+                    "cellWidth": 12,
+                    "cellHeight": 12,
+                    "sequenceOption": "FreeStyle",
+                    "blankCell": true,
+                    "freeStyleCellGroups": [
+                        [
+                            {
+                                "x": 0,
+                                "y": 0
+                            },
+                            {
+                                "x": 0,
+                                "y": 26
+                            },
+                            {
+                                "x": 0,
+                                "y": 53
+                            },
+                            {
+                                "x": 0,
+                                "y": 79
+                            }
+                        ]
+                    ]
+                },
+                {
+                    "x": 40,
+                    "y": 310,
+                    "cellWidth": 12,
+                    "cellHeight": 12,
+                    "sequenceOption": "FreeStyle",
+                    "blankCell": true,
+                    "freeStyleCellGroups": [
+                        [
+                            {
+                                "x": 0,
+                                "y": 0
+                            },
+                            {
+                                "x": 0,
+                                "y": 31
+                            },
+                            {
+                                "x": 0,
+                                "y": 60
+                            },
+                            {
+                                "x": 0,
+                                "y": 91
+                            }
+                        ]
+                    ]
+                },
+                {
+                    "x": 40,
+                    "y": 458,
+                    "cellWidth": 12,
+                    "cellHeight": 12,
+                    "sequenceOption": "FreeStyle",
+                    "blankCell": true,
+                    "freeStyleCellGroups": [
+                        [
+                            {
+                                "x": 0,
+                                "y": 0
+                            },
+                            {
+                                "x": 0,
+                                "y": 26
+                            },
+                            {
+                                "x": 0,
+                                "y": 53
+                            },
+                            {
+                                "x": 0,
+                                "y": 79
+                            }
+                        ]
+                    ]
+                },
+                {
+                    "x": 40,
+                    "y": 590,
+                    "cellWidth": 12,
+                    "cellHeight": 12,
+                    "sequenceOption": "FreeStyle",
+                    "blankCell": true,
+                    "freeStyleCellGroups": [
+                        [
+                            {
+                                "x": 0,
+                                "y": 0
+                            },
+                            {
+                                "x": 0,
+                                "y": 26
+                            },
+                            {
+                                "x": 0,
+                                "y": 53
+                            },
+                            {
+                                "x": 0,
+                                "y": 79
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "sectionNumber": 1
+        },
+        {
+            "sectionType": "MultiChoice",
+            "pageNumber": 1,
+            "seqArr": [
+                6,
+                7
+            ],
+            "multiSelect": [
+                true,
+                true
+            ],
+            "rect": {
+                "x": 758,
+                "y": 56,
+                "width": 734,
+                "height": 308
+            },
+            "subsections": [
+                {
+                    "x": 40,
+                    "y": 37,
+                    "cellWidth": 12,
+                    "cellHeight": 12,
+                    "sequenceOption": "FreeStyle",
+                    "blankCell": true,
+                    "freeStyleCellGroups": [
+                        [
+                            {
+                                "x": 0,
+                                "y": 0
+                            },
+                            {
+                                "x": 0,
+                                "y": 26
+                            },
+                            {
+                                "x": 0,
+                                "y": 53
+                            },
+                            {
+                                "x": 0,
+                                "y": 82
+                            }
+                        ]
+                    ]
+                },
+                {
+                    "x": 40,
+                    "y": 172,
+                    "cellWidth": 12,
+                    "cellHeight": 12,
+                    "sequenceOption": "FreeStyle",
+                    "blankCell": true,
+                    "freeStyleCellGroups": [
+                        [
+                            {
+                                "x": 0,
+                                "y": 0
+                            },
+                            {
+                                "x": 0,
+                                "y": 27
+                            },
+                            {
+                                "x": 0,
+                                "y": 53
+                            },
+                            {
+                                "x": 0,
+                                "y": 80
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "sectionNumber": 2
+        },
+        {
+            "sectionType": "Checkbox",
+            "pageNumber": 1,
+            "seqArr": [
+                8,
+                8,
+                9
+            ],
+            "rect": {
+                "x": 758,
+                "y": 387,
+                "width": 734,
+                "height": 288
+            },
+            "subsections": [
+                {
+                    "markLines": [
+                        [
+                            {
+                                "x": 376,
+                                "y": 17,
+                                "width": 123,
+                                "height": 18
+                            },
+                            {
+                                "x": 346,
+                                "y": 74,
+                                "width": 120,
+                                "height": 18
+                            },
+                            {
+                                "x": 96,
+                                "y": 151,
+                                "width": 150,
+                                "height": 18
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "sectionNumber": 3
+        },
+        {
+            "sectionType": "ScoreBox",
+            "pageNumber": 1,
+            "seqArr": [
+                10
+            ],
+            "rect": {
+                "x": 758,
+                "y": 699,
+                "width": 734,
+                "height": 302
+            },
+            "subsections": [
+                {
+                    "x": 618,
+                    "y": 280,
+                    "rows": 1,
+                    "columns": 1,
+                    "positions": 3,
+                    "cellWidth": 32,
+                    "cellHeight": 22,
+                    "cellGapWidth": 10,
+                    "columnGapWidth": 10
+                }
+            ],
+            "sectionNumber": 4
+        },
+        {
+            "sectionType": "ScoreBox",
+            "pageNumber": 2,
+            "seqArr": [
+                11
+            ],
+            "rect": {
+                "x": 0,
+                "y": 31,
+                "width": 734,
+                "height": 339
+            },
+            "subsections": [
+                {
+                    "x": 618,
+                    "y": 317,
+                    "rows": 1,
+                    "columns": 1,
+                    "positions": 3,
+                    "cellWidth": 32,
+                    "cellHeight": 22,
+                    "cellGapWidth": 10,
+                    "columnGapWidth": 10
+                }
+            ],
+            "sectionNumber": 5
+        },
+        {
+            "sectionType": "Checkbox",
+            "pageNumber": 2,
+            "seqArr": [
+                12,
+                12
+            ],
+            "rect": {
+                "x": 0,
+                "y": 370,
+                "width": 734,
+                "height": 631
+            },
+            "subsections": [
+                {
+                    "x": 660,
+                    "y": 609,
+                    "rows": 1,
+                    "columns": 2,
+                    "positions": 1,
+                    "cellWidth": 32,
+                    "cellHeight": 22,
+                    "cellGapWidth": 10,
+                    "columnGapWidth": 10
+                }
+            ],
+            "questionType": "QANDA",
+            "sectionNumber": 6
+        },
+        {
+            "sectionType": "Checkbox",
+            "pageNumber": 2,
+            "seqArr": [
+                13,
+                13,
+                13,
+                13,
+                13
+            ],
+            "rect": {
+                "x": 758,
+                "y": 31,
+                "width": 734,
+                "height": 970
+            },
+            "subsections": [
+                {
+                    "x": 534,
+                    "y": 948,
+                    "rows": 1,
+                    "columns": 5,
+                    "positions": 1,
+                    "cellWidth": 32,
+                    "cellHeight": 22,
+                    "cellGapWidth": 10,
+                    "columnGapWidth": 10
+                }
+            ],
+            "questionType": "QANDA",
+            "sectionNumber": 7
+        }
+    ],
+    "studentIdBarcode": false,
+    "firstBoxRect": {
+        "x": 544,
+        "y": 1016,
+        "width": 20,
+        "height": 20
+    },
+    "totalPageCount": 2
+}
 ,
       pdfUrl:null,
       cutDivScale:1,
@@ -295,7 +776,9 @@ export default {
     formattedJsonStr(){
       try{
         this.cutParamJson = JSON.parse(this.cutParamJsonStr)
+        // console.log(this.cutParamJsonStr)
         this.cutParamJsonStr = JSON.stringify(this.cutParamJson, null, 4);
+        console.log(JSON.stringify(this.cutParamJson).replace(/\s+/g, ''))
       }catch(error){
         this.cutParamJson = {"code":"error","msg":error}
       }
@@ -1046,6 +1529,7 @@ export default {
 }
 
 .sheet-canvas{
+  filter: var(--img-filter);
   position: absolute;
   box-shadow: var(--box-shadow);
 }
