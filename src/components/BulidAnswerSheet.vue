@@ -137,9 +137,16 @@
                       height:cutDivScale*section.rect.height + 'px',
                       top:cutDivScale*section.rect.y + 'px',
                       left:cutDivScale*section.rect.x + 'px'}">
-              <div class="cutpage-section sub" v-for="subsection in section.subsections" :style="{ width:'1px',height:'1px',
-                      top:cutDivScale*subsection.y + 'px',
-                      left:cutDivScale*subsection.x + 'px'}">
+              <div class="cutpage-section sub" v-for="subsection in section.subsections" :style="hasFreeStyleGroupsSubsectionStyle(subsection)">
+                      <!-- <div class="cutpage-section sub remove">
+                        {{subsection.x}},{{subsection.y}}
+                      </div> -->
+                      <div class="cutpage-section" v-for="freeStyleCellGroup in subsection.freeStyleCellGroups">
+                        <div class="cutpage-section sub" v-for="freeStyleCell in freeStyleCellGroup" :style="{ width:'1px',height:'1px',
+                        top:cutDivScale*freeStyleCell.y + 'px',
+                        left:cutDivScale*freeStyleCell.x + 'px'}"></div>
+                      </div>
+                        
               </div>
             </div>
           </div>
@@ -745,6 +752,17 @@ export default {
     FocusOne,
     LinkThree,
     auSelect
+  },
+  computed:{
+    hasFreeStyleGroupsSubsectionStyle(){
+      return (subsection) => {
+        if(subsection.freeStyleCellGroups){
+          return { width:'0', height:'0', top:this.cutDivScale*subsection.y + 'px', left:this.cutDivScale*subsection.x + 'px',border:'none',boxSizing:'border-size'}
+        }else{
+          return { width:'1px', height:'1px', top:this.cutDivScale*subsection.y + 'px', left:this.cutDivScale*subsection.x + 'px'}
+        }
+      }
+    }
   },
   mounted() {
     window.onresize = () => {
@@ -1629,6 +1647,18 @@ export default {
   border: 1px solid red;
   background: none;
   position: absolute;
+  box-sizing: border-box;
+}
+
+.cutpage-section.sub.remove {
+  position: absolute;
+  transform: translateY(-100%);
+  color: red;
+  border: none;
+}
+
+.cutpage-section.sub{
+  box-sizing: content-box;
 }
 
 

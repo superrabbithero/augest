@@ -45,14 +45,28 @@
 								<svg-icon v-show="tag_editing" name="correct01" size="20" @click="addTag()"></svg-icon>
 								<svg-icon v-show="tag_editing" name="error01" size="20" @click="tag_editing=false;addTagName=''"></svg-icon>
 							</div>
-							<div class="analysis-item">
-								<label>我的解析：</label>
-								<svg-icon :class="{'active':edited}" name="canvas02" size="20" @click="edited = !edited,tempAnalysisContent = currentAnalysisData.content"></svg-icon>
+							<div class="analysis-item" style="justify-content: space-between;">
+								<div class="analysis-item">
+									<label>我的解析：</label>
+									<svg-icon :class="{'active':edited}" name="canvas02" size="20" @click="edited = !edited,tempAnalysisContent = currentAnalysisData.content"></svg-icon>
+								</div>
+								<div class="analysis-item" v-show="edited">
+									<button @click="formatText('bold')" class="icon-button"><svg-icon name="blod02" size="20"></svg-icon></button>
+									<button @click="formatText('underline')" class="icon-button"><svg-icon  name="underline01" size="20"></svg-icon></button>
+									<button @click="formatText('italic')" class="icon-button"><svg-icon name="italic01" size="20"></svg-icon></button>
+									<button @click="formatText('insertUnorderedList')" class="icon-button"><svg-icon name="insertlist01" size="20"></svg-icon></button>
+									<button @click="formatText('insertOrderedList')" class="icon-button"><svg-icon name="insert-order-list01" size="20"></svg-icon></button>
+									<!-- <button @click="highlightText">高亮引用</button> -->
+								</div>
 							</div>
 							<div class="analysis-item">
-								<div contenteditable="true" :innerHTML="tempAnalysisContent" v-if="edited" class="analysis-edit" @input="updateAnalysisContent" rows="10"></div>
+								<div contenteditable="true" :innerHTML="tempAnalysisContent" v-if="edited" class="analysis-edit" @input="updateAnalysisContent" rows="10">
+								</div>
 
-								<div v-else class="analysis-content" v-html="currentAnalysisData.content?currentAnalysisData.content:'暂无解析'"></div>
+								<div v-else class="analysis-content" v-html="currentAnalysisData.content?currentAnalysisData.content:'暂无解析'">
+									
+								</div>
+
 							</div>
 						</div>
 					</div>
@@ -145,6 +159,12 @@
 			this.confirmLeave(to, from, next);
 		},
 		methods:{
+			formatText(command) {
+				document.execCommand(command, false, null);
+			},
+			highlightText() {
+				document.execCommand('backColor', false, 'yellow'); // 高亮为黄色
+			},
 			updateAnalysisContent(event){
 				const content = event.target.innerHTML.replace(/<br>\s*<\/?br>/g, '').trim();
 				this.currentAnalysisData.content = content == '<br>' ? '' : content
@@ -583,4 +603,6 @@ transition: 0.3s ease;
 	min-height: 5rem;
 
 }
+
+
 </style>

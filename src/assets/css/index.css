@@ -662,7 +662,7 @@ button {
 /*    overflow: hidden;*/
 }
 
-button::after {
+button.autton::after {
     content: "";
     width: 100%;
     height: 100%;
@@ -725,6 +725,21 @@ button:active {
    color: white;
    transition: 0s;
 }
+
+button.icon-button{
+    background-color: transparent;
+    width: unset;
+    height: unset;
+    border: unset;
+    padding: 0;
+}
+button.icon-button:hover{
+    border: none;
+}
+button.icon-button:active{
+    color: var(--main-color);
+}
+
 
 textarea {
     font-family: auto;
@@ -793,7 +808,9 @@ textarea:active, textarea:focus{
     }
   }
 
-/*container布局*/
+
+
+/* container布局*/
 .au-container {
     height: 100%;
     display: flex;
@@ -1094,4 +1111,29 @@ textarea:active, textarea:focus{
 
 .md-card-item .title:hover, .md-card-info .tags .tags-item:hover{
   color: #ffc848;
+}
+
+/* 修改编辑模式下的有序列表样式 */
+.analysis-edit ol,
+.analysis-content ol {
+  list-style-type: decimal; /* 使用数字列表 */
+  margin-block-start: 0;
+  margin-block-end: 0;
+  padding-inline-start: 1rem; /* 设置左侧缩进 */
+}
+
+/* 修改无序列表样式 */
+.analysis-edit ul,
+.analysis-content ul {
+  list-style-type: disc; /* 使用圆点符号 */
+  margin-block-start: 0;
+  margin-block-end: 0;
+  padding-inline-start: 1rem; /* 设置左侧缩进 */
+}
+
+/* 修改列表项的样式 */
+.analysis-edit li,
+.analysis-content li {
+  margin-bottom: 0.1rem; /* 每个列表项之间的间距 */
+  font-size: 1rem; /* 修改字体大小 */
 }
