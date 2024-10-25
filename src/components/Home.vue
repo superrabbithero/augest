@@ -85,7 +85,7 @@ export default {
   computed:{
     formatDate(){
       return (datetimeStr)=>{
-        console.log(datetimeStr)
+        // console.log(datetimeStr)
         const date = new Date(datetimeStr)
         if(date.getFullYear() === this.today.getFullYear){
           const formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });

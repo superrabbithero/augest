@@ -197,9 +197,13 @@ img {
     --img-filter:brightness(0.9) contrast(0.9) sepia(0.1);
 }
 
-body {
-  background-color: var(--content-bgc)
+body{
+  background-color: var(--content-bgc);
 }
+/*
+body > * {
+  transition: background-color 0.3s ease;
+}*/
 
 /* 针对Webkit内核浏览器的全局滚动条样式 */
 

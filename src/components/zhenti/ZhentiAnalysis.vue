@@ -51,11 +51,11 @@
 									<svg-icon :class="{'active':edited}" name="canvas02" size="20" @click="edited = !edited,tempAnalysisContent = currentAnalysisData.content"></svg-icon>
 								</div>
 								<div class="analysis-item" v-show="edited">
-									<button @click="formatText('bold')" class="icon-button"><svg-icon name="blod02" size="20"></svg-icon></button>
-									<button @click="formatText('underline')" class="icon-button"><svg-icon  name="underline01" size="20"></svg-icon></button>
-									<button @click="formatText('italic')" class="icon-button"><svg-icon name="italic01" size="20"></svg-icon></button>
-									<button @click="formatText('insertUnorderedList')" class="icon-button"><svg-icon name="insertlist01" size="20"></svg-icon></button>
-									<button @click="formatText('insertOrderedList')" class="icon-button"><svg-icon name="insert-order-list01" size="20"></svg-icon></button>
+									<button @click="formatText('bold')" class="icon-button edit-button"><svg-icon name="blod02" size="20"></svg-icon></button>
+									<button @click="formatText('underline')" class="icon-button edit-button"><svg-icon  name="underline01" size="20"></svg-icon></button>
+									<button @click="formatText('italic')" class="icon-button edit-button"><svg-icon name="italic01" size="20"></svg-icon></button>
+									<button @click="formatText('insertUnorderedList')" class="icon-button edit-button"><svg-icon name="insertlist01" size="20"></svg-icon></button>
+									<button @click="formatText('insertOrderedList')" class="icon-button edit-button"><svg-icon name="insert-order-list01" size="20"></svg-icon></button>
 									<!-- <button @click="highlightText">高亮引用</button> -->
 								</div>
 							</div>
@@ -135,7 +135,7 @@
 			}
 		},
 		mounted(){
-			console.log('mounted')
+			// console.log('mounted')
 			this.loadJsonData().then(data => {
 				
 			}).catch(error => {
@@ -202,14 +202,17 @@
 			initAnalysisDataJson(){
 				let count = 0
 				// console.log(this.answers)
+				if(this.answers == null){
+					return
+				}
 				for (let i = 0; i < 5; i++) {
 					var keys = Object.keys(this.answers[i])
-    			keys.forEach(key => {
-    				if(this.answers[i][key]){
-	    				count ++
-	    				const answer = this.answers[i][key]
-	    				// console.log(answer)
-	    				const data = {
+					keys.forEach(key => {
+						if(this.answers[i][key]){
+							count ++
+							const answer = this.answers[i][key]
+							// console.log(answer)
+							const data = {
 								questionNum:count,
 								answer:answer.answer,
 								mineAnswer:answer.mine,
@@ -225,13 +228,13 @@
 							}else{
 								this.AnalysisData.push(data)
 							}
-	    			}
-    			})
-	    	}
+						}
+					})
+				}
 			},
 			showQuestion(type,i,num){
 				const index = this.fillcardNum[type][i].index
-				console.log("showQuestion",type,i,num)
+				// console.log("showQuestion",type,i,num)
 				this.currentFillcardNumIndex = [type,i,num]
 				if(this.currentAnalysisChanged){
 					this.AnalysisData[Number(this.currentNum)-1] = this.currentAnalysisData
@@ -249,114 +252,114 @@
 				if (false) {
 					const answer = window.confirm("考试进程中，直接离开会丢失当前草稿和答题内容");
 					if (answer) {
-          next(); // 允许导航离开
-        } else {
-          next(false); // 阻止导航
-        }
-      } else {
-        next(); // 如果没有未保存的更改，直接离开
-      }
-    },
-    handleBeforeUnload(event){
-    	if(false){
-        // 在这里你可以处理关闭标签页时的逻辑
-    		const confirmationMessage = "考试进程中，直接离开会丢失当前草稿和答题内容";
+		  next(); // 允许导航离开
+		} else {
+		  next(false); // 阻止导航
+		}
+		  } else {
+		next(); // 如果没有未保存的更改，直接离开
+		  }
+		},
+		handleBeforeUnload(event){
+			if(false){
+		// 在这里你可以处理关闭标签页时的逻辑
+				const confirmationMessage = "考试进程中，直接离开会丢失当前草稿和答题内容";
 
-        // 设置这个消息会让浏览器显示一个确认对话框
-        event.returnValue = confirmationMessage;  // 标准兼容做法
-        return confirmationMessage;  // 对某些旧版浏览器的支持
-      }
-    },
-    init(){
-    	const jsonData = this.jsonData
-    	this.questions = [
-    		jsonData.questions_1,
-    		jsonData.questions_2,
-    		jsonData.questions_3,
-    		jsonData.questions_4,
-    		jsonData.questions_5
-    		]
-    	for (let i = 0; i < 5; i++) {
-    		this.questions[i].forEach((question,index) => {
-    			if (question.sub_questions){
-    				question.sub_questions.forEach(subQ => {
-    					this.fillcardNum[i].push({num:subQ.no,index:index})
-    				})
-    			}else{
-    				this.fillcardNum[i].push({num:question.no,index:index})
-    			}
-    		});
-    	}
-    	this.answers = JSON.parse(sessionStorage.getItem("currentAnswers"));
-    	this.initAnalysisDataJson()
-    	this.initAccuracy()
-    },
-    initAccuracy(){
-    	for(var i=0; i<5;i++){
-    		let right = 0;
-    		let wrong = 0;
-    		let none = 0;
-    		this.fillcardNum[i].forEach(num => {
-    			const aData = this.AnalysisData[num.num-1]
-    			if(aData.mineAnswer == ""){
-    				none++
-    			}else if(aData.mineAnswer != aData.answer){
-    				wrong++
-    			}else{
-    				right++
-    			}
-    		})
-    		// console.log(`${this.questionTypeList[i]}中正确${right}个，错误${wrong}个，未作答${none}个`)
-    		if(right == 0 && wrong == 0){
-    			this.accuracyList[i] = null
-    		}else{
-    			this.accuracyList[i] = (100*right/(right+wrong+none)).toFixed(1)
-    		}
-    	}
-    },
-    switchType(index){
-    	this.currQTypeIndex = index;
-    },
+		// 设置这个消息会让浏览器显示一个确认对话框
+		event.returnValue = confirmationMessage;  // 标准兼容做法
+		return confirmationMessage;  // 对某些旧版浏览器的支持
+		  }
+		},
+		init(){
+			const jsonData = this.jsonData
+			this.questions = [
+				jsonData.questions_1,
+				jsonData.questions_2,
+				jsonData.questions_3,
+				jsonData.questions_4,
+				jsonData.questions_5
+				]
+			for (let i = 0; i < 5; i++) {
+				this.questions[i].forEach((question,index) => {
+					if (question.sub_questions){
+						question.sub_questions.forEach(subQ => {
+							this.fillcardNum[i].push({num:subQ.no,index:index})
+						})
+					}else{
+						this.fillcardNum[i].push({num:question.no,index:index})
+					}
+				});
+			}
+			this.answers = JSON.parse(sessionStorage.getItem("currentAnswers"));
+			this.initAnalysisDataJson()
+			this.initAccuracy()
+		},
+		initAccuracy(){
+			for(var i=0; i<5;i++){
+				let right = 0;
+				let wrong = 0;
+				let none = 0;
+				this.fillcardNum[i].forEach(num => {
+					const aData = this.AnalysisData[num.num-1]
+					if(aData.mineAnswer == ""){
+						none++
+					}else if(aData.mineAnswer != aData.answer){
+						wrong++
+					}else{
+						right++
+					}
+				})
+				// console.log(`${this.questionTypeList[i]}中正确${right}个，错误${wrong}个，未作答${none}个`)
+				if(right == 0 && wrong == 0){
+					this.accuracyList[i] = null
+				}else{
+					this.accuracyList[i] = (100*right/(right+wrong+none)).toFixed(1)
+				}
+			}
+		},
+		switchType(index){
+			this.currQTypeIndex = index;
+		},
 
-    TypeSet(elements){
-    	if (!window.MathJax) {
-    		console.log('no window.MathJax')
-    		return
-    	}
-      // window.MathJax.startup.promise = 
-    	window.MathJax.startup.promise
-    	.then(() => {
-    		return window.MathJax.typesetPromise(elements)
-    	})
-    	.catch((err) => console.log('Typeset failed: ' + err.message))
+		TypeSet(elements){
+			if (!window.MathJax) {
+				console.log('no window.MathJax')
+				return
+			}
+		  // window.MathJax.startup.promise = 
+			window.MathJax.startup.promise
+			.then(() => {
+				return window.MathJax.typesetPromise(elements)
+			})
+			.catch((err) => console.log('Typeset failed: ' + err.message))
 
-    	return window.MathJax.startup.promise
-    },
+			return window.MathJax.startup.promise
+		},
 
-    async loadJsonData() {
-    	try {
-    		const jsonPath = `/json/zhenti/${this.$route.params.papername}_analysis.json`;
-    		// console.log(jsonPath);
+		async loadJsonData() {
+			try {
+				const jsonPath = `/json/zhenti/${this.$route.params.papername}_analysis.json`;
+				// console.log(jsonPath);
 
-    		const response = await fetch(jsonPath);
-    		if (!response.ok) {
-    			throw new Error('Network response was not ok');
-    		}else{
-    			this.AnalysisData = await response.json();
-    		}
+				const response = await fetch(jsonPath);
+				if (!response.ok) {
+					throw new Error('Network response was not ok');
+				}else{
+					this.AnalysisData = await response.json();
+				}
 
-    		const jsonPath2 = `/json/zhenti/${this.$route.params.papername}.json`;
+				const jsonPath2 = `/json/zhenti/${this.$route.params.papername}.json`;
 
-    		const response2 = await fetch(jsonPath2);
-    		if (!response2.ok) {
-    			throw new Error('Network response2 was not ok');
-    		}
-    		this.jsonData = await response2.json();
-    		
-    	} catch (error) {
-    		console.error('Failed to load JSON data:', error);
-    	}
-    }
+				const response2 = await fetch(jsonPath2);
+				if (!response2.ok) {
+					throw new Error('Network response2 was not ok');
+				}
+				this.jsonData = await response2.json();
+				
+			} catch (error) {
+				console.error('Failed to load JSON data:', error);
+			}
+		}
   }
 }
 </script>
@@ -533,7 +536,7 @@ transition: 0.3s ease;
 	padding-left: 2px;
 	opacity: 0;
 	transition-delay: 0s;
-/*    transition: opacity 0.3s ease;*/
+/*		transition: opacity 0.3s ease;*/
 }
 
 .left,.right{
@@ -604,5 +607,11 @@ transition: 0.3s ease;
 
 }
 
+.edit-button:not(:last-child):after{
+	content: "";
+	width: 0;
+	border-left: var(--box-border);
+	margin: 0 5px;
+}
 
 </style>

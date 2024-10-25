@@ -102,6 +102,8 @@
 .markdown-body img {
   border-style: none;
   max-width: 100%;
+  border: var(--box-border);
+/*  width: 80%;*/
   box-sizing: content-box;
   background-color: var(--color-canvas-default);
 }

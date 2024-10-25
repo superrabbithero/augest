@@ -405,6 +405,7 @@
         }
       },
       selectDate(index){
+        // console.log(this.type)
         this.selectedDate = this.selectedDate ? this.selectedDate : "yyyy/mm/ddT00:00"
         if(index == -1){
           this.init()
@@ -421,7 +422,7 @@
         let datetime = this.selectedDate.split("T")
           datetime[0] = `${date.getYear()+1900}/${(date.getMonth()+1)>10?'':0}${date.getMonth()+1}/${date.getDate()>10?'':0}${date.getDate()}`
           this.selectedDate = datetime.join("T")
-        if(this.show){
+        if(this.show && this.type != "calendar"){
           setTimeout(()=>{
             this.$refs.calendarContainer.style.display="none"
           },300)
@@ -429,6 +430,7 @@
           document.removeEventListener('click',this.closeCalendar)
         }
         this.changeHandler(this.selectedDate)
+        // console.log(this.selectedDate)
       }
     }
   };
