@@ -474,21 +474,24 @@ position: relative;
 }
 
 .answercard{
-	padding: 10px 10px;
+/*	padding: 10px 10px;*/
 }
 
 .fillcard {
+	font-family: SmileySans-Oblique;
 	min-width: 150px;
 	display: flex;
 	flex-wrap: wrap
 }
 
 .circle-groups {
+
+	
 	flex-basis: 100%;
 	background-color: var(--box-hightlight);
 	border-radius:0 0 5px 5px;
 	padding: 5px;
-	border: 1px solid #8cb9c0;
+/*	border: 1px solid #8cb9c0;*/
 	display: flex;
 	flex-wrap: wrap;
 }
@@ -512,14 +515,15 @@ position: relative;
 	align-items: center;	
 	width: 100%;
 	height: 100%;
-/*		border-radius: 50%;*/
-border: 1px solid #8cb9c0;
+		border-radius: 4px;
+/*border: 1px solid #8cb9c0;*/
 /*		line-height: 100%;*/
-color: #8cb9c0;
+/*color: #8cb9c0;*/
 display: flex;
 align-items: center;
 justify-content: center;
 cursor: pointer;
+background-color: var(--button-highlight);
 }
 .circle-groups-item .circle.answered{
 	background-color: #91b5a9;
@@ -540,10 +544,10 @@ cursor: pointer;
 }
 
 .exampaperbox-left .circle-groups-item .circle.current,.exampaperbox-bottom .circle-groups-item .circle.current{
-	background-color: #edca7f;
-	border: 1px solid #edca7f;
-	box-shadow: inset 0 0 0 1px white;
-	color: #fff;
+/*	background-color: #edca7f;*/
+	outline: 1px solid #edca7f;
+/*	box-shadow: inset 0 0 0 1px white;*/
+/*	color: #fff;*/
 }
 
 .report .circle-groups-item .circle.current{
@@ -658,11 +662,15 @@ color: #f67280;
 	display: flex;
 	justify-content: space-between;
 	padding: 0;
-	margin-bottom: -1px;
-	z-index: 888;
+	margin: 0 0 0.8rem 0;
+
+/*	margin-bottom: -1px;*/
+/*	z-index: 888;*/
 }
 
 .fill-type li{
+	user-select: none;
+	cursor: pointer;
 	flex:1;
 	text-align: center;
 	font-size: 15px;
@@ -670,13 +678,14 @@ color: #f67280;
 	height: 18px;
 	display: block;
 	padding: 5px 0;
+	border-radius: 0.5rem;
+/*	transition: background-color 0.1s ease-in;*/
 }
 
 .fill-type li.active{
-	background-color: var(--box-hightlight);
-	border-radius:5px 5px 0 0;
-	border: 1px solid #8cb9c0;
-	border-bottom: none;
+	background-color: #f76477;
+  
+  color: #eeeeee;
 
 }
 

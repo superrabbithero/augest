@@ -1258,7 +1258,7 @@
                     "no": 112
                 },
                 {
-                    "content": "若2019-2022年我国直播电商行业企业数、用户数、人均年消费额的年均增速分别用<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1723610466513/68c14ead70bb16d55bbb9932e308a054\">、<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1723610466513/0df683febb98c153eaaa89092b4d1461\">、<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1723610466513/591104832a52eeb4886ce68f2df76e47\">表示。则下列关系式正确的是：",
+                    "content": "若2019-2022年我国直播电商行业企业数、用户数、人均年消费额的年均增速分别用<span class=\"output\">$$V_1、 V_2、 V_3$$</span>表示。则下列关系式正确的是：",
                     "options": [
                         "<span class=\"output\">$$V_1\\le V_2\\le V_3$$</span>",
                         "<span class=\"output\">$$V_2\\le V_1\\le V_3$$</span>",

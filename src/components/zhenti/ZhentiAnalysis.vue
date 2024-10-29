@@ -202,6 +202,8 @@
 			initAnalysisDataJson(){
 				let count = 0
 				// console.log(this.answers)
+				this.answers = JSON.parse(sessionStorage.getItem("currentAnswers"));
+				console.log(this.answers)
 				if(this.answers == null){
 					return
 				}
@@ -222,7 +224,7 @@
 								content:"",
 							};
 							if(this.AnalysisData[count-1] && this.AnalysisData[count-1].questionNum == count){
-								if(answer.mine){
+								if(answer.mine != ''){
 									this.AnalysisData[count-1].mineAnswer = answer.mine
 								}
 							}else{
@@ -338,7 +340,13 @@
 
 		async loadJsonData() {
 			try {
-				const jsonPath = `/json/zhenti/${this.$route.params.papername}_analysis.json`;
+				const jsonPath2 = `/json/zhenti/${this.$route.params.papername}.json`;
+
+				const response2 = await fetch(jsonPath2);
+				if (!response2.ok) {
+					throw new Error('Network response2 was not ok');
+
+					const jsonPath = `/json/zhenti/${this.$route.params.papername}_analysis.json`;
 				// console.log(jsonPath);
 
 				const response = await fetch(jsonPath);
@@ -347,12 +355,6 @@
 				}else{
 					this.AnalysisData = await response.json();
 				}
-
-				const jsonPath2 = `/json/zhenti/${this.$route.params.papername}.json`;
-
-				const response2 = await fetch(jsonPath2);
-				if (!response2.ok) {
-					throw new Error('Network response2 was not ok');
 				}
 				this.jsonData = await response2.json();
 				
@@ -415,6 +417,7 @@
 }
 
 .circle-groups-item .circle{
+	font-family: SmileySans-Oblique;
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -428,14 +431,15 @@
 	border: var(--box-border);
 /*		line-height: 100%;*/
 /*		color: #8cb9c0;*/
-display: flex;
-align-items: center;
-justify-content: center;
-cursor: pointer;
-font-size: 80%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	font-size: 90%;
 }
 
 .circle-groups-item .circle.active,.circle-groups-item .circle.active:hover{
+	text-decoration: underline;
 	border: 1px solid #8cb9c0;
 	background-color: #8cb9c0;
 	color: #fff;
@@ -498,7 +502,7 @@ border: 1px solid #edca7f;
 	flex-direction: column;
 	justify-content: flex-start;
 	flex:1;
-	padding-right: 8px;
+/*	padding-right: 8px;*/
 	overflow-y: auto;
 }
 .right {
@@ -545,6 +549,7 @@ transition: 0.3s ease;
 }
 
 .analysis {
+	margin-right: 8px;
 	padding: 8px;
 	border: var(--box-border);
 	border-radius: 8px;
