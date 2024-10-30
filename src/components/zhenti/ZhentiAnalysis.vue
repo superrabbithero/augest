@@ -203,16 +203,18 @@
 				let count = 0
 				// console.log(this.answers)
 				this.answers = JSON.parse(sessionStorage.getItem("currentAnswers"));
-				console.log(this.answers)
-				if(this.answers == null){
+				// console.log(this.answers)
+				console.log("获取的解析文件：",this.AnalysisData)
+				if(this.answers == null || this.answers.name != `${this.$route.params.papername}`){
 					return
 				}
+				
 				for (let i = 0; i < 5; i++) {
-					var keys = Object.keys(this.answers[i])
+					var keys = Object.keys(this.answers.answerJson[i])
 					keys.forEach(key => {
-						if(this.answers[i][key]){
+						if(this.answers.answerJson[i][key]){
 							count ++
-							const answer = this.answers[i][key]
+							const answer = this.answers.answerJson[i][key]
 							// console.log(answer)
 							const data = {
 								questionNum:count,
@@ -233,6 +235,7 @@
 						}
 					})
 				}
+				console.log("初始化后的解析文件：",this.AnalysisData)
 			},
 			showQuestion(type,i,num){
 				const index = this.fillcardNum[type][i].index
@@ -294,7 +297,7 @@
 			}
 			this.answers = JSON.parse(sessionStorage.getItem("currentAnswers"));
 			this.initAnalysisDataJson()
-			this.initAccuracy()
+			// this.initAccuracy()
 		},
 		initAccuracy(){
 			for(var i=0; i<5;i++){
@@ -345,18 +348,17 @@
 				const response2 = await fetch(jsonPath2);
 				if (!response2.ok) {
 					throw new Error('Network response2 was not ok');
+				}
+				this.jsonData = await response2.json();
 
-					const jsonPath = `/json/zhenti/${this.$route.params.papername}_analysis.json`;
+				const jsonPath = `/json/zhenti/${this.$route.params.papername}_analysis.json`;
 				// console.log(jsonPath);
-
 				const response = await fetch(jsonPath);
 				if (!response.ok) {
 					throw new Error('Network response was not ok');
 				}else{
 					this.AnalysisData = await response.json();
 				}
-				}
-				this.jsonData = await response2.json();
 				
 			} catch (error) {
 				console.error('Failed to load JSON data:', error);
@@ -391,11 +393,9 @@
 		display: flex;
 		flex-wrap: wrap;
 		margin: 10px 0;
+		background-color: var(--box-hightlight);
 	}
 
-	.circle-groups:hover {
-		outline: 1px solid var(--main-color);
-	}
 
 	.sub-circle-groups {
 		flex-basis: 100%;
@@ -423,26 +423,27 @@
 	left: 0;
 	right: 0;
 	bottom: 0;
-
+	box-sizing: border-box;
 	align-items: center;	
 	width: 100%;
 	height: 100%;
-	border-radius: 50%;
-	border: var(--box-border);
+		border-radius: 4px;
+/*border: 1px solid #8cb9c0;*/
 /*		line-height: 100%;*/
-/*		color: #8cb9c0;*/
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	cursor: pointer;
-	font-size: 90%;
+/*color: #8cb9c0;*/
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+background-color: var(--button-highlight);
 }
 
 .circle-groups-item .circle.active,.circle-groups-item .circle.active:hover{
+	outline: 3px solid var(--main-color);
 	text-decoration: underline;
-	border: 1px solid #8cb9c0;
+	/*border: 1px solid #8cb9c0;
 	background-color: #8cb9c0;
-	color: #fff;
+	color: #fff;*/
 }
 
 .circle-groups-item .circle.liked,.circle-groups-item .circle.liked:hover{
@@ -460,8 +461,7 @@
 
 
 .circle-groups-item .circle:hover{
-	border: 1px solid #8cb9c0;
-	color: #8cb9c0;
+	outline: 2px solid var(--main-color);
 }
 
 .question{
@@ -531,10 +531,16 @@ transition: 0.3s ease;
   align-items: center;
 }
 
+.right.hidden .answercard{
+	opacity: 1;
+}
+
 .right-bar {
 	height: 100%;
 	width: 1.2rem;
 	position: absolute;
+	z-index: 1;
+	background-color: var(--box-bgc);
 	font-size: 0.8rem;
 	text-align: center;
 	padding-left: 2px;

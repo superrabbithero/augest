@@ -212,7 +212,7 @@ export default {
 	methods:{
 		gotoAnalysis(){
 			// console.log(toString(this.answers))
-			sessionStorage.setItem("currentAnswers", JSON.stringify(this.answers));
+			sessionStorage.setItem("currentAnswers", JSON.stringify({"name":`${this.$route.params.papername}`,"answerJson":this.answers}));
 			sessionStorage.setItem("currentQuestions", JSON.stringify(this.jsonData));
 			this.$router.push(`/zhenti/analysis/${this.$route.params.papername}`)
 		},
@@ -466,9 +466,9 @@ position: relative;
 }
 
 .exampaperbox-bottom .fillcard .circle-groups-item,.report .fillcard .circle-groups-item{
-	width: calc(10% - 10px);
-	padding-top: calc(10% - 10px);
-	margin: 5px;
+	width: calc(10% - 6px);
+	padding-top: calc(10% - 6px);
+	margin: 3px;
 	box-sizing: border-box;
 	position: relative;
 }
@@ -496,9 +496,9 @@ position: relative;
 	flex-wrap: wrap;
 }
 .circle-groups-item{
-	width: calc(20% - 10px);
-	padding-top: calc(20% - 10px);
-	margin: 5px;
+	width: calc(20% - 8px);
+	padding-top: calc(20% - 8px);
+	margin: 4px;
 	box-sizing: border-box;
 	position: relative;
 /*		display: inline-block;*/
@@ -511,7 +511,7 @@ position: relative;
 	left: 0;
 	right: 0;
 	bottom: 0;
-
+	box-sizing: border-box;
 	align-items: center;	
 	width: 100%;
 	height: 100%;
@@ -545,7 +545,7 @@ background-color: var(--button-highlight);
 
 .exampaperbox-left .circle-groups-item .circle.current,.exampaperbox-bottom .circle-groups-item .circle.current{
 /*	background-color: #edca7f;*/
-	outline: 1px solid #edca7f;
+	outline: 3px solid var(--main-color);
 /*	box-shadow: inset 0 0 0 1px white;*/
 /*	color: #fff;*/
 }
