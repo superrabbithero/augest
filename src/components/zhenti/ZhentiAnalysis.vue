@@ -40,7 +40,7 @@
 							<div class="analysis-item">
 								<label>知 识 点：</label>
 								<div class="analysis-tag" v-for="knowledge in currentAnalysisData.knowledges">{{ knowledge }}</div>
-								<svg-icon v-if="!tag_editing" name="letter-plus01" size="20" @click="tag_editing = true"></svg-icon>
+								<svg-icon v-if="!tag_editing" name="letter-plus01" size="20" @click="modal_show.knowledge_show = !modal_show.knowledge_show"></svg-icon>
 								<input v-else v-model="addTagName" type="text" />
 								<svg-icon v-show="tag_editing" name="correct01" size="20" @click="addTag()"></svg-icon>
 								<svg-icon v-show="tag_editing" name="error01" size="20" @click="tag_editing=false;addTagName=''"></svg-icon>
@@ -64,7 +64,7 @@
 								</div>
 
 								<div v-else class="analysis-content" v-html="currentAnalysisData.content?currentAnalysisData.content:'暂无解析'">
-									
+
 								</div>
 
 							</div>
@@ -98,9 +98,13 @@
 			</div>
 		</div>
 	</div>
+	<my-model :show="modal_show.knowledge_show" :modeless="false" :modalKey="'knowledge_show'">
+		<TreeSelect :treeData="treeData" />
+	</my-model>
 </template>
 
 <script>
+	import TreeSelect from '@/components/Model/TreeSelect.vue';
 
 	export default {
 		data(){
@@ -129,36 +133,177 @@
 				},
 				currentAnalysisChanged:false,
 				edited:false,
-				right_show:true,
+				right_show:false,
 				tag_editing:false,
-				addTagName:''
+				addTagName:'',
+				modal_show:{
+					knowledge_show:false
+				},
+				//知识点树形结构
+				treeData:[
+				{
+					"id":1,
+					"name": "政治理论",
+					"children": []
+				},
+				{
+					"id":2,
+					"name": "常识判断",
+					"children": []
+				},
+				{
+					"id":3,
+					"name": "言语理解",
+					"children": []
+				},
+				{
+					"id":4,
+					"name": "数学运算",
+					"children": []
+				},
+				{
+					"id":5,
+					"name": "判断推理",
+					"children": [
+					{
+						"id":6,
+						"name": "图形推理",
+						"children": []
+					},
+					{
+						"id":7,
+						"name": "定义判断",
+						"children": []
+					},
+					{
+						"id":8,
+						"name": "朴素逻辑",
+						"children": []
+					},
+					{
+						"id":9,
+						"name": "增强削弱",
+						"children": []
+					},
+					{
+						"id":10,
+						"name": "排列组合",
+						"children": []
+					}
+					]
+				},
+				{
+					"id":11,
+					"name": "资料分析",
+					"children": [
+					{
+						"id":12,
+						"name": "普通增长",
+						"children": []
+					},
+					{
+						"id":13,
+						"name": "比值",
+						"children": []
+					},
+					{
+						"id":14,
+						"name": "大小比较",
+						"children": []
+					},
+					{
+						"id":15,
+						"name": "年均增长",
+						"children": []
+					},
+					{
+						"id":16,
+						"name": "速算技巧",
+						"children": [
+						{
+							"id":17,
+							"name": "多项加法",
+							"children": []
+						},
+						{
+							"id":18,
+							"name": "错位法",
+							"children": []
+						},
+						{
+							"id":19,
+							"name": "假设分配",
+							"children": []
+						}
+						]
+					}
+					]
+				}
+				]
 			}
 		},
+		components: {
+			TreeSelect
+		},
 		mounted(){
-			// console.log('mounted')
 			this.loadJsonData().then(data => {
-				
+
 			}).catch(error => {
 				console.log(error)
-				
+
 			}).finally(()=>{
 				this.init()
 				this.showQuestion(0,0,1)
 				this.TypeSet([document.getElementsByClassName("output")])
-				// this.initAnalysisDataJson()
 			})
-  	// 添加监听器，当页面即将关闭时触发
+// 添加监听器，当页面即将关闭时触发
 			window.addEventListener("beforeunload", this.handleBeforeUnload);
 		},
 		unmounted(){
-		// this.toggleHeader(true)
-  	// 移除监听器，防止内存泄漏
+// this.toggleHeader(true)
+// 移除监听器，防止内存泄漏
 			window.removeEventListener("beforeunload", this.handleBeforeUnload);
 		},
 		beforeRouteLeave(to, from, next) {
 			this.confirmLeave(to, from, next);
 		},
 		methods:{
+			//获得知识点(树形数据节点id的最大值用于增加节点)
+			getMaxId(nodes) {
+				let maxId = 0;
+				nodes.forEach(node => {
+					maxId = Math.max(maxId, node.id);
+					if (node.children && node.children.length > 0) {
+						const childMaxId = getMaxId(node.children);
+						maxId = Math.max(maxId, childMaxId);
+					}
+				});
+				return maxId;
+			},
+			//增加节点
+			addNode(parentNode, newNode) {
+				const newId = getMaxId(treeData) + 1; // 获取新的 id
+				newNode.id = newId; // 设置新节点的 id
+				parentNode.children.push(newNode); // 将新节点添加到父节点的 children 中
+			},
+			//通过id修改节点名称
+			updateNodeName(nodes=this.treeData, id, newName) {
+				for (const node of nodes) {
+					if (node.id === id) {
+						node.name = newName; // 修改节点的 name
+						return true; // 找到并修改，返回 true
+					}
+					if (node.children && node.children.length > 0) {
+						const found = updateNodeName(node.children, id, newName); 
+						// 递归查找子节点
+						if (found) {
+						  return true; // 如果在子节点中找到，返回 true
+						}
+					}
+				}
+				return false; // 未找到，返回 false
+			},
+
 			formatText(command) {
 				document.execCommand(command, false, null);
 			},
@@ -173,7 +318,7 @@
 				let type = this.currentFillcardNumIndex[0]
 				let i = this.currentFillcardNumIndex[1]
 				let num = this.currentFillcardNumIndex[2]
-				console.log(type,i,num)
+				// console.log(type,i,num)
 				if(i > 0){
 					this.showQuestion(type,i-1,num-1)
 				}else if(type > 0){
@@ -184,7 +329,7 @@
 				let type = this.currentFillcardNumIndex[0]
 				let i = this.currentFillcardNumIndex[1]
 				let num = this.currentFillcardNumIndex[2]
-				console.log(type,i,num,this.fillcardNum[type].length)
+				// console.log(type,i,num,this.fillcardNum[type].length)
 				if(i < this.fillcardNum[type].length-1){
 					this.showQuestion(type,i+1,num+1)
 				}else if(type < 4){
@@ -201,21 +346,21 @@
 			},
 			initAnalysisDataJson(){
 				let count = 0
-				// console.log(this.answers)
+			// console.log(this.answers)
 				this.answers = JSON.parse(sessionStorage.getItem("currentAnswers"));
-				// console.log(this.answers)
-				console.log("获取的解析文件：",this.AnalysisData)
+			// console.log(this.answers)
+				// console.log("获取的解析文件：",this.AnalysisData)
 				if(this.answers == null || this.answers.name != `${this.$route.params.papername}`){
 					return
 				}
-				
+
 				for (let i = 0; i < 5; i++) {
 					var keys = Object.keys(this.answers.answerJson[i])
 					keys.forEach(key => {
 						if(this.answers.answerJson[i][key]){
 							count ++
 							const answer = this.answers.answerJson[i][key]
-							// console.log(answer)
+			// console.log(answer)
 							const data = {
 								questionNum:count,
 								answer:answer.answer,
@@ -235,17 +380,17 @@
 						}
 					})
 				}
-				console.log("初始化后的解析文件：",this.AnalysisData)
+				// console.log("初始化后的解析文件：",this.AnalysisData)
 			},
 			showQuestion(type,i,num){
 				const index = this.fillcardNum[type][i].index
-				// console.log("showQuestion",type,i,num)
+			// console.log("showQuestion",type,i,num)
 				this.currentFillcardNumIndex = [type,i,num]
 				if(this.currentAnalysisChanged){
 					this.AnalysisData[Number(this.currentNum)-1] = this.currentAnalysisData
 					this.currentAnalysisChanged = false
 				}
-				// console.log(type,index)
+			// console.log(type,index)
 				this.currentQuestion = this.questions[type][index]
 				this.currentNum = num
 				this.currentAnalysisData = this.AnalysisData[Number(this.currentNum)-1]
@@ -257,114 +402,114 @@
 				if (false) {
 					const answer = window.confirm("考试进程中，直接离开会丢失当前草稿和答题内容");
 					if (answer) {
-		  next(); // 允许导航离开
-		} else {
-		  next(false); // 阻止导航
-		}
-		  } else {
-		next(); // 如果没有未保存的更改，直接离开
-		  }
-		},
-		handleBeforeUnload(event){
-			if(false){
-		// 在这里你可以处理关闭标签页时的逻辑
-				const confirmationMessage = "考试进程中，直接离开会丢失当前草稿和答题内容";
-
-		// 设置这个消息会让浏览器显示一个确认对话框
-		event.returnValue = confirmationMessage;  // 标准兼容做法
-		return confirmationMessage;  // 对某些旧版浏览器的支持
-		  }
-		},
-		init(){
-			const jsonData = this.jsonData
-			this.questions = [
-				jsonData.questions_1,
-				jsonData.questions_2,
-				jsonData.questions_3,
-				jsonData.questions_4,
-				jsonData.questions_5
-				]
-			for (let i = 0; i < 5; i++) {
-				this.questions[i].forEach((question,index) => {
-					if (question.sub_questions){
-						question.sub_questions.forEach(subQ => {
-							this.fillcardNum[i].push({num:subQ.no,index:index})
-						})
-					}else{
-						this.fillcardNum[i].push({num:question.no,index:index})
+					next(); // 允许导航离开
+					} else {
+						next(false); // 阻止导航
 					}
-				});
+				} else {
+					next(); // 如果没有未保存的更改，直接离开
+				}
+			},
+			handleBeforeUnload(event){
+				if(false){
+			// 在这里你可以处理关闭标签页时的逻辑
+					const confirmationMessage = "考试进程中，直接离开会丢失当前草稿和答题内容";
+
+			// 设置这个消息会让浏览器显示一个确认对话框
+			event.returnValue = confirmationMessage;  // 标准兼容做法
+			return confirmationMessage;  // 对某些旧版浏览器的支持
 			}
-			this.answers = JSON.parse(sessionStorage.getItem("currentAnswers"));
-			this.initAnalysisDataJson()
+			},
+			init(){
+				const jsonData = this.jsonData
+				this.questions = [
+					jsonData.questions_1,
+					jsonData.questions_2,
+					jsonData.questions_3,
+					jsonData.questions_4,
+					jsonData.questions_5
+					]
+				for (let i = 0; i < 5; i++) {
+					this.questions[i].forEach((question,index) => {
+						if (question.sub_questions){
+							question.sub_questions.forEach(subQ => {
+								this.fillcardNum[i].push({num:subQ.no,index:index})
+							})
+						}else{
+							this.fillcardNum[i].push({num:question.no,index:index})
+						}
+					});
+				}
+				this.answers = JSON.parse(sessionStorage.getItem("currentAnswers"));
+				this.initAnalysisDataJson()
 			// this.initAccuracy()
-		},
-		initAccuracy(){
-			for(var i=0; i<5;i++){
-				let right = 0;
-				let wrong = 0;
-				let none = 0;
-				this.fillcardNum[i].forEach(num => {
-					const aData = this.AnalysisData[num.num-1]
-					if(aData.mineAnswer == ""){
-						none++
-					}else if(aData.mineAnswer != aData.answer){
-						wrong++
+			},
+			initAccuracy(){
+				for(var i=0; i<5;i++){
+					let right = 0;
+					let wrong = 0;
+					let none = 0;
+					this.fillcardNum[i].forEach(num => {
+						const aData = this.AnalysisData[num.num-1]
+						if(aData.mineAnswer == ""){
+							none++
+						}else if(aData.mineAnswer != aData.answer){
+							wrong++
+						}else{
+							right++
+						}
+					})
+			// console.log(`${this.questionTypeList[i]}中正确${right}个，错误${wrong}个，未作答${none}个`)
+					if(right == 0 && wrong == 0){
+						this.accuracyList[i] = null
 					}else{
-						right++
+						this.accuracyList[i] = (100*right/(right+wrong+none)).toFixed(1)
 					}
+				}
+			},
+			switchType(index){
+				this.currQTypeIndex = index;
+			},
+
+			TypeSet(elements){
+				if (!window.MathJax) {
+					console.log('no window.MathJax')
+					return
+				}
+			// window.MathJax.startup.promise = 
+				window.MathJax.startup.promise
+				.then(() => {
+					return window.MathJax.typesetPromise(elements)
 				})
-				// console.log(`${this.questionTypeList[i]}中正确${right}个，错误${wrong}个，未作答${none}个`)
-				if(right == 0 && wrong == 0){
-					this.accuracyList[i] = null
-				}else{
-					this.accuracyList[i] = (100*right/(right+wrong+none)).toFixed(1)
+				.catch((err) => console.log('Typeset failed: ' + err.message))
+
+				return window.MathJax.startup.promise
+			},
+
+			async loadJsonData() {
+				try {
+					const jsonPath2 = `/json/zhenti/${this.$route.params.papername}.json`;
+
+					const response2 = await fetch(jsonPath2);
+					if (!response2.ok) {
+						throw new Error('Network response2 was not ok');
+					}
+					this.jsonData = await response2.json();
+
+					const jsonPath = `/json/zhenti/${this.$route.params.papername}_analysis.json`;
+			// console.log(jsonPath);
+					const response = await fetch(jsonPath);
+					if (!response.ok) {
+						throw new Error('Network response was not ok');
+					}else{
+						this.AnalysisData = await response.json();
+					}
+
+				} catch (error) {
+					console.error('Failed to load JSON data:', error);
 				}
-			}
-		},
-		switchType(index){
-			this.currQTypeIndex = index;
-		},
-
-		TypeSet(elements){
-			if (!window.MathJax) {
-				console.log('no window.MathJax')
-				return
-			}
-		  // window.MathJax.startup.promise = 
-			window.MathJax.startup.promise
-			.then(() => {
-				return window.MathJax.typesetPromise(elements)
-			})
-			.catch((err) => console.log('Typeset failed: ' + err.message))
-
-			return window.MathJax.startup.promise
-		},
-
-		async loadJsonData() {
-			try {
-				const jsonPath2 = `/json/zhenti/${this.$route.params.papername}.json`;
-
-				const response2 = await fetch(jsonPath2);
-				if (!response2.ok) {
-					throw new Error('Network response2 was not ok');
-				}
-				this.jsonData = await response2.json();
-
-				const jsonPath = `/json/zhenti/${this.$route.params.papername}_analysis.json`;
-				// console.log(jsonPath);
-				const response = await fetch(jsonPath);
-				if (!response.ok) {
-					throw new Error('Network response was not ok');
-				}else{
-					this.AnalysisData = await response.json();
-				}
-				
-			} catch (error) {
-				console.error('Failed to load JSON data:', error);
 			}
 		}
-  }
 }
 </script>
 <style scoped>
@@ -385,7 +530,7 @@
 		display: flex;
 		flex-wrap: wrap
 	}
-	
+
 	.circle-groups {
 		flex-basis: 100%;
 		border-radius:5px;
@@ -427,7 +572,7 @@
 	align-items: center;	
 	width: 100%;
 	height: 100%;
-		border-radius: 4px;
+	border-radius: 4px;
 /*border: 1px solid #8cb9c0;*/
 /*		line-height: 100%;*/
 /*color: #8cb9c0;*/
@@ -441,9 +586,9 @@ background-color: var(--button-highlight);
 .circle-groups-item .circle.active,.circle-groups-item .circle.active:hover{
 	outline: 3px solid var(--main-color);
 	text-decoration: underline;
-	/*border: 1px solid #8cb9c0;
-	background-color: #8cb9c0;
-	color: #fff;*/
+/*border: 1px solid #8cb9c0;
+background-color: #8cb9c0;
+color: #fff;*/
 }
 
 .circle-groups-item .circle.liked,.circle-groups-item .circle.liked:hover{
@@ -496,14 +641,14 @@ border: 1px solid #edca7f;
 	border-radius: 10px;
 }
 .left {
-	/* width: calc(100% - 300px); */
-	box-sizing: border-box;
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-start;
-	flex:1;
+/* width: calc(100% - 300px); */
+box-sizing: border-box;
+display: flex;
+flex-direction: column;
+justify-content: flex-start;
+flex:1;
 /*	padding-right: 8px;*/
-	overflow-y: auto;
+overflow-y: auto;
 }
 .right {
 	flex:0 0 auto;
@@ -527,8 +672,8 @@ transition: 0.3s ease;
 	transition: opacity 0.8s ease-in-out;
 	cursor: pointer;
 	display: flex;
-  flex-direction: column;
-  align-items: center;
+	flex-direction: column;
+	align-items: center;
 }
 
 .right.hidden .answercard{
@@ -566,7 +711,7 @@ transition: 0.3s ease;
 	font-family: SmileySans-Oblique;
 	text-align:justify;
 	line-height: 2rem;
-  height: 2rem;
+	height: 2rem;
 }
 .analysis-item label:after{
 	display:inline-block;

@@ -1,0 +1,62 @@
+{
+  "id":0,
+  "name": "行测知识点",
+  "children": [
+    {
+      "id":1,
+      "name": "政治理论",
+      "children": []
+    },
+    {
+      "id":2,
+      "name": "常识判断",
+      "children": []
+    },
+    {
+      "id":3,
+      "name": "言语理解",
+      "children": []
+    },
+    {
+      "id":4,
+      "name": "数学运算",
+      "children": []
+    },
+    {
+      "id":5,
+      "name": "判断推理",
+      "children": [
+        {
+          "id":6,
+          "name": "图形推理",
+          "children": []
+        },
+        {
+          "id":7,
+          "name": "定义判断",
+          "children": []
+        },
+        {
+          "id":8,
+          "name": "朴素逻辑",
+          "children": []
+        },
+        {
+          "id":9,
+          "name": "增强削弱",
+          "children": []
+        },
+        {
+          "id":10,
+          "name": "排列组合",
+          "children": []
+        }
+      ]
+    },
+    {
+      "id":11,
+      "name": "资料分析",
+      "children": []
+    }
+  ]
+}

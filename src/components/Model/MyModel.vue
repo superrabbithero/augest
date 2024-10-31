@@ -6,7 +6,9 @@
         <div class="modal-close" @click="close()">
         </div>
       </div>
-      <slot></slot>
+      <div class="modal-slot">
+        <slot></slot>
+      </div>
     </div>
 </transition>
 </template>
@@ -73,7 +75,7 @@ export default({
 
 <style scoped>
 .overlay {
-  position: fixed;
+  position: absolute;
   height: 100%;
   width: 100%;
   top: 0;
@@ -81,9 +83,12 @@ export default({
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 999;
 }
+
 .modal {
+  padding-bottom: 1rem;
   width:400px;
-  /* height: fit-content; */
+  display: flex;
+  flex-direction: column;
 }
 
 .modal-slide-enter-active, .modal-slide-leave-active {
@@ -99,4 +104,39 @@ export default({
 /*  transform: translate(-50%,-50%);*/
 /*  transform: translateY(0);*/
 }
+.modal-slot{
+  height: 100%;
+  overflow: auto;
+}
+
+@media (max-width: 400px) {
+  .modal {
+    width:100%;
+    border-radius: 0;
+    bottom: 0;
+    top: unset;
+    left: 0;
+    transform: unset;
+    max-height: 60%;
+  }
+  .modal-slide-enter-active, .modal-slide-leave-active {
+    transition: transform 0.5s;
+  }
+  .modal-slide-enter-from, .modal-slide-leave-to /* .modal-slide-leave-active in <2.1.8 */ {
+    opacity: 0;
+    transform: translateY(100%);
+    transition: transform 0.5s;
+  /*  transform: translateY(1em);*/
+  }
+  .modal-slide-enter-to, .modal-slide-leave-from /* .modal-slide-enter-active in <2.1.8 */ {
+    opacity: 1;
+  /*  transform: translate(-50%,-50%);*/
+    transition: transform 0.5s;
+    transform: translateY(0);
+  }
+}
+
+
+
+
 </style>
