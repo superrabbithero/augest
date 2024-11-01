@@ -1,27 +1,38 @@
 <template>
   <div v-if="node.id == -1" class="node-item">
-    <div @click="toggle" class="node-edit" tabindex="1">
+    <div class="node-edit">
       <div class="left">
         <div class="dot" :style="{backgroundColor:itemColor}" v-show="level==0"></div>
-        <input type="text" />
+        <input type="text" v-model="node.name"/>
         <span v-show="node.children.length">({{node.children.length}})</span>
       </div>
       <div class="right">
-        <div :style="{fontSize:'12px',color:itemColor,marginRight:'6px'}">保存</div>
+        <div :style="{fontSize:'12px',color:itemColor,marginRight:'6px'}" @click="save('add')">保存</div>
         <div :style="{fontSize:'12px',color:itemColor}" @click="cancel">取消</div>
       </div>
     </div>
   </div>
   <div v-else class="node-item">
-    <div @click="toggle" class="node-name" tabindex="1">
+    <div v-if="isChangeName" class="node-edit">
       <div class="left">
+        <div class="dot" :style="{backgroundColor:itemColor}" v-show="level==0"></div>
+        <input type="text" v-model="node.name"/>
+        <span v-show="node.children.length">({{node.children.length}})</span>
+      </div>
+      <div class="right">
+        <div :style="{fontSize:'12px',color:itemColor}" @click="isChangeName = false">确定</div>
+      </div>
+    </div>
+    <div v-else @click="toggle" class="node-name" tabindex="1">
+      <div class="left" @click="clickNodeName">
         <div class="dot" :style="{backgroundColor:itemColor}" v-show="level==0"></div>
         {{ node.name }}
         <span v-show="node.children.length">({{node.children.length}})</span>
       </div>
       <div class="right">
-        <svg-icon @click="addNode" @click.stop class="node-btn" name="letter-plus01" size="18" :fill="itemColor"></svg-icon>
-        <svg-icon @click="cancel" v-show="!node.children.length" class="node-btn" name="delete02" size="16" :fill="itemColor"></svg-icon>
+        <svg-icon v-show="!isEditing" @click="isChangeName = true" @click.stop class="node-btn" name="edit01" size="18" :fill="itemColor"></svg-icon>
+        <svg-icon v-show="!isEditing" @click="addNode" @click.stop class="node-btn" name="letter-plus01" size="18" :fill="itemColor"></svg-icon>
+        <svg-icon @click="cancel" v-show="!node.children.length && level!=0" class="node-btn" name="delete02" size="16" :fill="itemColor"></svg-icon>
       </div>
     </div>
 
@@ -35,6 +46,7 @@
         :node="child"
         :is-open="openNodes[child.id]"
         @toggle="toggleNode"
+        @add="openChildren"
         @delete = "deleteNode"
       />
     </div>
@@ -68,14 +80,27 @@ export default {
     return {
       openNodes:[],
       itemColorList:['#E76747','#F4A261','#E9C46A','#2A9D8F','#2A9D8F','#7d64ff'],
-      handleNodeClick : null,
-      isAdding:false,
+      isChangeName:false
     }
   },
   mounted(){
-    this.handleNodeClick = inject('handleNodeClick')
+    // this.handleNodeClick = inject('handleNodeClick')
+  },
+  setup(props) {
+    const handleNodeClick = inject('handleNodeClick')
+
+    const changeEditing = inject('changeEditing')
+
+    const isEditing = inject('isEditing')
+
+    const saveNode = inject('saveNode')
+
+    return { handleNodeClick, changeEditing, isEditing, saveNode}
   },
   methods: {
+    clickNodeName(){
+      this.handleNodeClick(this.node.id,this.node.name)
+    },
     toggle() {
       if (this.node.children && this.node.children.length > 0) {
         this.$emit('toggle', this.node.id);
@@ -86,18 +111,21 @@ export default {
       // console.log(this.openNodes)
     },
     deleteNode(id) {
-      // console.log("删除：",id)
-      // console.log(this.node.children)
       for(var i=0;i<this.node.children.length;i++){
         if(this.node.children[i].id == id){
-          // console.log(`find node's id is:${i}`)
           this.node.children.splice(i,1)
-          // console.log("success")
         }
       }
     },
+    add() {
+      this.$emit('add', this.node.id);
+    },
+    openChildren(id){
+      this.openNodes[id] = true;
+    },
     addNode() {
-      if(this.isAdding){
+      // console.log(this.isEditing)
+      if(this.isEditing){
         return
       }else{
         const newnode = {
@@ -106,13 +134,26 @@ export default {
           "children":[]
         }
         this.node.children.push(newnode)
-        this.handleNodeClick(this.node.id)
-        this.isAdding = true
+        // console.log(this.node.children)
+        this.add()
+        this.changeEditing(true)
       }
     },
     cancel() {
       this.$emit('delete', this.node.id);
-    }
+      this.changeEditing(false)
+    },
+    save(command) {
+      if(command == 'add'){
+        if(this.node.name && this.node.name != ''){
+          this.saveNode(command,this.node, this.$parent.node.id)
+          this.cancel()
+        }else{
+          this.$toast.show('请输入知识点名称','error')
+        }
+        
+      }
+    },
   }
 };
 </script>
