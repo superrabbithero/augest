@@ -1,9 +1,11 @@
 <template>
   <div class="tree-select">
-    {{`maxId:${maxId}`}}
-    <div @click="console.log(treeData)">查看treeData</div>
+    <!-- {{`maxId:${maxId}`}}
+    <div @click="console.log(treeData)">查看treeData</div> -->
+    <div >{{ selectedMap }}</div>
     <div class="selectedGroups">
-      <div v-for="(value, key) in selectedMap" class="selected-item">{{value[1]}}</div>
+      <div class="selected-item" style="background-color: transparent;">{{ `知 识 点：` }}</div>
+      <div v-for="[key,value] in Object.entries(selectedMap)" class="selected-item" @click="handleNodeClick(key,value)">{{value}}</div>
     </div>
     <ul>
       <tree-node
@@ -30,7 +32,12 @@ export default {
     treeData: {
       type: Array,
       required: true
+    },
+    selectedMap: {
+      type: Object,
+      required: true
     }
+
   },
   data(){
     return{
@@ -50,17 +57,20 @@ export default {
       });
     }
 
-    const selectedMap = reactive(new Map())
-    const handleNodeClick = (id,name) => {
-      // 处理节点点击
-      if(selectedMap.has(id)){
-        selectedMap.delete(id)
-      }else{
-        console.log(name)
-        selectedMap.set(id,name)
-      }
-      console.log(selectedMap)
-    };
+
+
+    // const selectedMap = reactive(new Map())
+    const handleNodeClick = (id, name) => {
+    // 处理节点点击
+    if (props.selectedMap[id]) {
+        delete props.selectedMap[id]; // 删除选中的节点
+    } else {
+        console.log(name);
+        props.selectedMap[id] = name; // 添加新的节点
+    }
+    // console.log(props.selectedMap);
+};
+
 
     provide('handleNodeClick', handleNodeClick);
 
@@ -102,12 +112,11 @@ export default {
 
     provide('isEditing', isEditing)
 
-    return {getMaxId, maxId, selectedMap}
+    return {getMaxId, maxId , handleNodeClick}
 
   },
   mounted(){
     this.getMaxId()
-    console.log(this.maxId)
   },
   methods:{
     openChildren(id){
@@ -130,6 +139,8 @@ export default {
 ul {
   margin: 0;
   padding-left: 0rem;
+  background-color: var(--box-hightlight);
+  height: 100%;
 }
 
 li::marker {
@@ -148,9 +159,10 @@ li::marker {
 }
 
 .selected-item {
+  font-family: SmileySans-Oblique;
   margin: 2px;
   padding: 2px 5px;
   border-radius: 5px;
-  background: #8c3636;
+  background: var(--box-hightlight);
 }
 </style>

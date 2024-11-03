@@ -24,7 +24,7 @@
       </div>
     </div>
     <div v-else @click="toggle" class="node-name" tabindex="1">
-      <div class="left" @click="clickNodeName">
+      <div class="left" @click="clickNodeName" @click.stop>
         <div class="dot" :style="{backgroundColor:itemColor}" v-show="level==0"></div>
         {{ node.name }}
         <span v-show="node.children.length">({{node.children.length}})</span>

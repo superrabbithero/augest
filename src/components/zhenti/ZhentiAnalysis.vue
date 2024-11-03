@@ -39,7 +39,7 @@
 							</div>
 							<div class="analysis-item">
 								<label>知 识 点：</label>
-								<div class="analysis-tag" v-for="knowledge in currentAnalysisData.knowledges">{{ knowledge }}</div>
+								<div class="analysis-tag" v-for="[key,value] in Object.entries(currentAnalysisData.knowledges)">{{ value }}</div>
 								<svg-icon v-if="!tag_editing" name="letter-plus01" size="20" @click="modal_show.knowledge_show = !modal_show.knowledge_show"></svg-icon>
 								<input v-else v-model="addTagName" type="text" />
 								<svg-icon v-show="tag_editing" name="correct01" size="20" @click="addTag()"></svg-icon>
@@ -99,7 +99,7 @@
 		</div>
 	</div>
 	<my-model :show="modal_show.knowledge_show" :modeless="false" :modalKey="'knowledge_show'">
-		<TreeSelect :treeData="treeData" />
+		<TreeSelect :treeData="treeData" :selectedMap="currentAnalysisData.knowledges"/>
 	</my-model>
 </template>
 
@@ -126,7 +126,7 @@
 					questionNum:1,
 					answer:"",
 					mineAnswer:"",
-					knowledges:[],
+					knowledges:{},
 					like:false,
 					mistake:false,
 					content:"暂无解析",
@@ -365,7 +365,7 @@
 								questionNum:count,
 								answer:answer.answer,
 								mineAnswer:answer.mine,
-								knowledges:[],
+								knowledges:{},
 								like:false,
 								mistake:answer.answer != answer.mine && answer.mine != '',
 								content:"",
@@ -394,6 +394,8 @@
 				this.currentQuestion = this.questions[type][index]
 				this.currentNum = num
 				this.currentAnalysisData = this.AnalysisData[Number(this.currentNum)-1]
+				//用于将object转为map
+				// this.currentAnalysisData.knowledges = new Map(Object.entries(this.currentAnalysisData.knowledges))
 				this.$nextTick(()=>{
 					this.TypeSet([document.getElementsByClassName("output")])
 				})
