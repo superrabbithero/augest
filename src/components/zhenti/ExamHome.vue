@@ -10,8 +10,8 @@
         <div class="card-content" v-for="paper in filteredPaperList">
           <div class="md-card-item">
             <div class="title"  @click="goto(`/zhenti/${paper.year}_${paper.prov}_${paper.type}`)">{{paper.title}}</div>
-            <div class="md-card-info" @click="goto(`/zhenti/analysis/${paper.year}_${paper.prov}_${paper.type}`)">
-              <div v-if="paper.finished" class="tag analysis" >查看解析</div>
+            <div class="md-card-info">
+              <div v-if="paper.finished" class="tag analysis" @click="goto(`/zhenti/analysis/${paper.year}_${paper.prov}_${paper.type}`)">查看解析</div>
               <div v-else class="tag"></div>
               <div class="date">
                 4.4

@@ -29,7 +29,7 @@
 
   <my-model :show="modal_show.json_show" :dragable="true" :modalKey="'json_show'">
     <!-- json-view -->
-    <div class="modal-content" >
+    <div class="modal-content" style="max-height: 500px;overflow: auto;">
      <json-model :json-data="cutParamJson"></json-model>
     </div>
     <textarea v-model="cutParamJsonStr"/>

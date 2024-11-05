@@ -1,8 +1,5 @@
 <template>
   <div class="tree-select">
-    <!-- {{`maxId:${maxId}`}}
-    <div @click="console.log(treeData)">查看treeData</div> -->
-    <div >{{ selectedMap }}</div>
     <div class="selectedGroups">
       <div class="selected-item" style="background-color: transparent;">{{ `知 识 点：` }}</div>
       <div v-for="[key,value] in Object.entries(selectedMap)" class="selected-item" @click="handleNodeClick(key,value)">{{value}}</div>
@@ -138,9 +135,10 @@ export default {
 
 ul {
   margin: 0;
-  padding-left: 0rem;
   background-color: var(--box-hightlight);
   height: 100%;
+  padding: 2px 5px;
+  border-radius: 5px;
 }
 
 li::marker {
@@ -163,6 +161,6 @@ li::marker {
   margin: 2px;
   padding: 2px 5px;
   border-radius: 5px;
-  background: var(--box-hightlight);
+  background: var(--button-highlight);
 }
 </style>

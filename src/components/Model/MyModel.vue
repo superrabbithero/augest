@@ -87,8 +87,6 @@ export default({
 .modal {
   padding-bottom: 1rem;
   width:400px;
-  display: flex;
-  flex-direction: column;
 }
 
 .modal-slide-enter-active, .modal-slide-leave-active {
@@ -105,8 +103,7 @@ export default({
 /*  transform: translateY(0);*/
 }
 .modal-slot{
-  height: 100%;
-  overflow: auto;
+  overflow: hidden;
 }
 
 @media (max-width: 400px) {
@@ -117,7 +114,10 @@ export default({
     top: unset;
     left: 0;
     transform: unset;
-    max-height: 60%;
+    padding-bottom: 10px
+  }
+  .modal-slot {
+    max-height: calc(60vh - 40px);
   }
   .modal-slide-enter-active, .modal-slide-leave-active {
     transition: transform 0.5s;
