@@ -39,7 +39,7 @@ export default {
   data(){
     return{
       openNodes:[],
-      itemColorList:['#E76747','#F4A261','#E9C46A','#2A9D8F','#2A9D8F','#7d64ff'],
+      itemColorList:['#E76747','#F4A261','#E9C46A','#2A9D8F','#00A7FF','#7d64ff'],
       maxId:0
     }
   },
@@ -134,7 +134,7 @@ export default {
 }
 
 ul {
-  margin: 0;
+  margin: 10px 0 0 0;
   background-color: var(--box-hightlight);
   height: 100%;
   padding: 2px 5px;

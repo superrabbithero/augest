@@ -24,9 +24,9 @@
       </div>
     </div>
     <div v-else @click="toggle" class="node-name" tabindex="1">
-      <div class="left" @click="clickNodeName" @click.stop>
+      <div class="left"  @click="clickNodeName" @click.stop>
         <div class="dot" :style="{backgroundColor:itemColor}" v-show="level==0"></div>
-        {{ node.name }}
+        <div> {{ node.name }} </div>
         <span v-show="node.children.length">({{node.children.length}})</span>
       </div>
       <div class="right">
@@ -199,6 +199,13 @@ export default {
 .node-name:focus .right{
   opacity: 1;
 }
+
+.node-name-item {
+  border-radius: 5px;
+  padding: 2px 8px;
+/*  background-color: #eee;*/
+}
+
 @media(any-hover:hover){
   .node-name:focus {
     background-color: unset;
