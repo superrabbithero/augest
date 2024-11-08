@@ -381,7 +381,8 @@ export default {
 
     async loadJsonData() {
     	try {
-    		const jsonPath = `/json/zhenti/${this.$route.params.papername}.json`;
+    		const basePath = import.meta.env.BASE_URL || ''; // 获取基础路径
+    		const jsonPath = `${basePath}/json/zhenti/${this.$route.params.papername}.json`;
     		console.log(jsonPath);
 
     		const response = await fetch(jsonPath);

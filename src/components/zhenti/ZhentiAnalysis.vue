@@ -490,7 +490,9 @@
 
 			async loadJsonData() {
 				try {
-					const jsonPath2 = `/json/zhenti/${this.$route.params.papername}.json`;
+					const basePath = import.meta.env.BASE_URL || ''; // 获取基础路径
+        			const jsonPath2 = `${basePath}json/zhenti/${this.$route.params.papername}.json`;
+					// const jsonPath2 = `/json/zhenti/${this.$route.params.papername}.json`;
 
 					const response2 = await fetch(jsonPath2);
 					if (!response2.ok) {
@@ -498,7 +500,7 @@
 					}
 					this.jsonData = await response2.json();
 
-					const jsonPath = `/json/zhenti/${this.$route.params.papername}_analysis.json`;
+					const jsonPath = `${basePath}/json/zhenti/${this.$route.params.papername}_analysis.json`;
 			// console.log(jsonPath);
 					const response = await fetch(jsonPath);
 					if (!response.ok) {
