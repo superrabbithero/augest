@@ -2,6 +2,8 @@ const path = require('path');
 const webpack = require('webpack');
 
 module.exports = {
+
+  publicPath: '/augest/',
   parallel: false,
   transpileDependencies: true,
   lintOnSave: false,
