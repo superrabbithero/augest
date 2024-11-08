@@ -41,5 +41,3 @@ jobs:
       with:
         branch: gh-pages  # 部署到 gh-pages 分支
         folder: dist  # Vue 项目构建后输出的文件夹（通常是 dist）
-      env:
-        GITHUB_TOKEN: ${{ secrets.ACTIONS_TOKEN }}
