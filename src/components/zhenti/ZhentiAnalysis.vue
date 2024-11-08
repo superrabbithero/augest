@@ -490,7 +490,8 @@
 
 			async loadJsonData() {
 				try {
-					const jsonPath2 = `/json/zhenti/${this.$route.params.papername}.json`;
+					const repoName = process.env.NODE_ENV === 'production' ? '/augest':''
+					const jsonPath2 = `${repoName}/json/zhenti/${this.$route.params.papername}.json`;
 
 					const response2 = await fetch(jsonPath2);
 					if (!response2.ok) {
@@ -498,7 +499,7 @@
 					}
 					this.jsonData = await response2.json();
 
-					const jsonPath = `/json/zhenti/${this.$route.params.papername}_analysis.json`;
+					const jsonPath = `${repoName}/json/zhenti/${this.$route.params.papername}_analysis.json`;
 			// console.log(jsonPath);
 					const response = await fetch(jsonPath);
 					if (!response.ok) {
