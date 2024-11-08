@@ -104,6 +104,11 @@ export default {
     if(this.$constants.DARK){
       document.body.classList.add('dark')//黑夜模式时添加类名
     }
+    if (process.env.NODE_ENV === 'production') {
+      console.log('当前是生产环境');
+    } else {
+        console.log('当前是开发环境');
+    }
   },
   unmounted() {
     document.removeEventListener('click',this.closemenu)

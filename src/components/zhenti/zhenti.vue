@@ -381,7 +381,9 @@ export default {
 
     async loadJsonData() {
     	try {
-    		const jsonPath = `/json/zhenti/${this.$route.params.papername}.json`;
+    		const repoName = process.env.NODE_ENV === 'production' ? '/augest':''
+    		const jsonPath = `${repoName}/json/zhenti/${this.$route.params.papername}.json`;
+    		
     		console.log(jsonPath);
 
     		const response = await fetch(jsonPath);
