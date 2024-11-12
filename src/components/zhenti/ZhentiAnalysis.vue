@@ -444,7 +444,7 @@
 				}
 				this.answers = JSON.parse(sessionStorage.getItem("currentAnswers"));
 				this.initAnalysisDataJson()
-			// this.initAccuracy()
+				this.initAccuracy()
 			},
 			initAccuracy(){
 				for(var i=0; i<5;i++){
@@ -461,7 +461,7 @@
 							right++
 						}
 					})
-			// console.log(`${this.questionTypeList[i]}中正确${right}个，错误${wrong}个，未作答${none}个`)
+			console.log(`${this.questionTypeList[i]}中正确${right}个，错误${wrong}个，未作答${none}个`)
 					if(right == 0 && wrong == 0){
 						this.accuracyList[i] = null
 					}else{
