@@ -3,6 +3,8 @@
                @pointerdown="handlePointerDown"
                @pointermove="handlePointerMove"
                @pointerup="handlePointerUp"></canvas>
+
+    <!-- editTools 1.0 -->
     <div v-show="show" :class="{'edit-tools-fixedbox':true,'show':editTools_show}">
       <div :class="{'edit-tools-handle':true,'show':!editTools_show}" 
                @pointerdown="handleStart"
@@ -23,35 +25,50 @@
             <img draggable="false" src="@/assets/imgs/canvastools/eraser.png"/>
           </div>
         </div>
-        <div style="width:25px;display:flex;color:#252525;margin-left:15px" @click="setting_show = true">
+        <div style="width:25px;display:flex;color:#252525;margin-left:15px" @click="modal_show.setting_show = true">
           <svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="M15 1v6H9V1h6zm-2 2h-2v2h2V3zm2 6v6H9V9h6zm-2 2h-2v2h2v-2zm2 6v6H9v-6h6zm-2 2h-2v2h2v-2z" fill="currentColor"/> </svg>
         </div>
       </div>
     </div>
 
-    <div v-show="show && setting_show" class="canvas-setting">
-      <div style="position: absolute;top: 5px;right: 5px;width: 20px;color: #ff5252;" @click="setting_show = false">
-        <svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="M5 3H3v18h18V3H5zm14 2v14H5V5h14zm-8 4H9V7H7v2h2v2h2v2H9v2H7v2h2v-2h2v-2h2v2h2v2h2v-2h-2v-2h-2v-2h2V9h2V7h-2v2h-2v2h-2V9z" fill="currentColor"/> </svg>
+    <!-- editTools 2.0 -->
+    <div v-show="show" class="edit-tools-box">
+      <div :class="{'edit-tools-item':true,'active':!erasing}">
+        <svg-icon name="pencilStub01"  size="20"></svg-icon>
       </div>
-      
+      <div :class="{'edit-tools-item':true,'active':erasing}" >
+        <svg-icon name="eraser02" size="20"></svg-icon>
+      </div>
+      <div class="divider-line"></div>
+      <div class="edit-tools-item">
+        <svg-icon name="setting02" size="20"></svg-icon>
+      </div>
+      <!-- <div class="edit-tools-item">
+        <svg-icon name="drag01" size="20"></svg-icon>
+      </div> -->
+    </div>
+
+    <!-- <div v-show="show && modal_show.setting_show" class="canvas-setting"> -->
+    <my-model :show="show && modal_show.setting_show" :modeless="true" :modalKey="'setting_show'">
       <div class="content-items">
-        画笔大小：
+        <label>画笔大小：</label>
         <input type="range" class="custom-range" v-model="penWidth" min="1" max="15">  {{penWidth}}
       </div>
       <div class="content-items">
-        橡皮大小：
+        <label>橡皮大小：</label>
         <input type="range" class="custom-range" v-model="eraserWidth" min="5" max="30">   {{eraserWidth}}
       </div>
       <div class="content-items">
-        画笔颜色：
+        <label>画笔颜色：</label>
         <div v-for="color in colorList" @click="penColor = color" class="color-item" :style="{backgroundColor:color,height: color==penColor ? '20px':'15px'}"></div>
       </div>
       <div class="content-items">
-        仅触控笔：
+        <label>仅触控笔：</label>
         <div @click="switchmode()" :class="{'switch-botton':true, 'close':mode=='all touch'}"></div>
         {{mode=='only pen' ? '开' : '关' }}
       </div>
-    </div>
+    <!-- </div> -->
+    </my-model>
 </template>
 
 <script>
@@ -114,7 +131,11 @@ export default {
 
       imgDataList:[],
 
-      setting_show:false,
+      // modal_show.setting_show:false,
+
+      modal_show:{
+        setting_show:false,
+      },
 
       colorList:['#000','#f00','#ffa500','#ff0','#90ee90','#87ceeb','#fff'],
     }
@@ -308,7 +329,7 @@ export default {
       console.log("start")
       this.pressTimer = setTimeout(() => {
         // this.editTools_show = true
-        this.setting_show = true
+        this.modal_show.setting_show = true
         clearTimeout(this.pressTimer)
         this.pressTimer = null
       }, 500);
@@ -426,44 +447,46 @@ export default {
   }
 
   .edit-tools-item {
+   /* 1.0
     margin: 0 5px;
     width: 25px;
     overflow: hidden;
     transform: translateY(18px);
-    transition: transform 0.3s ease;
-    
-/*    height: 40px;*/
-/*    border: 3px solid #ffc848;*/
+    transition: transform 0.3s ease;*/
 
+    /*  2.0  */
+/*    color: var(--button-highlight);*/
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+/*    padding: 3px;*/
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 2px;
   }
+
+  
+
 
   .edit-tools-item img{
     width: 25px;
     -webkit-user-drag: none;
   }
 
-  .edit-tools-item.active{
-    transform: translateY(10px);
+  .edit-tools-item:hover{
+/*    box-shadow: inset 1px 1px 4px 0px rgb(158 158 158 / 20%), inset -10px -13px 14px 1px rgba(255, 255, 255, 0.9);*/
+    /* background: linear-gradient(45deg, #c2d9ed 0%, rgba(255, 255, 255, 1) 100%); */
+    background: var(--button-highlight);
+
   }
 
-  .canvas-setting {
-    font-family: 'HYPixel';
-    font-size: 20px;
-    padding: 20px 10px;
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    z-index: 2;
-    width: 300px;
-    top: 50%;
-    left: 50%;
-    background-color: var(--box-bgc);
-    transform: translate(-50%,-50%);
-/*    border-radius: 10px;*/
-    border: 3px solid;
+  .edit-tools-item.active {
+    background: var(--main-color);
   }
-
-  .canvas-setting .content-items{
+  
+  .content-items{
     margin: 10px 0;
     display: flex;
     align-items: flex-end
@@ -507,5 +530,24 @@ export default {
       width: 120px;
       transform: translateY(5px);
   }
-  
+
+  /* 工具栏2.0样式 */
+  .edit-tools-box {
+    display: flex;
+    position: absolute;
+    border-radius: 14px;
+    border: var(--box-border);
+    z-index: 999;
+    background: var(--box-bgc);
+    padding: 8px;
+    box-shadow: var(--box-shadow);
+/*    opacity: 0.5;*/
+/*    background: linear-gradient(45deg, rgba(214, 229, 242, 1) 0%, rgba(255, 255, 255, 1) 100%);*/
+
+  }
+  .divider-line {
+    width: 0;
+    border-left: var(--box-border);
+    margin: 0 5px;
+  }
 </style>

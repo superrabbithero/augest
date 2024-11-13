@@ -1144,3 +1144,7 @@ textarea:active, textarea:focus{
   margin-bottom: 0.1rem; /* 每个列表项之间的间距 */
   font-size: 1rem; /* 修改字体大小 */
 }
+
+label {
+    font-family: SmileySans-Oblique;
+}

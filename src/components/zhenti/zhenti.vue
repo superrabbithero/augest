@@ -13,9 +13,10 @@
 		</div>
 		<div class="head-item"  style="margin-left: auto;">
 			<button class="button-item" v-show="examstatus!=0" @click="openReport()">交卷</button>
-			<svg-icon :class="{'button-item':true,'active':pencanvas_show}"  @click="showPenCanvas" name="canvas02"></svg-icon>
+			<!-- <svg-icon class="button-item" @click="" name="edit01"></svg-icon> -->
+			<svg-icon :class="{'button-item':true,'active':pencanvas_show}"  @click="showPenCanvas" name="edit01"></svg-icon>
 			<svg-icon :class="{'button-item':true,'active':!exampaperbox_expand}" @click="exampaperboxExpand" name="answerCard"></svg-icon>
-			<svg-icon class="button-item" @click="gotoAnalysis" name="bulb02"></svg-icon>
+			<!-- <svg-icon class="button-item" @click="gotoAnalysis" name="bulb02"></svg-icon> -->
 			<svg-icon class="button-item" @click="changeStyle" name="dark"></svg-icon>
 		</div>   
 	</div>
