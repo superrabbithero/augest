@@ -3,52 +3,22 @@
                @pointerdown="handlePointerDown"
                @pointermove="handlePointerMove"
                @pointerup="handlePointerUp"></canvas>
-
-    <!-- editTools 1.0 -->
-    <div v-show="show" :class="{'edit-tools-fixedbox':true,'show':editTools_show}">
-      <div :class="{'edit-tools-handle':true,'show':!editTools_show}" 
-               @pointerdown="handleStart"
-               @pointermove="handleMove"
-               @pointerup="handleEnd"
-               @pointerleave="handleCancel">
-        <img v-show="!erasing" src="@/assets/imgs/canvastools/pen.png"/>
-        <img v-show="erasing" src="@/assets/imgs/canvastools/eraser.png"/>
-
-      </div>
-      <div class="edit-tools">
-        <div style="height: 100%;font-size: 18px;line-height: 50px;padding: 0 2px 0 2px;color:#252525" @click="editTools_show = false">&times;</div>
-        <div class="edit-tools-group">
-          <div :class="{'edit-tools-item':true,'active':!erasing}" @click="getcanvastool('pencil')">
-            <img draggable="false" src="@/assets/imgs/canvastools/pen.png"/>
-          </div>
-          <div :class="{'edit-tools-item':true,'active':erasing}" @click="getcanvastool('eraser')">
-            <img draggable="false" src="@/assets/imgs/canvastools/eraser.png"/>
-          </div>
-        </div>
-        <div style="width:25px;display:flex;color:#252525;margin-left:15px" @click="modal_show.setting_show = true">
-          <svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="M15 1v6H9V1h6zm-2 2h-2v2h2V3zm2 6v6H9V9h6zm-2 2h-2v2h2v-2zm2 6v6H9v-6h6zm-2 2h-2v2h2v-2z" fill="currentColor"/> </svg>
-        </div>
-      </div>
-    </div>
-
-    <!-- editTools 2.0 -->
-    <div v-show="show" class="edit-tools-box">
-      <div :class="{'edit-tools-item':true,'active':!erasing}">
+    <div v-show="show" class="edit-tools-box" ref="dragToolsBar">
+      <div :class="{'edit-tools-item':true,'active':!erasing}" @click="getcanvastool('pencil')">
         <svg-icon name="pencilStub01"  size="20"></svg-icon>
       </div>
-      <div :class="{'edit-tools-item':true,'active':erasing}" >
+      <div :class="{'edit-tools-item':true,'active':erasing}" @click="getcanvastool('eraser')">
         <svg-icon name="eraser02" size="20"></svg-icon>
       </div>
       <div class="divider-line"></div>
-      <div class="edit-tools-item">
+      <div class="edit-tools-item" @click="modal_show.setting_show = !modal_show.setting_show">
         <svg-icon name="setting02" size="20"></svg-icon>
       </div>
-      <!-- <div class="edit-tools-item">
+      <div class="edit-tools-drag" @pointerdown="dragdown($event)"  @mouseup="dragup">
         <svg-icon name="drag01" size="20"></svg-icon>
-      </div> -->
+      </div>
     </div>
 
-    <!-- <div v-show="show && modal_show.setting_show" class="canvas-setting"> -->
     <my-model :show="show && modal_show.setting_show" :modeless="true" :modalKey="'setting_show'">
       <div class="content-items">
         <label>画笔大小：</label>
@@ -67,7 +37,6 @@
         <div @click="switchmode()" :class="{'switch-botton':true, 'close':mode=='all touch'}"></div>
         {{mode=='only pen' ? '开' : '关' }}
       </div>
-    <!-- </div> -->
     </my-model>
 </template>
 
@@ -138,6 +107,9 @@ export default {
       },
 
       colorList:['#000','#f00','#ffa500','#ff0','#90ee90','#87ceeb','#fff'],
+      dragToolsBar:null ,//工具栏
+      disx:0,
+      disy:0
     }
   },
   mounted() {
@@ -145,8 +117,33 @@ export default {
   },
   beforeUnmount() {
     document.body.classList.remove('none-select')
+    document.removeEventListener('pointermove', this.dragmove)
+    document.removeEventListener('pointerup', this.dragup)
   },
   methods: {
+    dragdown(e){
+      if(!this.dragToolsBar){
+        this.dragToolsBar = this.$refs.dragToolsBar
+        document.addEventListener('pointermove', this.dragmove)
+        document.addEventListener('pointerup', this.dragup)
+        this.disx = e.pageX - this.dragToolsBar.offsetLeft
+        this.disy = e.pageY - this.dragToolsBar.offsetTop
+      }
+      this.dragToolsBar.style.right = 'unset'
+    },
+
+    dragmove(e){
+      if(this.dragToolsBar){
+        this.dragToolsBar.style.left = e.pageX - this.disx + 'px';
+        this.dragToolsBar.style.top = e.pageY - this.disy + 'px';
+      } 
+    },
+
+    dragup(){
+      this.dragToolsBar = null
+      document.removeEventListener('pointermove', this.dragmove)
+    },
+
     changePenWidth() {
       const range = document.getElementById('penWidth-range')
       this.penWidth = parseInt(range.value)
@@ -215,6 +212,8 @@ export default {
       }
     },
     handlePointerDown(event){
+      if(this.dragToolsBar)
+        return
       this.currentPointerType = event.pointerType;
       if(this.mode == "all touch" && this.currentPointerType == 'pen'){
         this.mode = "only pen"
@@ -259,6 +258,8 @@ export default {
       this.context.closePath();
     },
     handlePointerMove(event){
+      if(this.dragToolsBar)
+        return
       var id = event.pointerId
       if(this.isDrawing && this.multiLastPt[id]){
         if (this.mode == "only pen" && this.currentPointerType === 'pen' || this.mode === "all touch") {
@@ -299,6 +300,8 @@ export default {
       }
     },
     handlePointerUp(event){
+      if(this.dragToolsBar)
+        return
       var id = event.pointerId
       if (this.isDrawing) {
         this.isDrawing = false;
@@ -325,36 +328,36 @@ export default {
     },
 
     //处理工具栏按钮事件
-    handleStart(){
-      console.log("start")
-      this.pressTimer = setTimeout(() => {
-        // this.editTools_show = true
-        this.modal_show.setting_show = true
-        clearTimeout(this.pressTimer)
-        this.pressTimer = null
-      }, 500);
-    },
-    handleMove(event){
-      if (this.pressTimer) {
-        clearTimeout(this.pressTimer);
-        this.pressTimer = null;
-      }
-    },
-    handleEnd(){
-      // 如果定时器还在，说明是点击事件
-      console.log("end")
-      if (this.pressTimer) {
-        clearTimeout(this.pressTimer);
-        this.pressTimer = null;
-        this.getcanvastool(this.erasing ? "pencil":"eraser")
-      }
-    },
-    handleCancel(){
-      if (this.pressTimer) {
-        clearTimeout(this.pressTimer);
-        this.pressTimer = null;
-      }
-    },
+    // handleStart(){
+    //   console.log("start")
+    //   this.pressTimer = setTimeout(() => {
+    //     // this.editTools_show = true
+    //     this.modal_show.setting_show = true
+    //     clearTimeout(this.pressTimer)
+    //     this.pressTimer = null
+    //   }, 500);
+    // },
+    // handleMove(event){
+    //   if (this.pressTimer) {
+    //     clearTimeout(this.pressTimer);
+    //     this.pressTimer = null;
+    //   }
+    // },
+    // handleEnd(){
+    //   // 如果定时器还在，说明是点击事件
+    //   console.log("end")
+    //   if (this.pressTimer) {
+    //     clearTimeout(this.pressTimer);
+    //     this.pressTimer = null;
+    //     this.getcanvastool(this.erasing ? "pencil":"eraser")
+    //   }
+    // },
+    // handleCancel(){
+    //   if (this.pressTimer) {
+    //     clearTimeout(this.pressTimer);
+    //     this.pressTimer = null;
+    //   }
+    // },
     changeCanvas(newval,oldval){
       const canvas = this.$refs.canvas;
       let imageData = this.context.getImageData(0, 0, canvas.width, canvas.height);
@@ -386,7 +389,7 @@ export default {
     z-index: 988;
   }
 
-  .edit-tools-fixedbox{
+  /* .edit-tools-fixedbox{
     position: fixed;
     z-index: 2;
     top: 150px;
@@ -444,27 +447,23 @@ export default {
     height: 100%;
     display: flex;
     overflow: hidden;
-  }
+  } */
 
-  .edit-tools-item {
-   /* 1.0
-    margin: 0 5px;
-    width: 25px;
-    overflow: hidden;
-    transform: translateY(18px);
-    transition: transform 0.3s ease;*/
-
-    /*  2.0  */
-/*    color: var(--button-highlight);*/
-    width: 38px;
-    height: 38px;
+  .edit-tools-item, .edit-tools-drag {
+    width: 35px;
+    height: 35px;
     border-radius: 50%;
-/*    padding: 3px;*/
     
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 2px;
+    cursor: pointer;
+  }
+
+  .edit-tools-drag {
+    width: unset;
+    opacity: 0.5;
   }
 
   
@@ -483,7 +482,9 @@ export default {
   }
 
   .edit-tools-item.active {
-    background: var(--main-color);
+    background: #ffc848;
+    box-shadow: inset 2px 2px 4px 0px #8c6509, inset -1px -1px 6px 0px #fff;
+    color: #363636;
   }
   
   .content-items{
@@ -534,17 +535,23 @@ export default {
   /* 工具栏2.0样式 */
   .edit-tools-box {
     display: flex;
-    position: absolute;
+    position: fixed;
+    right:20px;
     border-radius: 14px;
     border: var(--box-border);
     z-index: 999;
     background: var(--box-bgc);
-    padding: 8px;
-    box-shadow: var(--box-shadow);
-/*    opacity: 0.5;*/
-/*    background: linear-gradient(45deg, rgba(214, 229, 242, 1) 0%, rgba(255, 255, 255, 1) 100%);*/
-
+    padding: 6px 4px;
+    box-shadow: unset;
+    opacity: 0.5;
+    touch-action: none;
   }
+
+  .edit-tools-box:hover {
+    box-shadow: var(--box-shadow);
+    opacity: 1;
+  }
+
   .divider-line {
     width: 0;
     border-left: var(--box-border);

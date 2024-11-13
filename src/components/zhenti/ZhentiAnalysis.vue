@@ -360,7 +360,7 @@
 						if(this.answers.answerJson[i][key]){
 							count ++
 							const answer = this.answers.answerJson[i][key]
-			// console.log(answer)
+			// console.log(answer,answer.answer != answer.mine && answer.mine != '')
 							const data = {
 								questionNum:count,
 								answer:answer.answer,
@@ -370,9 +370,11 @@
 								mistake:answer.answer != answer.mine && answer.mine != '',
 								content:"",
 							};
+							
 							if(this.AnalysisData[count-1] && this.AnalysisData[count-1].questionNum == count){
 								if(answer.mine != ''){
 									this.AnalysisData[count-1].mineAnswer = answer.mine
+									this.AnalysisData[count-1].mistake = data.mistake
 								}
 							}else{
 								this.AnalysisData.push(data)

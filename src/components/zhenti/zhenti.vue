@@ -14,9 +14,11 @@
 		<div class="head-item"  style="margin-left: auto;">
 			<button class="button-item" v-show="examstatus!=0" @click="openReport()">交卷</button>
 			<!-- <svg-icon class="button-item" @click="" name="edit01"></svg-icon> -->
+			
 			<svg-icon :class="{'button-item':true,'active':pencanvas_show}"  @click="showPenCanvas" name="edit01"></svg-icon>
 			<svg-icon :class="{'button-item':true,'active':!exampaperbox_expand}" @click="exampaperboxExpand" name="answerCard"></svg-icon>
 			<!-- <svg-icon class="button-item" @click="gotoAnalysis" name="bulb02"></svg-icon> -->
+			<svg-icon :class="{'button-item':true,'active':fontSizeBigger}"  @click="fontSizeBigger = !fontSizeBigger" name="font-size01" size="23"></svg-icon>
 			<svg-icon class="button-item" @click="changeStyle" name="dark"></svg-icon>
 		</div>   
 	</div>
@@ -43,7 +45,7 @@
 		</div>
 
 		<div class="exampaperbox-right" ref="right">
-			<div class="exampaper">
+			<div :class="{'exampaper':true, 'fontsize-bigger':fontSizeBigger}">
 				<pencanvas :show="pencanvas_show" :switch="currQTypeIndex"></pencanvas>
 				<h3 v-for="(title, index) in ['一、常识判断', '二、言语理解', '三、数量关系', '四、推理判断', '五、资料分析']" 
 				v-show="currQTypeIndex == index">{{ title }}</h3>
@@ -124,6 +126,9 @@
 			<div class="report-content">
 				用时:{{reportDataJson.time}}
 			</div>
+			<div class="report-content center">
+				<div class="button" @click="gotoAnalysis">前往解析</div>
+			</div>
 			<div class="fillcard">
 				<ul class="fill-type" style="flex-basis: 100%;">
 					<li v-for="(type,index) in questionTypeList" :class="{'active':currQTypeIndex == index}" @click="switchType(index)">{{type}}</li>
@@ -183,16 +188,17 @@ export default {
 			exampaperbox_expand:true,
 			examtimer:null,
 			timer:"00:00:00",
-	  	examstatus:0,  //0：停止，1:进行中，2：暂停
-	  	answers:[{},{},{},{},{}],
-	  	canvasWidth:0,
-	  	canvasHeight:0,
-	  	modal_show:{
-	  		report_show:false
-	  	},
-	  	report_step:1,
-	  	reportDataJson:{"correctCount":[],"totalCount":[],"time":"00:00:00","datetime":null}
-	  }
+			examstatus:0,  //0：停止，1:进行中，2：暂停
+			answers:[{},{},{},{},{}],
+			canvasWidth:0,
+			canvasHeight:0,
+			modal_show:{
+				report_show:false
+			},
+			report_step:1,
+			reportDataJson:{"correctCount":[],"totalCount":[],"time":"00:00:00","datetime":null},
+			fontSizeBigger:false
+		}
 	},
 	mounted(){
 		this.loadJsonData().then(data => {
@@ -424,12 +430,13 @@ export default {
 <style scoped>
 	
 
-	.exampaperbox{
+.exampaperbox{
 /*		width: 100%;*/
-margin: 0 -30px;
-display: flex;
-overflow: hidden;
-height: calc(100vh - 61px);
+	margin: 0 -30px;
+	display: flex;
+	overflow: hidden;
+	height: calc(100vh - 61px);
+	line-height: 1.5rem;
 }
 .exampaperbox-left{
 	background-color: var(--content-bgc);
@@ -609,7 +616,6 @@ background-color: var(--button-highlight);
 	text-align: left;
 	display: flex;
 	flex-direction: column;
-	line-height: 1.5rem;
 	padding: 8px;
 	border-radius: 10px;
 }
@@ -820,6 +826,11 @@ flex-grow: 1;
 
 .button-item.active {
 	color:var(--main-color)
+}
+
+.fontsize-bigger{
+	font-size: 1.5rem;
+	line-height: 2rem;
 }
 
 
