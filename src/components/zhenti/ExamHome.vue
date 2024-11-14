@@ -49,7 +49,7 @@ export default {
         {title:'2022年江苏省公务员录用考试《行测》题（C类）（网友回忆版）',year:2022,prov:'js',type:'C'},
         {title:'2023年国家公务员录用考试《行测》题（副省级网友回忆版）',year:2023,prov:'gk',type:'fs'},
         {title:"2024年江苏省公务员录用考试《行测》题（A类）（网友回忆版）",year:2024,prov:'js',type:'A'},
-        {title:"2024年江苏省公务员录用考试《行测》题（C类）（网友回忆版）",year:2024,prov:'js',type:'C',time:[-1,2400,-1,3452,-1],finished:true},
+        {title:"2024年江苏省公务员录用考试《行测》题（C类）（网友回忆版）",year:2024,prov:'js',type:'C',time:[-1,2400,-1,3452,2080],finished:true},
         {title:"2024年江苏省公务员录用考试《行测》题（B类）（网友回忆版）",year:2024,prov:'js',type:'B'},
         {title:"2024年国家公务员录用考试《行测》题（地市级网友回忆版）",year:2024,prov:'gk',type:'dj'},
         {title:"2024年国家公务员录用考试《行测》题（副省级网友回忆版）",year:2024,prov:'gk',type:'fs'},
