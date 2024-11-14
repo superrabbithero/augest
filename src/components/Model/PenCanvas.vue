@@ -2,8 +2,11 @@
     <canvas v-show="show" ref="canvas"
                @pointerdown="handlePointerDown"
                @pointermove="handlePointerMove"
-               @pointerup="handlePointerUp"></canvas>
-    <div v-show="show" class="edit-tools-box" ref="dragToolsBar">
+               @pointerup="handlePointerUp">
+                
+    </canvas>
+    <div v-show="show" :class="{'edit-tools-box':true, 'active':editToolsActive || modal_show.setting_show}" ref="dragToolsBar" @pointerover="handleToolsBarFocus" @pointerleave="handleToolsBarOut">
+
       <div :class="{'edit-tools-item':true,'active':!erasing}" @click="getcanvastool('pencil')">
         <svg-icon name="pencilStub01"  size="20"></svg-icon>
       </div>
@@ -15,7 +18,7 @@
         <svg-icon name="setting02" size="20"></svg-icon>
       </div>
       <div class="edit-tools-drag" @pointerdown="dragdown($event)"  @mouseup="dragup">
-        <svg-icon name="drag01" size="20"></svg-icon>
+        <svg-icon style="user-select: none;" name="drag01" size="20"></svg-icon>
       </div>
     </div>
 
@@ -96,8 +99,6 @@ export default {
       canvasWidth:0,
       canvasHeight:0,
 
-      pressTimer:null,
-
       imgDataList:[],
 
       // modal_show.setting_show:false,
@@ -109,7 +110,10 @@ export default {
       colorList:['#000','#f00','#ffa500','#ff0','#90ee90','#87ceeb','#fff'],
       dragToolsBar:null ,//工具栏
       disx:0,
-      disy:0
+      disy:0,
+      editToolsActive:false,
+      pressTimer:null,
+      pressTimerNum:0,
     }
   },
   mounted() {
@@ -128,8 +132,12 @@ export default {
         document.addEventListener('pointerup', this.dragup)
         this.disx = e.pageX - this.dragToolsBar.offsetLeft
         this.disy = e.pageY - this.dragToolsBar.offsetTop
+        this.dragToolsBar.style.right = 'unset'
+        this.dragToolsBar.style.left = e.pageX - this.disx + 'px';
+        this.dragToolsBar.style.top = e.pageY - this.disy + 'px';
       }
-      this.dragToolsBar.style.right = 'unset'
+      
+      
     },
 
     dragmove(e){
@@ -358,6 +366,31 @@ export default {
     //     this.pressTimer = null;
     //   }
     // },
+    //控制toolsbar点击后展示，不操作后3s隐藏
+    handleToolsBarFocus(){
+      console.log("---------focus")
+      this.editToolsActive = true
+      this.pressTimerNum = 0
+      clearInterval(this.pressTimer)
+      this.pressTimer = null
+      
+    },
+
+    handleToolsBarOut(){
+      this.pressTimerNum = 0
+      clearInterval(this.pressTimer)
+      this.pressTimer = null
+      this.pressTimer = setInterval(() => {
+        this.pressTimerNum += 1
+        if(this.pressTimerNum >= 5){
+          this.editToolsActive = false
+          this.pressTimerNum = 0
+          clearInterval(this.pressTimer)
+          this.pressTimer = null
+        }
+      }, 1000);
+    },
+
     changeCanvas(newval,oldval){
       const canvas = this.$refs.canvas;
       let imageData = this.context.getImageData(0, 0, canvas.width, canvas.height);
@@ -547,10 +580,15 @@ export default {
     touch-action: none;
   }
 
-  .edit-tools-box:hover {
+  .edit-tools-box.active {
+    opacity: 1;
+    box-shadow: var(--box-shadow);
+  }
+
+  /*.edit-tools-box:hover {
     box-shadow: var(--box-shadow);
     opacity: 1;
-  }
+  }*/
 
   .divider-line {
     width: 0;

@@ -436,7 +436,6 @@ export default {
 	display: flex;
 	overflow: hidden;
 	height: calc(100vh - 61px);
-	line-height: 1.5rem;
 }
 .exampaperbox-left{
 	background-color: var(--content-bgc);
@@ -605,6 +604,7 @@ background-color: var(--button-highlight);
 .exampaper{
 	position:relative;
 	padding: 0 10px;
+	line-height: 1.5rem;
 }
 
 .exampaper h3{

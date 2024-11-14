@@ -215,6 +215,13 @@
         <textarea placeholder="这是一个textarea..." cols="30" rows="5"></textarea>
       </div>
     </cpt-view>
+
+    <cpt-view name="Slider" >
+      <h5>Slider</h5>
+      <div class="content">
+        <au-slider :value="20"></au-slider>
+      </div>
+    </cpt-view>
   </div>
     
   
@@ -231,6 +238,7 @@ import timer from "./Model/Time.vue"
 import cptView from "./Model/ComponentView.vue"
 import calender from "./Model/Calendar.vue"
 import auSelect from "./Model/auSelect.vue"
+import auSlider from "./Model/auSlider.vue"
 
 
 
@@ -244,7 +252,8 @@ export default {
     timer,
     cptView,
     calender,
-    auSelect
+    auSelect,
+    auSlider
   },
   data(){
     return {
