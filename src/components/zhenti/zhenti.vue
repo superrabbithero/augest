@@ -391,14 +391,14 @@ export default {
     		const repoName = process.env.NODE_ENV === 'production' ? '/augest':''
     		const jsonPath = `${repoName}/json/zhenti/${this.$route.params.papername}.json`;
     		
-    		console.log(jsonPath);
+    		// console.log(jsonPath);
 
     		const response = await fetch(jsonPath);
     		if (!response.ok) {
     			throw new Error('Network response was not ok');
     		}
     		this.jsonData = await response.json();
-    		console.log(JSON.stringify(this.jsonData))
+    		// console.log(JSON.stringify(this.jsonData))
     	} catch (error) {
     		console.error('Failed to load JSON data:', error);
     	}

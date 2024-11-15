@@ -1,106 +1,165 @@
 <template>
-  
-  <div class="au-slider-container" @pointerdown="handleThumbStart">
-    <!-- <div class="log">{{log}}</div> -->
-    <div class="au-slider-track">
-      <div class="au-slider-runnable-track" ref="process"></div>
+  <div class="au-slider-container">
+    <div class="au-slider-track-box" @pointerdown="handleTrackStart">
+      <div class="au-slider-track">
+        <div class="au-slider-runnable-track" ref="process"></div>
+      </div>
     </div>
-    <div class="au-slider-thumb" ref="thumb"></div>
+    <div class="au-slider-thumb" ref="thumb" @pointerdown="handleThumbStart"></div>
   </div>
 </template>
 
-<script >
+<script>
+import { ref, reactive, onMounted, onBeforeUnmount, watch ,nextTick } from 'vue';
+
 export default {
   props: {
-    value:{
+    data: {
       type: Number,
       required: true
     },
-    min:{
+    min: {
       type: Number,
       default: 0
     },
-    max:{
+    max: {
       type: Number,
       default: 100
     },
-    step:{
+    step: {
       type: Number,
       default: 1
     },
-    vertical:{
+    vertical: {
       type: Boolean,
       default: false
     }
+  },
+  setup(props, {emit}) {
+    const thumb = ref(null);
+    let thumbDrag = false
+    const process = ref(null);
+    const disx = ref(0);
+    const disy = ref(0);
+    const data = ref(props.data);
+    console.log(`setup:${data.value}`)
+    const step_px = ref(0)
 
-  },
-  data(){
-    return{
-      disx:0,
-      disy:0,
-      thumb:null,
-      process:null,
-      log:''
-    }
-  },
-  mounted(){
+    onMounted(() => {
+      process.value = document.querySelector('.au-slider-runnable-track');
+      step_px.value = document.querySelector('.au-slider-track').clientWidth/props.max*props.step;
+      console.log(`setup:step_px.value=${document.querySelector('.au-slider-track').clientWidth}/${props.max}*${props.step}`)
+      console.log(`setup:step_px.value=${step_px.value}`)
+      const left = Math.floor(data.value/props.step) * step_px.value
+      console.log(`left:${left}`)
+      process.value.style.width = `${left}px`
 
-  },
-  unmounted(){
-    document.removeEventListener('pointermove', this.handleThumbMove)
-    document.removeEventListener('pointerup', this.handleThumbUp)
-  },
-  methods: {
-    handleThumbStart(e){
-      if(!this.thumb){
-        this.thumb = this.$refs.thumb
-        this.process = this.$refs.process
-        this.disx = e.pageX - this.thumb.offsetLeft
-        this.disy = e.pageY - this.thumb.offsetTop
-        document.addEventListener('pointermove', this.handleThumbMove)
-        document.addEventListener('pointerup', this.handleThumbUp)
+      thumb.value = document.querySelector('.au-slider-thumb')
+      thumb.value.style.left = `${left}px`;
+      console.log(`onMounted:${data.value}`)
+    });
+
+    onBeforeUnmount(() => {
+      document.removeEventListener('pointermove', handleThumbMove);
+      document.removeEventListener('pointerup', handleThumbUp);
+    });
+
+    
+
+    const handleThumbStart = (e) => {
+      e.preventDefault();
+      if (!thumbDrag) {
+        thumbDrag = true
+        disx.value = e.pageX - thumb.value.offsetLeft;
+        disy.value = e.pageY - thumb.value.offsetTop;
+        
+        document.addEventListener('pointermove', handleThumbMove);
+        document.addEventListener('pointerup', handleThumbUp);
       }
-    },
-    handleThumbMove(e){
-      if(this.thumb){
-        if(this.vertical){
-          const top = Math.min(Math.max(e.pageY - this.disy,0),this.thumb.parentElement.clientHeight - 20 )
-          this.process.style.height = top + 'px'
-          this.thumb.style.top = top + 'px';
-        }else{
-          const left = Math.min(Math.max(e.pageX - this.disx,0),this.thumb.parentElement.clientWidth - 20 )
-          this.process.style.width = left + 'px'
-          this.thumb.style.left = left + 'px';
+    };
+
+    const handleTrackStart = (e) => {
+      console.log(`handleTrackStart-1:${data.value}`)
+      if(!thumbDrag){
+        thumbDrag = true
+      
+        console.log(`left_steped = Math.floor(${e.offsetX}/${step_px.value})*${step_px.value}`)
+        const left_steped = Math.floor(e.offsetX/step_px.value)*step_px.value
+        console.log(`left_steped:${left_steped}`)
+        const left = Math.min(Math.max(left_steped, 0), thumb.value.parentElement.clientWidth - 20);
+
+        process.value.style.width = `${left}px`;
+        thumb.value.style.left = `${left}px`;
+        console.log(`handleTrackStart-2:${data.value}`)
+        console.log(`Math.ceil(${props.min} + ${left}/${step_px.value})*${props.step};`)
+        data.value = Math.ceil(props.min + left/step_px.value)*props.step;
+        console.log(`handleTrackStart-3:${data.value}`)
+        emit('change', data.value)
+
+        disx.value = e.pageX - thumb.value.offsetLeft;
+        disy.value = e.pageY - thumb.value.offsetTop;
+
+
+        document.addEventListener('pointermove', handleThumbMove);
+        document.addEventListener('pointerup', handleThumbUp);
+      }
+    };
+
+    const handleThumbMove = (e) => {
+      e.preventDefault();
+      if (thumbDrag) {
+        if (props.vertical) {
+          const top = Math.min(Math.max(e.pageY - disy.value, 0), thumb.value.parentElement.clientHeight - 20);
+          process.value.style.height = `${top}px`;
+          thumb.value.style.top = `${top}px`;
+        } else {
+          const left_steped = Math.floor((e.pageX - disx.value)/step_px.value)*step_px.value
+          const left = Math.min(Math.max(left_steped, 0), thumb.value.parentElement.clientWidth - 20);
+          
+          process.value.style.width = `${left}px`;
+          thumb.value.style.left = `${left}px`;
+          data.value = Math.ceil(props.min + left/step_px.value)*props.step;
+          emit('change', data.value)
         }
-        this.log =   `${this.thumb.style.left},${this.thumb.parentElement.clientWidth}` 
-      } 
-    },
-    handleThumbUp(){
-      this.thumb = null
-      document.removeEventListener('pointermove', this.handleThumbMove)
-      document.removeEventListener('pointerup', this.handleThumbUp)
-    }
-  }  
+      }
+    };
+
+    const handleThumbUp = () => {
+      thumbDrag = false;
+      document.removeEventListener('pointermove', handleThumbMove);
+      document.removeEventListener('pointerup', handleThumbUp);
+    };
+
+    return {
+      thumb,
+      process,
+      data,
+      handleTrackStart,
+      handleThumbStart
+    };
+  }
 };
-
-
 </script>
+
 <style scoped>
-.log{
+.log {
   position: absolute;
   width: 50px;
   left: -50px;
 }
 /*容器*/
-.au-slider-container{
+.au-slider-container {
   position: relative;
   background-color: transparent;
-  width: 150px;
+  width: 100%;
   height: 30px;
 }
 
 /*轨道*/
-.au-slider-track{
+.au-slider-track-box {
+  height: 100%;
+}
+.au-slider-track {
   position: absolute;
   height: 6px;
   border-radius: 3px;
@@ -108,7 +167,7 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: var(--card-hightlight);
+  background-color: var(--button-highlight);
   overflow: hidden;
 }
 .au-slider-runnable-track {
@@ -119,16 +178,16 @@ export default {
   left: 0;
 }
 /*滑块*/
-.au-slider-thumb{
+.au-slider-thumb {
   width: 20px;
   height: 20px;
   position: absolute;
-  left: 0;
+  left: 0px;
   top: 50%;
   border-radius: 50%;
   transform: translateY(-50%);
   background-color: #ffc848;
   touch-action: none;
-
+  cursor: pointer;
 }
 </style>

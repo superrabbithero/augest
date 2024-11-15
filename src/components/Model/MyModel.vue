@@ -1,7 +1,7 @@
 <template>
   <div class="overlay" v-show="show && !modeless"></div>
   <transition name="modal-slide">
-    <div class="modal" ref="modal" v-show="show">     
+    <div class="modal" ref="modal" v-if="show">     
       <div :class="{'modal-bar':true,'draged':dragable}" @mousedown="dragdown($event)"  @mouseup="dragup">
         <div class="modal-close" @click="close()">
         </div>

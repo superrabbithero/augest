@@ -218,8 +218,9 @@
 
     <cpt-view name="Slider" >
       <h5>Slider</h5>
-      <div class="content">
-        <au-slider :value="20"></au-slider>
+      <div>{{sliderData}}</div>
+      <div class="content" style="width:200px">
+        <au-slider :data="sliderData" :step="5" @change="setSliderData"></au-slider>
       </div>
     </cpt-view>
   </div>
@@ -240,7 +241,7 @@ import calender from "./Model/Calendar.vue"
 import auSelect from "./Model/auSelect.vue"
 import auSlider from "./Model/auSlider.vue"
 
-
+import { ref } from 'vue';
 
 export default {
   name: 'HelloWorld',
@@ -264,7 +265,8 @@ export default {
       helloworldtimer: null,
       htmlcontent:"<span class=\"output\">$$\\frac{1}{2}$$</span><span class=\"output\">$$\\sqrt{3}$$</span>",
       selectList:["item 1","item 2","item 3","item 4","item 5","item 6","item 7"],
-      toastMsg:null
+      toastMsg:null,
+      sliderData:20
     }
   },
   watch:{
@@ -304,6 +306,10 @@ export default {
       
       return window.MathJax.startup.promise
     },  
+
+    setSliderData(data){
+      this.sliderData = data
+    }
   },
 
 }

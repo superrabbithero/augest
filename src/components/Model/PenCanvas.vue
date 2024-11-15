@@ -25,11 +25,14 @@
     <my-model :show="show && modal_show.setting_show" :modeless="true" :modalKey="'setting_show'">
       <div class="content-items">
         <label>画笔大小：</label>
-        <input type="range" class="custom-range" v-model="penWidth" min="1" max="15">  {{penWidth}}
+          
+        <au-slider :data="penWidth" @change="changePenWidth" style="width: 150px;" max="20"></au-slider>
+        {{penWidth}}
       </div>
       <div class="content-items">
         <label>橡皮大小：</label>
-        <input type="range" class="custom-range" v-model="eraserWidth" min="5" max="30">   {{eraserWidth}}
+         
+        <au-slider :data="eraserWidth" @change="changeEraserWidth" style="width: 150px;"></au-slider>{{eraserWidth}}
       </div>
       <div class="content-items">
         <label>画笔颜色：</label>
@@ -44,6 +47,7 @@
 </template>
 
 <script>
+import auSlider from "./auSlider.vue"
 
 export default {
   props:{
@@ -55,6 +59,9 @@ export default {
     width: Number,
     height: Number,
     switch: Number,
+  },
+  components:{
+    auSlider
   },
   watch: {
     switch(newval, oldval){
@@ -93,7 +100,7 @@ export default {
       points:[],
       beginPoint:{x:0,y:0},
 
-      penWidth: 5,
+      penWidth: 20,
       eraserWidth: 10,
       penColor: '#f00',
       canvasWidth:0,
@@ -125,6 +132,12 @@ export default {
     document.removeEventListener('pointerup', this.dragup)
   },
   methods: {
+    changeEraserWidth(data){
+      this.eraserWidth = data
+    },
+    changePenWidth(data){
+      this.penWidth = data
+    },
     dragdown(e){
       if(!this.dragToolsBar){
         this.dragToolsBar = this.$refs.dragToolsBar
@@ -152,10 +165,10 @@ export default {
       document.removeEventListener('pointermove', this.dragmove)
     },
 
-    changePenWidth() {
-      const range = document.getElementById('penWidth-range')
-      this.penWidth = parseInt(range.value)
-    },
+    // changePenWidth() {
+    //   const range = document.getElementById('penWidth-range')
+    //   this.penWidth = parseInt(range.value)
+    // },
     resize(Imgdata=null){
       const canvas = this.$refs.canvas;
       let imageData = null
