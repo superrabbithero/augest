@@ -1,2 +1,0 @@
-"use strict";(self["webpackChunkaugest"]=self["webpackChunkaugest"]||[]).push([[5162],{65162:function(e,n,t){t.r(n),t.d(n,{default:function(){return h}});var l=t(19812),u=(0,l._)("html",null,[(0,l._)("head"),(0,l._)("body",null,[(0,l._)("h4",null,"MDN文档地址"),(0,l._)("p",null,[(0,l._)("a",{href:"https://developer.mozilla.org/zh-CN/docs/Web/API/Pointer_events"},"Pointer events 指针事件")])])],-1),r=[u];function s(e,n){return(0,l.wg)(),(0,l.iD)("section",null,r)}var o=t(48998);const a={},c=(0,o.Z)(a,[["render",s]]);var h=c}}]);
-//# sourceMappingURL=5162-legacy.36a2db9c.js.map
