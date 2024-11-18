@@ -539,23 +539,23 @@
             "no": 48
         },
         {
-            "content": "<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1723610466412/7cc610acc4a05af18bc3dc2415982615\">",
+            "content": "<span class=\"output\">$$\\sqrt{3}$$</span>，<span class=\"output\">$$\\sqrt[5]{5}$$</span>，<span class=\"output\">$$\\sqrt[5]{3}$$</span>，<span class=\"output\">$$\\sqrt[17]{17}$$</span>，<span class=\"output\">$$\\sqrt[26]{33}$$</span>，(  )",
             "options": [
-                "<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1723610466412/3cf4f8e7dd37da4a834c22384ecaef10\">",
-                "<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1723610466412/58d436c895e00db1a1ec8fbab9fb07c7\">",
-                "<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1723610466412/7ca93720e917de8a6a0fd0bce1dc2c15\">",
-                "<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1723610466412/b55a3e2c424aab100aa0ae4a3d24898d\">"
+                "<span class=\"output\">$$\\sqrt[36]{55}$$</span>",
+                "<span class=\"output\">$$\\sqrt[36]{65}$$</span>",
+                "<span class=\"output\">$$\\sqrt[37]{55}$$</span>",
+                "<span class=\"output\">$$\\sqrt[37]{65}$$</span>"
             ],
             "answer": "D",
             "no": 49
         },
         {
-            "content": "<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1723610466412/b20ca25a2e98c3607d9e895c601adf31\">，<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1723610466412/e9b4e7a317009966a6a6681ab18c80a0\">，<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1723610466412/14dc9993af231e7cfdbe1220c9a773f6\">，<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1723610466412/ad7cecf94162417815ee5b7afb492251\">，<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1723610466412/9fade722427996a7ada0943b62c692cd\">，（    ）。",
+            "content": "<span class=\"output\">$$\\frac{1}{2}$$</span>,<span class=\"output\">$$\\frac{1}{5}$$</span>,<span class=\"output\">$$\\frac{5}{7}$$</span>,<span class=\"output\">$$\\frac{7}{17}$$</span>,<span class=\"output\">$$\\frac{23}{25}$$</span>,(  )",
             "options": [
-                "<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1723610466412/44354ee9a478957b88475b1fc2953583\">",
-                "<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1723610466412/393606322be7da2b1dcf7361bb37e01b\">",
-                "<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1723610466412/cafcfa2d19f26f31ab4437f005ed9f0a\">",
-                "<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1723610466412/3f52a07bf39c02bd4a060c647087f828\">"
+                "<span class=\"output\">$$\\frac{27}{31}$$</span>",
+                "<span class=\"output\">$$\\frac{39}{43}$$</span>,",
+                "<span class=\"output\">$$\\frac{47}{49}$$</span>,",
+                "<span class=\"output\">$$\\frac{35}{64}$$</span>,"
             ],
             "answer": "C",
             "no": 50
@@ -715,12 +715,13 @@
             "no": 64
         },
         {
-            "content": "如图所示，ABCDEF是一个边长为2的正六边形，圆O是<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1723610466412/71441f83e02395a556b51d9531d64ff8\">的内切圆，则圆O的面积是（    ）。\n<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1723610466412/18ca512bf886d25.png\">",
+            "content": "如图所示，ABCDEF是一个边长为2的正六边形，圆O是<span class=\"output\">$$\\bigtriangleup ABC$$</span> 的内切圆，则圆O的面积是（    ）。\n<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1723610466513/18ca512bf886d25.png\">",
             "options": [
-                "<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1723610466412/9cc056be36e251349f7039b681dd07d9\">",
-                "<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1723610466412/0625154a3ac929f00869c09828d2c013\">",
-                "<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1723610466412/f90c75400b9c0ecd7fa6e71b30c91556\">",
-                "<img src=\"https://superrabbithero-imgs.oss-cn-beijing.aliyuncs.com/zhenti/1723610466412/1d646687b0eca3d457ba16042308ebfb\">"
+               "<span class=\"output\">$$\\pi$$</span>",
+               "<span class=\"output\">$$2\\pi$$</span>",
+               "<span class=\"output\">$$\\frac{5\\pi}{4}$$</span>",
+               "<span class=\"output\">$$\\frac{3\\pi}{2}$$</span>"
+                
             ],
             "answer": "A",
             "no": 65
