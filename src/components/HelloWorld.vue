@@ -220,7 +220,14 @@
       <h5>Slider</h5>
       <div>{{sliderData}}</div>
       <div class="content" style="width:200px">
-        <au-slider :data="sliderData" :step="5" @change="setSliderData"></au-slider>
+        <au-slider v-model="sliderData" :step="5"></au-slider>
+      </div>
+    </cpt-view>
+    <cpt-view name="Switch" >
+      <h5>Switch</h5>
+      <div>{{switchData}}</div>
+      <div class="content">
+        <au-switch v-model="switchData"></au-switch>
       </div>
     </cpt-view>
   </div>
@@ -240,6 +247,7 @@ import cptView from "./Model/ComponentView.vue"
 import calender from "./Model/Calendar.vue"
 import auSelect from "./Model/auSelect.vue"
 import auSlider from "./Model/auSlider.vue"
+import auSwitch from "./Model/auSwitch.vue"
 
 import { ref } from 'vue';
 
@@ -254,7 +262,8 @@ export default {
     cptView,
     calender,
     auSelect,
-    auSlider
+    auSlider,
+    auSwitch
   },
   data(){
     return {
@@ -266,7 +275,8 @@ export default {
       htmlcontent:"<span class=\"output\">$$\\frac{1}{2}$$</span><span class=\"output\">$$\\sqrt{3}$$</span>",
       selectList:["item 1","item 2","item 3","item 4","item 5","item 6","item 7"],
       toastMsg:null,
-      sliderData:20
+      sliderData:20,
+      switchData:false
     }
   },
   watch:{

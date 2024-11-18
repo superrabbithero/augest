@@ -1,7 +1,7 @@
 <template>
   <div class="au-slider-container">
-    <div class="au-slider-track-box" @pointerdown="handleTrackStart">
-      <div class="au-slider-track">
+    <div class="au-slider-track-box"  @pointerdown="handleTrackStart">
+      <div class="au-slider-track" ref="track">
         <div class="au-slider-runnable-track" ref="process"></div>
       </div>
     </div>
@@ -14,7 +14,7 @@ import { ref, reactive, onMounted, onBeforeUnmount, watch ,nextTick } from 'vue'
 
 export default {
   props: {
-    data: {
+    modelValue: {
       type: Number,
       required: true
     },
@@ -36,27 +36,30 @@ export default {
     }
   },
   setup(props, {emit}) {
+    const track = ref(null);
     const thumb = ref(null);
     let thumbDrag = false
     const process = ref(null);
     const disx = ref(0);
     const disy = ref(0);
-    const data = ref(props.data);
-    console.log(`setup:${data.value}`)
+    const modelValue = ref(props.modelValue);
+    console.log(`setup:${modelValue.value}`)
     const step_px = ref(0)
 
     onMounted(() => {
-      process.value = document.querySelector('.au-slider-runnable-track');
-      step_px.value = document.querySelector('.au-slider-track').clientWidth/props.max*props.step;
-      console.log(`setup:step_px.value=${document.querySelector('.au-slider-track').clientWidth}/${props.max}*${props.step}`)
+      track.value = document.querySelector('.au-slider-track');
+      console.log(`onMounted`)
+      console.log(track.value)
+      console.log(thumb.value)
+      console.log(process.value)
+      step_px.value = track.value.clientWidth/props.max*props.step;
+      console.log(`setup:step_px.value=${track.value.clientWidth}/${props.max}*${props.step}`)
       console.log(`setup:step_px.value=${step_px.value}`)
-      const left = Math.floor(data.value/props.step) * step_px.value
+      const left = Math.floor(modelValue.value/props.step) * step_px.value
       console.log(`left:${left}`)
       process.value.style.width = `${left}px`
-
-      thumb.value = document.querySelector('.au-slider-thumb')
       thumb.value.style.left = `${left}px`;
-      console.log(`onMounted:${data.value}`)
+      console.log(`onMounted:${modelValue.value}`)
     });
 
     onBeforeUnmount(() => {
@@ -79,7 +82,7 @@ export default {
     };
 
     const handleTrackStart = (e) => {
-      console.log(`handleTrackStart-1:${data.value}`)
+      console.log(`handleTrackStart-1:${modelValue.value}`)
       if(!thumbDrag){
         thumbDrag = true
       
@@ -90,11 +93,11 @@ export default {
 
         process.value.style.width = `${left}px`;
         thumb.value.style.left = `${left}px`;
-        console.log(`handleTrackStart-2:${data.value}`)
+        console.log(`handleTrackStart-2:${modelValue.value}`)
         console.log(`Math.ceil(${props.min} + ${left}/${step_px.value})*${props.step};`)
-        data.value = Math.ceil(props.min + left/step_px.value)*props.step;
-        console.log(`handleTrackStart-3:${data.value}`)
-        emit('change', data.value)
+        modelValue.value = Math.ceil(props.min + left/step_px.value)*props.step;
+        console.log(`handleTrackStart-3:${modelValue.value}`)
+        emit('update:modelValue', modelValue.value)
 
         disx.value = e.pageX - thumb.value.offsetLeft;
         disy.value = e.pageY - thumb.value.offsetTop;
@@ -118,8 +121,8 @@ export default {
           
           process.value.style.width = `${left}px`;
           thumb.value.style.left = `${left}px`;
-          data.value = Math.ceil(props.min + left/step_px.value)*props.step;
-          emit('change', data.value)
+          modelValue.value = Math.ceil(props.min + left/step_px.value)*props.step;
+          emit('update:modelValue', modelValue.value)
         }
       }
     };
@@ -133,7 +136,7 @@ export default {
     return {
       thumb,
       process,
-      data,
+      modelValue,
       handleTrackStart,
       handleThumbStart
     };
@@ -158,6 +161,7 @@ export default {
 /*轨道*/
 .au-slider-track-box {
   height: 100%;
+  
 }
 .au-slider-track {
   position: absolute;
@@ -167,13 +171,15 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: var(--button-highlight);
+  background-color: var(--layout-bgc);
+  box-shadow: var(--inset-boxShadow-gray);
   overflow: hidden;
 }
 .au-slider-runnable-track {
   position: absolute;
   height: 100%;
   background-color: #ffc848;
+  box-shadow: var(--inset-boxShadow-yellow);
   width: 0;
   left: 0;
 }
@@ -186,7 +192,8 @@ export default {
   top: 50%;
   border-radius: 50%;
   transform: translateY(-50%);
-  background-color: #ffc848;
+  background-color: #fff;
+  box-shadow: var(--outset-boxShadow-gray);
   touch-action: none;
   cursor: pointer;
 }

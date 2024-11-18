@@ -13,6 +13,10 @@
   --box-shadow:0.2vw 0.2vw 1vw rgba(0,0,0,0.2);
   /*  卡片的阴影样式*/
   --boxHoverShadow:0.5vw 0.5vw 1.1vw rgba(0,0,0,0.3);  
+  --inset-boxShadow-gray:inset 1px 1px 2px 0 #afafaf,inset -1px -1px 2px #f2f2f2;
+  --inset-boxShadow-yellow:inset 1px 1px 2px 0 #daa937,inset -1px -1px 2px #fff4da;
+  --outset-boxShadow-gray:1px 1px 6px 0 #afafaf;
+  --outset-boxShadow-yellow:1px 1px 6px 0 #daa937;
   /*  边框hover的阴影样式 */
   --fontNormal:#363636;
   --font-lowlight:#bbb;
@@ -142,6 +146,11 @@ img {
 
   --modal-bgc:#333;
   --modal-bgc-bar:#3a3a3a;
+
+  --inset-boxShadow-gray:inset 1px 1px 2px 0 #2a2e32, inset -1px -1px 2px #515151;
+  --inset-boxShadow-yellow:inset 1px 1px 2px 0 #998045, inset -1px -1px 2px #b4964e;;
+  --outset-boxShadow-gray:1px 1px 6px 0 #2a2e32;
+  --outset-boxShadow-yellow:1px 1px 6px 0 #998045;
 
 
   /*markdown-css-dark*/

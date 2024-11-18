@@ -23,31 +23,35 @@
     </div>
 
     <my-model :show="show && modal_show.setting_show" :modeless="true" :modalKey="'setting_show'">
-      <div class="content-items">
-        <label>画笔大小：</label>
+      <div class="tools-setting-container">
+        <div class="content-items">
+          <label>画笔大小：</label>
+            
+          <au-slider v-model="penWidth" style="width: 150px;" :max="20"></au-slider>
+          {{penWidth}}
+        </div>
+        <div class="content-items">
+          <label>橡皮大小：</label>
           
-        <au-slider :data="penWidth" @change="changePenWidth" style="width: 150px;" max="20"></au-slider>
-        {{penWidth}}
+          <au-slider v-model="eraserWidth" style="width: 150px;"></au-slider>{{eraserWidth}}
+        </div>
+        <div class="content-items">
+          <label>画笔颜色：</label>
+          <div v-for="color in colorList" @click="penColor = color" class="color-item" :style="{backgroundColor:color,height: color==penColor ? '20px':'15px'}"></div>
+        </div>
+        <div class="content-items">
+          <label>仅触控笔：</label>
+          <au-switch v-model="mode"></au-switch>
+          {{mode ? '开' : '关' }}
+        </div>
       </div>
-      <div class="content-items">
-        <label>橡皮大小：</label>
-         
-        <au-slider :data="eraserWidth" @change="changeEraserWidth" style="width: 150px;"></au-slider>{{eraserWidth}}
-      </div>
-      <div class="content-items">
-        <label>画笔颜色：</label>
-        <div v-for="color in colorList" @click="penColor = color" class="color-item" :style="{backgroundColor:color,height: color==penColor ? '20px':'15px'}"></div>
-      </div>
-      <div class="content-items">
-        <label>仅触控笔：</label>
-        <div @click="switchmode()" :class="{'switch-botton':true, 'close':mode=='all touch'}"></div>
-        {{mode=='only pen' ? '开' : '关' }}
-      </div>
+      
     </my-model>
 </template>
 
 <script>
 import auSlider from "./auSlider.vue"
+import auSwitch from "./auSwitch.vue"
 
 export default {
   props:{
@@ -61,7 +65,7 @@ export default {
     switch: Number,
   },
   components:{
-    auSlider
+    auSlider,auSwitch
   },
   watch: {
     switch(newval, oldval){
@@ -80,7 +84,7 @@ export default {
   data(){
     return{
       log:"",
-      mode:"all touch",
+      mode:false,
       isDrawing: false,
       drawData: null,
       isScroll: 0,
@@ -100,8 +104,8 @@ export default {
       points:[],
       beginPoint:{x:0,y:0},
 
-      penWidth: 20,
-      eraserWidth: 10,
+      penWidth: 5,
+      eraserWidth: 40,
       penColor: '#f00',
       canvasWidth:0,
       canvasHeight:0,
@@ -132,12 +136,6 @@ export default {
     document.removeEventListener('pointerup', this.dragup)
   },
   methods: {
-    changeEraserWidth(data){
-      this.eraserWidth = data
-    },
-    changePenWidth(data){
-      this.penWidth = data
-    },
     dragdown(e){
       if(!this.dragToolsBar){
         this.dragToolsBar = this.$refs.dragToolsBar
@@ -226,35 +224,35 @@ export default {
       this.context.strokeStyle = this.penColor
     },
     switchmode() {
-      if(this.mode == "only pen"){
-        this.mode = "all touch"
+      if(this.mode == true){
+        this.mode = false
       }else{
-        this.mode = "only pen"
+        this.mode = true
       }
     },
     handlePointerDown(event){
       if(this.dragToolsBar)
         return
       this.currentPointerType = event.pointerType;
-      if(this.mode == "all touch" && this.currentPointerType == 'pen'){
-        this.mode = "only pen"
+      if(this.mode == false && this.currentPointerType == 'pen'){
+        this.mode = true
         this.$toast.show(`检测到正在使用触控笔，开启"仅触控笔"模式，可在画板设置中关闭`,"info")
       }
       var id = event.pointerId
       this.multiLastPt[id] = {x:event.pageX,y:event.pageY}
-      if(this.mode == "only pen" && this.currentPointerType === 'pen'){
+      if(this.mode == true && this.currentPointerType === 'pen'){
         this.scrolltop = this.el.parentElement.scrollTop;
         this.isDrawing = true;
         this.points = []
         this.points.push({x:event.pageX,y:event.pageY});
         this.beginPoint = this.points[0]
         
-      }else if(this.mode == "only pen" && this.currentPointerType === 'touch'){
+      }else if(this.mode == true && this.currentPointerType === 'touch'){
    
         this.isScroll = id
         this.startY = event.pageY;
         this.scrolltop = this.el.parentElement.scrollTop;
-      }else if(this.mode === "all touch"){
+      }else if(this.mode === false){
         this.scrolltop = this.el.parentElement.scrollTop;
         if(Object.keys(this.multiLastPt).length == 2){
           this.isDrawing = false;
@@ -283,7 +281,7 @@ export default {
         return
       var id = event.pointerId
       if(this.isDrawing && this.multiLastPt[id]){
-        if (this.mode == "only pen" && this.currentPointerType === 'pen' || this.mode === "all touch") {
+        if (this.mode == true && this.currentPointerType === 'pen' || this.mode === false) {
           //触控笔模式，手指滑动页面
           var scrolltop = this.el.parentElement.scrollTop;
           if(!this.erasing){
@@ -529,7 +527,7 @@ export default {
 
   .edit-tools-item.active {
     background: #ffc848;
-    box-shadow: inset 2px 2px 4px 0px #8c6509, inset -1px -1px 6px 0px #fff;
+    box-shadow: var(--inset-boxShadow-yellow);
     color: #363636;
   }
   
@@ -539,43 +537,12 @@ export default {
     align-items: flex-end
   }
 
-  .switch-botton{
-    margin: 0 10px;
-    position: relative;
-    width: 36px;
-    height: 18px;
-    border: 2px solid;
-    background-color: var(--card-hightlight);
-  }
-
-  .switch-botton:after {
-    content: "";
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 14px;
-    height: 14px;
-    background-color: var(--fontNormal);
-    transition: left 0.1s ease;
-  }
-
-  .switch-botton.close:after {
-
-    left: 20px;
-  }
-
   .color-item {
     box-sizing: border-box;
     margin: 0 2px;
     border: 2px solid;
     width: 20px;
     transition: height 0.1s ease;
-  }
-
-  /*自定义滑动input样式*/
-  .custom-range {
-      width: 120px;
-      transform: translateY(5px);
   }
 
   /* 工具栏2.0样式 */
