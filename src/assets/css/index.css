@@ -17,6 +17,8 @@
   --inset-boxShadow-yellow:inset 1px 1px 2px 0 #daa937,inset -1px -1px 2px #fff4da;
   --outset-boxShadow-gray:1px 1px 6px 0 #afafaf;
   --outset-boxShadow-yellow:1px 1px 6px 0 #daa937;
+
+  --handle-color:#fff;
   /*  边框hover的阴影样式 */
   --fontNormal:#363636;
   --font-lowlight:#bbb;
@@ -151,6 +153,7 @@ img {
   --inset-boxShadow-yellow:inset 1px 1px 2px 0 #998045, inset -1px -1px 2px #b4964e;;
   --outset-boxShadow-gray:1px 1px 6px 0 #2a2e32;
   --outset-boxShadow-yellow:1px 1px 6px 0 #998045;
+  --handle-color:#848484;
 
 
   /*markdown-css-dark*/

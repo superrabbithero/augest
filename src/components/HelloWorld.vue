@@ -220,14 +220,23 @@
       <h5>Slider</h5>
       <div>{{sliderData}}</div>
       <div class="content" style="width:200px">
-        <au-slider v-model="sliderData" :step="5"></au-slider>
+        <au-slider v-model="sliderData" :step="1"></au-slider>
+      </div>
+      <div class="content" style="width:200px">
+        <au-slider v-model="sliderData" :step="1"></au-slider>
       </div>
     </cpt-view>
     <cpt-view name="Switch" >
       <h5>Switch</h5>
       <div>{{switchData}}</div>
       <div class="content">
+        <au-switch v-model="switchData" size="big"></au-switch>
+      </div>
+      <div class="content">
         <au-switch v-model="switchData"></au-switch>
+      </div>
+      <div class="content">
+        <au-switch v-model="switchData" size="small"></au-switch>
       </div>
     </cpt-view>
   </div>
