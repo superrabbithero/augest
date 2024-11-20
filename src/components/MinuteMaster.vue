@@ -1,7 +1,7 @@
 <template>
   <div class="au-layout">
-    <!-- <div class="rows center"> -->
       <div class="clock-container rows center">
+        {{ timer }}
         <div class="clock-card">
           <div class="clock-item">
             <div class="timer-rect">
@@ -27,7 +27,9 @@
           </div>
         </div>
       </div>
-    <!-- </div> -->
+      <div class="clock-button" @click="starttimer">开始</div>
+      <div class="clock-button" @click="pause">暂停</div>
+      <div class="clock-button" @click="resettimer">重置</div>
   </div>
 </template>
 
@@ -37,19 +39,61 @@ import { ref, onMounted } from 'vue';
 export default {
   
   setup() {
-    
+    let status = 0
+    let startTime = 0
+    let elapsedTime = 0
+    let timerInterval = 0
+    const timer = ref("00:00:00")
 
     onMounted(() => {
       
     });
 
+    const starttimer = ()=>{
+      if(status != 1){
+        clearInterval(timerInterval);
+        console.log("start")
+        startTime = Date.now() - elapsedTime;
+        timerInterval = setInterval(updatetimer(), 1000);
+        status = 1
+      }
+    }
 
-    
+    const resettimer = ()=>{
+      if(status != 0){
+        clearInterval(timerInterval);
+        timerInterval = null
+        elapsedTime = 0;
+        timer.value = "00:00:00";
+        status = 0
+      }
+    }
 
+    const pause = () => {
+      if(status == 1){
+        clearInterval(timerInterval);
+        status = 2
+      }
+    }
+
+    const updatetimer = () => {
+      console.log("updatetimer")
+      elapsedTime = Date.now() - startTime;
+      const time = new Date(elapsedTime);
+      const hours = String(time.getUTCHours()).padStart(2, '0');
+      const minutes = String(time.getUTCMinutes()).padStart(2, '0');
+      const seconds = String(time.getUTCSeconds()).padStart(2, '0');
+      timer.value = `${hours}:${minutes}:${seconds}`;
+    }
     
 
     return {
-    };
+      starttimer,
+      resettimer,
+      pause,
+      updatetimer,
+      timer
+    }
   }
 };
 </script>
