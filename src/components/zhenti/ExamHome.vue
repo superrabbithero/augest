@@ -57,7 +57,10 @@ export default {
         {title:"2023年江苏省公务员录用考试《行测》题（A类）（网友回忆版）",year:2023,prov:'js',type:'A'},
         {title:"2023年江苏省公务员录用考试《行测》题（B类）（网友回忆版）",year:2023,prov:'js',type:'B'},
         {title:"2023年国家公务员录用考试《行测》题（行政执法卷网友回忆版）",year:2023,prov:'gk',type:'zf',finished:true},
-        {title:"2022年国家公务员录用考试《行测》题（行政执法卷网友回忆版）",year:2022,prov:'gk',type:'zf',finished:true}],
+        {title:"2022年国家公务员录用考试《行测》题（行政执法卷网友回忆版）",year:2022,prov:'gk',type:'zf',finished:true},
+        {title:"2022年江苏省公务员录用考试《行测》题（B类）（网友回忆版）",year:2022,prov:'js',type:'B'},
+        {title:"2021年江苏省公务员录用考试《行测》题（B类）（网友回忆版）",year:2021,prov:'js',type:'B'},
+        {title:"2020年江苏省公务员录用考试《行测》题（B类）（网友回忆版）",year:2020,prov:'js',type:'B'}],
 
       paperType:{'全部':['全部'],'国考':['全部','副省级','地市级','行政执法'],'江苏省考':['全部','A类','B类','C类']},
       years:['全部',2022,2023,2024],

@@ -181,6 +181,14 @@ const routes = [
             title: '一言'
         }
     },
+    {
+        path: '/MinuteMaster',
+        name: 'MinuteMaster',
+        component: () => import("@/components/MinuteMaster"),
+        meta:{
+            title: 'MinuteMaster'
+        }
+    }
 
 ]
 
