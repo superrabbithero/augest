@@ -4,7 +4,16 @@
         <div class="clock-card">
           <div class="clock-item">
             <div class="timer-rect">
-              <div class="timer">{{hours}}</div>
+              <div class="timer">
+                <div class="paper up">{{hours}}</div>
+                <div class="paper down">{{hours_pre}}</div>
+                <div class="paper-turning-container">
+                  <div :class="{'paper-turning':true,'turning':turning[0]}">
+                    <div class="paper up">{{hours_pre}}</div>
+                    <div class="paper down">{{hours}}</div>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="name">HOURS</div>
           </div>
@@ -12,7 +21,16 @@
         <div class="clock-card">
           <div class="clock-item">
             <div class="timer-rect">
-              <div class="timer">{{minutes}}</div>
+              <div class="timer">
+                <div class="paper up">{{minutes}}</div>
+                <div class="paper down">{{minutes_pre}}</div>
+                <div class="paper-turning-container">
+                  <div :class="{'paper-turning':true,'turning':turning[1]}">
+                    <div class="paper up">{{minutes_pre}}</div>
+                    <div class="paper down">{{minutes}}</div>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="name">MINUTES</div>
           </div>
@@ -20,7 +38,16 @@
         <div class="clock-card">
           <div class="clock-item">
             <div class="timer-rect">
-              <div class="timer">{{seconds}}</div>
+              <div class="timer">
+                <div class="paper up">{{seconds}}</div>
+                <div class="paper down">{{seconds_pre}}</div>
+                <div class="paper-turning-container">
+                  <div :class="{'paper-turning':true,'turning':turning[2]}">
+                    <div class="paper up">{{seconds_pre}}</div>
+                    <div class="paper down">{{seconds}}</div>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="name">SECONDS</div>
           </div>
@@ -55,9 +82,14 @@ export default {
     const minutes = ref("00")
     const seconds = ref("00")
 
+    const hours_pre = ref("00")
+    const minutes_pre = ref("00")
+    const seconds_pre = ref("00")
+
     const recordedTimes = ref([]); // 记录的时间点
     const intervals = ref([]);    // 时间段记录
     const records = ref([])
+    const turning = ref([false,false,false])
 
 
     onMounted(() => {
@@ -99,12 +131,24 @@ export default {
     }
 
     const updatetimer = () => {
+      hours_pre.value = hours.value
+      minutes_pre.value = minutes.value
+      seconds_pre.value = seconds.value
       console.log("updatetimer")
       elapsedTime = Date.now() - startTime;
       const time = new Date(elapsedTime);
       hours.value = String(time.getUTCHours()).padStart(2, '0');
       minutes.value = String(time.getUTCMinutes()).padStart(2, '0');
       seconds.value = String(time.getUTCSeconds()).padStart(2, '0');
+      turning.value = [hours_pre.value != hours.value,
+        minutes_pre.value != minutes.value,
+        seconds_pre.value != seconds.value]
+      setTimeout(() => {
+        hours_pre.value = hours.value
+        minutes_pre.value = minutes.value
+        seconds_pre.value = seconds.value
+        turning.value = [false,false,false]
+      }, 500); 
       
     }
 
@@ -146,7 +190,11 @@ export default {
       seconds,
       recordTime,
       records,
-      intervals
+      intervals,
+      turning,
+      seconds_pre,
+      minutes_pre,
+      hours_pre
     }
   }
 };
@@ -187,33 +235,85 @@ export default {
     position: relative;
     width: 80%;
     padding-top: 80%;
-/*    border: var(--box-border);*/
-/*    margin-bottom: 20%;*/
   }
   .timer-rect .timer{
-    text-align: center;
-
-    font-variant-numeric: tabular-nums;
-    font-family: fantasy;
-
     background-color: var(--content-bgc);
     border-radius: 2vw;
-    font-size: 15vw;
-
-    font-variant-numeric: tabular-nums;
-    transition: all 0.2s ease-in-out; /* 添加过渡效果 */
-
+    font-size: 13vw;
+    line-height: 18.4vw;
     box-shadow: inset 2px 2px 2px 0px #fff, 2px 2px 4px 2px #a2a2a2;
+    justify-content: flex-start;
   }
   .clock-item .name{
     position: absolute;
-    font-size: 3vw;
-
+    font-size: 2.3vw;
     transform: translateY(16vw);
   }
 
   .au-layout.center {
     align-items: center;
+  }
+
+  .timer .paper{
+    width: 18.4vw;
+    height: 9.2vw;
+    box-sizing: border-box;
+    line-height: 18.4vw;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .paper.down{
+    align-items: flex-end
+  }
+
+  .paper-turning-container {
+    position: absolute;
+    height: 9.2vw;
+    top: 0;
+  }
+
+  .paper-turning.turning {
+    
+    transform: rotateX(-180deg);
+    transition: transform 0.5s ease-in-out;
+    
+
+  }
+
+  /*.paper-turning-container:hover .paper-turning {
+    transform: rotateX(-180deg);
+  }*/
+
+  .paper-turning {
+    width: 18.4vw;
+    height: 9.2vw;
+    position: relative;
+/*    border:1px solid red;*/
+    border-radius: 2vw 2vw 0 0;
+/*    overflow: hidden;*/
+    transform-origin: bottom;
+    transform-style: preserve-3d;
+    transition: transform 1s ease-in-out;
+    transition: transform 0s;
+  }
+
+  .paper-turning .paper{
+    background-color: var(--content-bgc);
+    position: absolute;
+    width: 18.4vw;
+    height: 9.2vw;
+    border-radius: 2vw;
+    backface-visibility: hidden; 
+  }
+  .paper-turning .paper.down{
+    transform: rotateX(180deg);
+  }
+
+  .paper-turning .paper.up{
+    backface-visibility: visible; 
+    transform: rotateX(0deg);
   }
 
   @media (min-width: 768px) {}
