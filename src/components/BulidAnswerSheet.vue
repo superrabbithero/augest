@@ -121,7 +121,7 @@
       </div>
 
       <div v-if="canvasVisible" class="canvasbox" :style="{ height:clientHeight - 40 + 'px'}" ref="canvasbox">
-        <canvas class="sheet-canvas" @mousedown="MoDown($event)" @mousemove="MoMove($event)" @mouseup="MoUp" v-for="pageIndex in pdfPages " :id="'canvas'+pageIndex" :key="pageIndex" v-show="pageIndex == pageNum" ref="pdfcanvas">
+        <canvas class="sheet-canvas" @pointerdown="MoDown($event)" @pointermove="MoMove($event)" @pointerup="MoUp" v-for="pageIndex in pdfPages " :id="'canvas'+pageIndex" :key="pageIndex" v-show="pageIndex == pageNum" ref="pdfcanvas">
         </canvas>
 
          <!-- 识别点展示 -->
@@ -152,11 +152,11 @@
           </div>
         </div>
 
-        <div class="dragged-image" v-for="(image, index) in images" v-show="image" :key="index"  @mousedown="dragimgdown($event)"  @mouseup="dragimgup" :ref="`image-${index}`">
+        <div class="dragged-image" v-for="(image, index) in images" v-show="image" :key="index"  @pointerdown="dragimgdown($event)"  @pointerup="dragimgup" :ref="`image-${index}`">
           <img  draggable="false" :src="image" width="150" />
-          <check-one theme="outline" size="22" fill="#7ed321" :strokeWidth="2" style="position: absolute;right: -11px;top: -9px;" @click="darwimg(index)" @mousedown.prevent="$event.stopPropagation()" @mouseup="$event.stopPropagation()"/>
-          <close-one theme="outline" size="22" fill="#d0021b" :strokeWidth="2" style="position: absolute;right: -11px;top: 24px;" @click="delimg(index)" @mousedown.prevent="$event.stopPropagation()" @mouseup="$event.stopPropagation()"/>
-          <sliding-horizontal theme="outline" size="22" fill="#555" :strokeWidth="2" style="position: absolute;right: -11px;bottom: -9px;" @mousedown.prevent="resizeImgStart($event,index)" @mousemove="$event.stopPropagation()" @mouseup="stopResize"/>
+          <check-one theme="outline" size="22" fill="#7ed321" :strokeWidth="2" style="position: absolute;right: -11px;top: -9px;" @click="darwimg(index)" @pointerdown.prevent="$event.stopPropagation()" @pointerup="$event.stopPropagation()"/>
+          <close-one theme="outline" size="22" fill="#d0021b" :strokeWidth="2" style="position: absolute;right: -11px;top: 24px;" @click="delimg(index)" @pointerdown.prevent="$event.stopPropagation()" @pointerup="$event.stopPropagation()"/>
+          <sliding-horizontal theme="outline" size="22" fill="#555" :strokeWidth="2" style="position: absolute;right: -11px;bottom: -9px;" @pointerdown.prevent="resizeImgStart($event,index)" @pointermove="$event.stopPropagation()" @pointerup="stopResize"/>
         </div>
 
         <edit-tools-box v-if="canvasVisible"></edit-tools-box>
@@ -838,8 +838,8 @@ export default {
       this.draggedImageDom = imgElem.querySelector('img')
       this.disx = e.pageX;
       this.disy = this.draggedImageDom.width
-      window.addEventListener('mousemove', this.imgResize);
-      window.addEventListener('mouseup', this.stopResize);
+      window.addEventListener('pointermove', this.imgResize);
+      window.addEventListener('pointerup', this.stopResize);
     },
 
     imgResize(e){
@@ -854,8 +854,8 @@ export default {
       this.disy = 0;
       this.draggedImageDom = null;
 
-      window.removeEventListener('mousemove', this.imgResize);
-      window.removeEventListener('mouseup', this.stopResize);
+      window.removeEventListener('pointermove', this.imgResize);
+      window.removeEventListener('pointerup', this.stopResize);
     },
 
 
@@ -879,7 +879,7 @@ export default {
       this.draggedImageDom = el
       el.left = 0
       el.top = 0
-      window.addEventListener('mousemove',this.dragimgmove)
+      window.addEventListener('pointermove',this.dragimgmove)
       this.disx = e.pageX - el.offsetLeft
       this.disy = e.pageY - el.offsetTop
 
@@ -902,7 +902,7 @@ export default {
 
     dragimgup(){
       const el = this.draggedImageDom
-      window.removeEventListener('mousemove',this.dragimgmove)
+      window.removeEventListener('pointermove',this.dragimgmove)
       this.draggedImageDom = null
     },
 
@@ -1550,6 +1550,7 @@ export default {
   filter: var(--img-filter);
   position: absolute;
   box-shadow: var(--box-shadow);
+  touch-action: none;
 }
 
 .filenameview{

@@ -39,6 +39,8 @@
   --modal-bgc:#f7f9fe;
   --modal-bgc-bar:#f0f5ff;
 
+  --box-darker:#dedede;
+
   /*  颜色*/
   --nomal-clr: #55efc4;
   --warningI-clr: #ffeaa7;
@@ -155,6 +157,7 @@ img {
   --outset-boxShadow-yellow:1px 1px 6px 0 #998045;
   --handle-color:#848484;
 
+  --box-darker:#000;
 
   /*markdown-css-dark*/
     color-scheme: dark;
