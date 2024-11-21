@@ -204,7 +204,7 @@ export default {
   .clock-container {
     padding: 0;
 /*    border: var(--box-border);*/
-    box-shadow: inset 2px 2px 10px 0px #a2a2a2, inset -4px -4px 4px 0 #fff;
+    box-shadow: var(--clock-shadow);
     border-radius: 4vw;
     margin-top: 1rem;
     margin-bottom: calc(6vw + 1rem);
@@ -241,7 +241,7 @@ export default {
     border-radius: 2vw;
     font-size: 13vw;
     line-height: 18.4vw;
-    box-shadow: inset 2px 2px 2px 0px #fff, 2px 2px 4px 2px #a2a2a2;
+    box-shadow: var(--timer-shadow);
     justify-content: flex-start;
   }
   .clock-item .name{
@@ -290,13 +290,15 @@ export default {
     width: 18.4vw;
     height: 9.2vw;
     position: relative;
-/*    border:1px solid red;*/
+    box-sizing: border-box;
+    /* border: var(--box-border); */
     border-radius: 2vw 2vw 0 0;
 /*    overflow: hidden;*/
     transform-origin: bottom;
     transform-style: preserve-3d;
     transition: transform 1s ease-in-out;
     transition: transform 0s;
+
   }
 
   .paper-turning .paper{

@@ -41,6 +41,9 @@
 
   --box-darker:#dedede;
 
+  --clock-shadow:inset 2px 2px 10px 0px #a2a2a2, inset -4px -4px 4px 0 #fff;
+  --timer-shadow:inset 2px 2px 2px 0px #fff, 2px 2px 4px 2px #a2a2a2;
+
   /*  颜色*/
   --nomal-clr: #55efc4;
   --warningI-clr: #ffeaa7;
@@ -158,6 +161,9 @@ img {
   --handle-color:#848484;
 
   --box-darker:#000;
+
+  --clock-shadow:none;
+  --timer-shadow:none;
 
   /*markdown-css-dark*/
     color-scheme: dark;
