@@ -41,6 +41,11 @@ export default {
             path:'/tools/bulidanswersheet',
             imgUrl:require('@/assets/imgs/background-imgs/bulidanswersheetBcg.jpg')
           },
+          {
+            name:'公考计时器',
+            path:'/MinuteMaster',
+            imgUrl:require('@/assets/imgs/background-imgs/MinuteMasterBcg.jpg')
+          },
         ]
     }
   },

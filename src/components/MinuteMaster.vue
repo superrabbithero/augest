@@ -39,8 +39,12 @@
           <div class="clock-item">
             <div class="timer-rect">
               <div class="timer">
-                <div class="paper up">{{seconds}}</div>
-                <div class="paper down">{{seconds_pre}}</div>
+                <div class="paper-turning-container">
+                  <div class="paper-turning-bac">
+                    <div class="paper up">{{seconds}}</div>
+                    <div class="paper down">{{seconds_pre}}</div>
+                  </div>
+                </div>
                 <div class="paper-turning-container">
                   <div :class="{'paper-turning':true,'turning':turning[2]}">
                     <div class="paper up">{{seconds_pre}}</div>
@@ -243,6 +247,7 @@ export default {
     line-height: 18.4vw;
     box-shadow: var(--timer-shadow);
     justify-content: flex-start;
+    font-weight: bolder;
   }
   .clock-item .name{
     position: absolute;
@@ -256,59 +261,111 @@ export default {
 
   .timer .paper{
     width: 18.4vw;
-    height: 9.2vw;
+    height: 9vw;
     box-sizing: border-box;
     line-height: 18.4vw;
     display: flex;
     justify-content: center;
     overflow: hidden;
+    background-color: var(--content-bgc);
   }
 
   .paper.down{
-    align-items: flex-end
+    align-items: flex-end;
+
   }
 
   .paper-turning-container {
     position: absolute;
-    height: 9.2vw;
+    width: 18.4vw;
+    height: 18.4vw;
     top: 0;
+    border-radius: 2vw;
+    overflow: hidden;
   }
+
+
 
   .paper-turning.turning {
     
-    transform: rotateX(-180deg);
-    transition: transform 0.5s ease-in-out;
-    
+    /*transform: rotateX(-180deg);
+    transition: transform 0.5s ease-in-out;*/
+/*    animation-duration: 0.5s;*/
+    animation: turning  0.5s;
+    animation-fill-mode: forwards;
 
   }
 
+/*  改做动画效果*/
+  @keyframes turning {
+    from {
+      transform: rotateX(0);
+    }
+
+    to {
+      transform: rotateX(-180deg);
+    }
+  }
+
+
+
+
+
+
+
+  /*.paper-turning:after {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 100%;
+    height: 100%;
+    background-color: #ccc;
+    z-index: -1;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+  }*/
   /*.paper-turning-container:hover .paper-turning {
     transform: rotateX(-180deg);
   }*/
+
+
 
   .paper-turning {
     width: 18.4vw;
     height: 9.2vw;
     position: relative;
-    box-sizing: border-box;
-    /* border: var(--box-border); */
-    border-radius: 2vw 2vw 0 0;
-/*    overflow: hidden;*/
     transform-origin: bottom;
     transform-style: preserve-3d;
-    transition: transform 1s ease-in-out;
-    transition: transform 0s;
 
+  }
+
+  .paper-turning-bac {
+    width: 18.4vw;
+    height: 18.4vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: var(--box-darker)
   }
 
   .paper-turning .paper{
     background-color: var(--content-bgc);
     position: absolute;
     width: 18.4vw;
-    height: 9.2vw;
-    border-radius: 2vw;
+    height: 9vw;
+    overflow:hidden;
     backface-visibility: hidden; 
   }
+  /*.paper.down{
+    border-top: 2px solid;
+    border-radius: 0 0 2vw 2vw;
+  }
+
+  .paper.up{
+    border-bottom: 2px solid;
+    border-radius: 2vw 2vw 0 0;
+  }*/
+
   .paper-turning .paper.down{
     transform: rotateX(180deg);
   }
