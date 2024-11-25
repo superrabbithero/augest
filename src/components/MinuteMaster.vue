@@ -5,8 +5,12 @@
           <div class="clock-item">
             <div class="timer-rect">
               <div class="timer">
-                <div class="paper up">{{hours}}</div>
-                <div class="paper down">{{hours_pre}}</div>
+                <div class="paper-turning-container">
+                  <div class="paper-turning-bac">
+                    <div class="paper up">{{hours}}</div>
+                    <div class="paper down">{{hours_pre}}</div>
+                  </div>
+                </div>
                 <div class="paper-turning-container">
                   <div :class="{'paper-turning':true,'turning':turning[0]}">
                     <div class="paper up">{{hours_pre}}</div>
@@ -22,8 +26,12 @@
           <div class="clock-item">
             <div class="timer-rect">
               <div class="timer">
-                <div class="paper up">{{minutes}}</div>
-                <div class="paper down">{{minutes_pre}}</div>
+                <div class="paper-turning-container">
+                  <div class="paper-turning-bac">
+                    <div class="paper up">{{minutes}}</div>
+                    <div class="paper down">{{minutes_pre}}</div>
+                  </div>
+                </div>
                 <div class="paper-turning-container">
                   <div :class="{'paper-turning':true,'turning':turning[1]}">
                     <div class="paper up">{{minutes_pre}}</div>
@@ -268,6 +276,7 @@ export default {
     justify-content: center;
     overflow: hidden;
     background-color: var(--content-bgc);
+    box-shadow: var(--timer-shadow);
   }
 
   .paper.down{
@@ -281,17 +290,15 @@ export default {
     height: 18.4vw;
     top: 0;
     border-radius: 2vw;
-    overflow: hidden;
+    /* overflow: hidden; */
+    perspective: 50vw;
   }
 
 
 
   .paper-turning.turning {
     
-    /*transform: rotateX(-180deg);
-    transition: transform 0.5s ease-in-out;*/
-/*    animation-duration: 0.5s;*/
-    animation: turning  0.5s;
+    animation: turning  0.5s ease-in-out;
     animation-fill-mode: forwards;
 
   }
@@ -307,36 +314,13 @@ export default {
     }
   }
 
-
-
-
-
-
-
-  /*.paper-turning:after {
-    content: '';
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    width: 100%;
-    height: 100%;
-    background-color: #ccc;
-    z-index: -1;
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
-  }*/
-  /*.paper-turning-container:hover .paper-turning {
-    transform: rotateX(-180deg);
-  }*/
-
-
-
   .paper-turning {
     width: 18.4vw;
     height: 9.2vw;
     position: relative;
-    transform-origin: bottom;
+    transform-origin: 9.2vw 9.2vw;
     transform-style: preserve-3d;
-
+    
   }
 
   .paper-turning-bac {
@@ -345,6 +329,7 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    border-radius: 2vw;
     background-color: var(--box-darker)
   }
 
@@ -355,16 +340,24 @@ export default {
     height: 9vw;
     overflow:hidden;
     backface-visibility: hidden; 
-  }
-  /*.paper.down{
-    border-top: 2px solid;
-    border-radius: 0 0 2vw 2vw;
+    perspective-origin: top;
+    /* box-shadow: none; */
+    /* box-shadow: inset 1px 1px 0px 0px #333333; */
   }
 
-  .paper.up{
-    border-bottom: 2px solid;
+  .paper.down {
+    border-radius: 0 0 2vw 2vw;
+    /* box-shadow: inset 1px 1px 0px 0px #333333; */
+    /* border:0.1vw solid #000;
+    border-top: none; */
+  }
+
+  .paper.up {
     border-radius: 2vw 2vw 0 0;
-  }*/
+    /* box-shadow: inset 1px 1px 0px 0px #333333; */
+    /* border:0.1vw solid #000;
+    border-bottom: none; */
+  }
 
   .paper-turning .paper.down{
     transform: rotateX(180deg);
