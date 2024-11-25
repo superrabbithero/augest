@@ -65,9 +65,29 @@
           </div>
         </div>
       </div>
-      <div class="clock-button" @click="starttimer">开始</div>
-      <div class="clock-button" @click="pause">暂停</div>
-      <div class="clock-button" @click="resettimer">重置</div>
+
+      <div class="rows left">
+        <div class="cols">
+          <div v-if="status!=1" class="clock-button" @click="starttimer">
+            <IconWrapper iconName="PlayOne" theme="filled" size="40"/>
+          </div>
+          <div v-else class="clock-button" @click="pause">
+            <IconWrapper iconName="Pause" theme="outline" size="30" strokeWidth="6"/>
+          </div>
+        </div>
+        <div class="cols">
+          <div :class="{'clock-button':true,'none':status==0}" @click="resettimer">
+            <IconWrapper iconName="SquareSmall" theme="filled" size="36"/>
+          </div>
+        </div>
+        <div class="cols">
+          <div class="clock-button" @click="resettimer">
+            <IconWrapper iconName="SettingThree" theme="outline" strokeWidth="6" size="25"/>
+          </div>
+        </div>
+      </div>
+
+      
       <div class="clock-button" @click="recordTime">记录时间</div>
       <div class="intervals">
         <div v-for="(interval, index) in intervals" :key="index">
@@ -82,11 +102,15 @@
 
 <script>
 import { ref, onMounted ,onBeforeUnmount} from 'vue';
+import IconWrapper from './IconWrapper.vue';
 
 export default {
+  components:{
+    IconWrapper
+  },
   
   setup() {
-    let status = 0
+    const status = ref(0)
     let startTime = 0
     let elapsedTime = 0
     let timerInterval = null
@@ -113,32 +137,35 @@ export default {
     })
 
     const starttimer = ()=>{
-      if(status != 1){
+      if(status.value != 1){
         clearInterval(timerInterval);
         console.log("start")
         startTime = Date.now() - elapsedTime;
         timerInterval = setInterval(updatetimer, 1000);
-        console.log('status=1')
-        status = 1
+        console.log('status.value=1')
+        status.value = 1
       }
     }
 
     const resettimer = ()=>{
-      if(status != 0){
+      if(status.value != 0){
         clearInterval(timerInterval);
         timerInterval = null
         elapsedTime = 0;
         hours.value = "00"
         minutes.value = "00"
         seconds.value = "00"
-        status = 0
+        hours_pre.value = "00"
+        minutes_pre.value = "00"
+        seconds_pre.value = "00"
+        status.value = 0
       }
     }
 
     const pause = () => {
-      if(status == 1){
+      if(status.value == 1){
         clearInterval(timerInterval);
-        status = 2
+        status.value = 2
       }
     }
 
@@ -206,7 +233,8 @@ export default {
       turning,
       seconds_pre,
       minutes_pre,
-      hours_pre
+      hours_pre,
+      status
     }
   }
 };
@@ -366,6 +394,31 @@ export default {
   .paper-turning .paper.up{
     backface-visibility: visible; 
     transform: rotateX(0deg);
+  }
+
+  .clock-button {
+    background-color: var(--button-highlight);
+  }
+
+  .clock-button {
+    width: 3.2rem;
+    height: 3.2rem;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0.4rem;
+    /*transform: rotate(180deg);
+    transition: transform 1s;*/
+  }
+
+  .clock-button:hover {
+    
+/*    transform: rotate(0deg);*/
+  }
+
+  .clock-button.none{
+    touch-action: none;
   }
 
   @media (min-width: 768px) {}
