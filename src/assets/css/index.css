@@ -2,9 +2,9 @@
   --layout-bgc:#d3dce6;
   --main-color : #ffc848;  
   /* 白天样式 */
-  --content-bgc:#f7f9fe;
+  --content-bgc:#f0f0f2;
   /*  内容的背景颜色*/
-  --box-bgc:#fff;
+  --box-bgc:#f5f5f5;
   --box-hightlight:#f3f3f3;
   --button-highlight:#e6e6e6;
   --card-hightlight:rgb(238, 238, 238);
@@ -42,7 +42,7 @@
   --box-darker:#dedede;
 
   --clock-shadow:inset 2px 2px 10px 0px #a2a2a2, inset -4px -4px 4px 0 #fff;
-  --timer-shadow:inset 2px 2px 2px 0px #fff, 2px 2px 4px 2px #a2a2a2;
+  --timer-shadow:inset 2px 2px 2px 0px #fff, 2px 2px 10px 0 #a2a2a2;
 
   /*  颜色*/
   --nomal-clr: #55efc4;

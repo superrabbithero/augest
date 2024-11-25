@@ -68,11 +68,9 @@
 
       <div class="rows left">
         <div class="cols">
-          <div v-if="status!=1" class="clock-button" @click="starttimer">
-            <IconWrapper iconName="PlayOne" theme="filled" size="40"/>
-          </div>
-          <div v-else class="clock-button" @click="pause">
-            <IconWrapper iconName="Pause" theme="outline" size="30" strokeWidth="6"/>
+          <div  :class="{'clock-button':true,'active':status!=0}" @click="starttimer">
+            <IconWrapper v-if="status!=1" iconName="PlayOne" theme="filled" size="40"/>
+            <IconWrapper v-else iconName="Pause" theme="outline" size="30" strokeWidth="6"/>
           </div>
         </div>
         <div class="cols">
@@ -81,7 +79,7 @@
           </div>
         </div>
         <div class="cols">
-          <div class="clock-button" @click="resettimer">
+          <div class="clock-button">
             <IconWrapper iconName="SettingThree" theme="outline" strokeWidth="6" size="25"/>
           </div>
         </div>
@@ -144,6 +142,8 @@ export default {
         timerInterval = setInterval(updatetimer, 1000);
         console.log('status.value=1')
         status.value = 1
+      }else{
+        pause()
       }
     }
 
@@ -396,29 +396,40 @@ export default {
     transform: rotateX(0deg);
   }
 
-  .clock-button {
-    background-color: var(--button-highlight);
-  }
+  
 
   .clock-button {
     width: 3.2rem;
     height: 3.2rem;
-    border-radius: 50%;
+    border-radius: 25%;
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 0.4rem;
+    background-color: var(--box-bgc);
+    box-shadow:  0px 0px 0px 1px #161b1d3b;
+    box-shadow: -3px -3px 3px 0 #fafbff, 3px 3px 10px 0 #161b1d3b;
     /*transform: rotate(180deg);
     transition: transform 1s;*/
+    transition: box-shadow 0.1s ease-in-out;
   }
 
   .clock-button:hover {
-    
+    box-shadow: -6px -6px 6px 0 #fafbff, 6px 6px 20px 0 #161b1d3b;
 /*    transform: rotate(0deg);*/
   }
 
+  .clock-button.none:hover{
+    box-shadow: -2px -2px 2px 0 #fafbff, 2px 2px 2px 0 #161b1d3b;
+    cursor: not-allowed;
+  }
+
   .clock-button.none{
-    touch-action: none;
+    box-shadow: -2px -2px 2px 0 #fafbff, 2px 2px 2px 0 #161b1d3b;
+  }
+
+  .clock-button.active{
+/*    box-shadow:  inset -2px -2px 2px 0 #fafbff, inset 2px 2px 2px 0 #161b1d3b;*/
   }
 
   @media (min-width: 768px) {}
