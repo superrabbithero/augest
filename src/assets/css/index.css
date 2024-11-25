@@ -41,8 +41,13 @@
 
   --box-darker:#dedede;
 
-  --clock-shadow:inset 2px 2px 10px 0px #a2a2a2, inset -4px -4px 4px 0 #fff;
-  --timer-shadow:inset 2px 2px 2px 0px #fff, 2px 2px 10px 0 #a2a2a2;
+  --clock-shadow:inset -0.4vw -0.4vw 0.5vw 0 #fafbff,inset  0.4vw 0.4vw 0.5vw 0 #161b1d3b;
+  --timer-shadow-down:0.4vw 0.4vw 0.5vw 0 #161b1d3b,-0.4vw 0.4vw 0.5vw 0 #fafbff;
+  --timer-shadow-up:0.4vw 0.4vw 0.5vw 0 #161b1d3b,-0.4vw -0.4vw 0.5vw 0 #fafbff;
+
+  --clock-button-shadow-close:-2px -2px 2px 0 #fafbff, 2px 2px 2px 0 #161b1d3b;
+  --clock-button-shadow-far:-3px -3px 3px 0 #fafbff, 3px 3px 10px 0 #161b1d3b;
+  --clock-button-shadow-farther:-6px -6px 6px 0 #fafbff, 6px 6px 20px 0 #161b1d3b;
 
   /*  颜色*/
   --nomal-clr: #55efc4;
@@ -162,8 +167,13 @@ img {
 
   --box-darker:#000;
 
-  --clock-shadow:none;
-  --timer-shadow:none;
+  --clock-shadow:inset -0.4vw -0.4vw 1vw 0 #202020, inset 0.4vw 0.4vw 2vw 0 #000000;
+  --timer-shadow-down:0.4vw 0.4vw 2vw 0 #000000, -0.4vw 0.4vw 16vw 0 #1e1e1e;
+  --timer-shadow-up:0.4vw 0.4vw 0.5vw 0 #000,-0.4vw -0.4vw 0.5vw 0 #1e1e1e;
+
+  --clock-button-shadow-close:-2px -2px 2px 0 #1e1e1e, 2px 2px 2px 0 #000000;
+  --clock-button-shadow-far:-3px -3px 3px 0 #1e1e1e, 3px 3px 10px 0 #000000;
+  --clock-button-shadow-farther:-6px -6px 6px 0 #1e1e1e, 6px 6px 20px 0 #000000;
 
   /*markdown-css-dark*/
     color-scheme: dark;

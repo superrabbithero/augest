@@ -6,9 +6,9 @@
             <div class="timer-rect">
               <div class="timer">
                 <div class="paper-turning-container">
-                  <div class="paper-turning-bac">
-                    <div class="paper up">{{hours}}</div>
+                  <div :class="{'paper-turning-bac':true,'turning':turning[0]}">
                     <div class="paper down">{{hours_pre}}</div>
+                    <div class="paper up">{{hours}}</div>
                   </div>
                 </div>
                 <div class="paper-turning-container">
@@ -27,9 +27,9 @@
             <div class="timer-rect">
               <div class="timer">
                 <div class="paper-turning-container">
-                  <div class="paper-turning-bac">
-                    <div class="paper up">{{minutes}}</div>
+                  <div :class="{'paper-turning-bac':true,'turning':turning[1]}">
                     <div class="paper down">{{minutes_pre}}</div>
+                    <div class="paper up">{{minutes}}</div>
                   </div>
                 </div>
                 <div class="paper-turning-container">
@@ -48,9 +48,9 @@
             <div class="timer-rect">
               <div class="timer">
                 <div class="paper-turning-container">
-                  <div class="paper-turning-bac">
-                    <div class="paper up">{{seconds}}</div>
+                  <div :class="{'paper-turning-bac':true,'turning':turning[2]}">
                     <div class="paper down">{{seconds_pre}}</div>
+                    <div class="paper up">{{seconds}}</div>
                   </div>
                 </div>
                 <div class="paper-turning-container">
@@ -79,6 +79,11 @@
           </div>
         </div>
         <div class="cols">
+          <div :class="{'clock-button record-btn':true,'none':status!=1}" @click="recordTime">
+            记录时间
+          </div>
+        </div>
+        <div class="cols">
           <div class="clock-button">
             <IconWrapper iconName="SettingThree" theme="outline" strokeWidth="6" size="25"/>
           </div>
@@ -86,7 +91,6 @@
       </div>
 
       
-      <div class="clock-button" @click="recordTime">记录时间</div>
       <div class="intervals">
         <div v-for="(interval, index) in intervals" :key="index">
           记录 {{ index + 1 }}: {{ interval }}
@@ -192,6 +196,9 @@ export default {
     }
 
     const recordTime = () => {
+      if(status.value!=1){
+        return
+      }
       records.value.push(`${hours.value}:${minutes.value}:${seconds.value}`)
       const currentTime = Date.now(); // 当前时间
       if (recordedTimes.value.length === 0) {
@@ -248,7 +255,7 @@ export default {
     border-radius: 4vw;
     margin-top: 1rem;
     margin-bottom: calc(6vw + 1rem);
-    background-color: var(--box-darker);
+    background-color: var(--content-bgc);
   }
 
   .clock-container.fullscreen {
@@ -281,7 +288,7 @@ export default {
     border-radius: 2vw;
     font-size: 13vw;
     line-height: 18.4vw;
-    box-shadow: var(--timer-shadow);
+    /* box-shadow: -0.4vw -0.4vw 0.5vw 0 #fafbff,0.4vw 0.4vw 0.5vw 0 #161b1d3b; */
     justify-content: flex-start;
     font-weight: bolder;
   }
@@ -304,7 +311,7 @@ export default {
     justify-content: center;
     overflow: hidden;
     background-color: var(--content-bgc);
-    box-shadow: var(--timer-shadow);
+    
   }
 
   .paper.down{
@@ -331,6 +338,18 @@ export default {
 
   }
 
+  .paper-turning.turning .paper.up{
+    
+    animation: turning-paper  0.5s ease-in-out;
+    animation-fill-mode: forwards;
+
+  }
+
+  .paper-turning-bac.turning .paper.down {
+    animation: turning-paper  0.8s ease-in-out;
+    animation-fill-mode: forwards;
+  }
+
 /*  改做动画效果*/
   @keyframes turning {
     from {
@@ -339,6 +358,20 @@ export default {
 
     to {
       transform: rotateX(-180deg);
+    }
+  }
+
+  @keyframes turning-paper {
+    0% {
+      background-color: var(--content-bgc);
+    }
+
+    20% {
+      background-color: var(--content-bgc);
+    }
+
+    100% {
+      background-color: #000
     }
   }
 
@@ -355,10 +388,10 @@ export default {
     width: 18.4vw;
     height: 18.4vw;
     display: flex;
-    flex-direction: column;
+    flex-direction: column-reverse;
     justify-content: space-between;
     border-radius: 2vw;
-    background-color: var(--box-darker)
+    /* background-color: var(--box-darker) */
   }
 
   .paper-turning .paper{
@@ -369,12 +402,13 @@ export default {
     overflow:hidden;
     backface-visibility: hidden; 
     perspective-origin: top;
-    /* box-shadow: none; */
+    box-shadow: none !important;
     /* box-shadow: inset 1px 1px 0px 0px #333333; */
   }
 
   .paper.down {
     border-radius: 0 0 2vw 2vw;
+    box-shadow: var(--timer-shadow-down);
     /* box-shadow: inset 1px 1px 0px 0px #333333; */
     /* border:0.1vw solid #000;
     border-top: none; */
@@ -382,6 +416,7 @@ export default {
 
   .paper.up {
     border-radius: 2vw 2vw 0 0;
+    box-shadow: var(--timer-shadow-up);
     /* box-shadow: inset 1px 1px 0px 0px #333333; */
     /* border:0.1vw solid #000;
     border-bottom: none; */
@@ -392,7 +427,7 @@ export default {
   }
 
   .paper-turning .paper.up{
-    backface-visibility: visible; 
+    backface-visibility: hidden; 
     transform: rotateX(0deg);
   }
 
@@ -406,26 +441,36 @@ export default {
     justify-content: center;
     align-items: center;
     margin: 0.4rem;
-    background-color: var(--box-bgc);
-    box-shadow:  0px 0px 0px 1px #161b1d3b;
-    box-shadow: -3px -3px 3px 0 #fafbff, 3px 3px 10px 0 #161b1d3b;
+    background-color: var(--content-bgc);
+    /* box-shadow:  0px 0px 0px 1px #161b1d3b; */
+    box-shadow: var(--clock-button-shadow-close);
     /*transform: rotate(180deg);
     transition: transform 1s;*/
     transition: box-shadow 0.1s ease-in-out;
   }
 
+  .record-btn {
+    width: 8rem;
+    border-radius: 0.8rem;
+    /* box-shadow:  inset -2px -2px 2px 0 #fafbff, inset 2px 2px 2px 0 #161b1d3b; */
+  }
+
   .clock-button:hover {
-    box-shadow: -6px -6px 6px 0 #fafbff, 6px 6px 20px 0 #161b1d3b;
+    box-shadow: var(--clock-button-shadow-farther);
 /*    transform: rotate(0deg);*/
   }
 
   .clock-button.none:hover{
-    box-shadow: -2px -2px 2px 0 #fafbff, 2px 2px 2px 0 #161b1d3b;
+    /* box-shadow: var(--clock-button-shadow-close); */
     cursor: not-allowed;
+    
   }
 
   .clock-button.none{
-    box-shadow: -2px -2px 2px 0 #fafbff, 2px 2px 2px 0 #161b1d3b;
+    touch-action: none;
+    cursor: not-allowed;
+    
+    box-shadow: var(--clock-button-shadow-close);
   }
 
   .clock-button.active{
