@@ -68,7 +68,7 @@
 
       <div class="rows left">
         <div class="cols">
-          <div  :class="{'clock-button':true,'active':status!=0}" @click="starttimer">
+          <div  :class="{'clock-button':true,'active':status!=0,'turning':status==1}" @click="starttimer">
             <IconWrapper v-if="status!=1" iconName="PlayOne" theme="filled" size="40"/>
             <IconWrapper v-else iconName="Pause" theme="outline" size="30" strokeWidth="6"/>
           </div>
@@ -441,12 +441,17 @@ export default {
     justify-content: center;
     align-items: center;
     margin: 0.4rem;
-    background-color: var(--content-bgc);
+/*    background-color: var(--content-bgc);*/
     /* box-shadow:  0px 0px 0px 1px #161b1d3b; */
-    box-shadow: var(--clock-button-shadow-close);
+/*    box-shadow: var(--clock-button-shadow-close);*/
     /*transform: rotate(180deg);
     transition: transform 1s;*/
-    transition: box-shadow 0.1s ease-in-out;
+/*    transition: box-shadow 0.1s ease-in-out;*/
+
+    box-shadow: var(--lightBox-shadow-light);
+    background: var(--lightBox-background-light);
+    color:var(--lightBox-color-light);
+    transition: 0.3s;
   }
 
   .record-btn {
@@ -456,22 +461,50 @@ export default {
   }
 
   .clock-button:hover {
-    box-shadow: var(--clock-button-shadow-farther);
+    box-shadow: var(--lightBox-shadow-dark);
+    background: var(--lightBox-background-dark);
 /*    transform: rotate(0deg);*/
   }
 
-  .clock-button.none:hover{
-    /* box-shadow: var(--clock-button-shadow-close); */
-    cursor: not-allowed;
-    
-  }
-
-  .clock-button.none{
+   .clock-button.none{
     touch-action: none;
     cursor: not-allowed;
-    
-    box-shadow: var(--clock-button-shadow-close);
+    box-shadow: var(--lightBox-shadow);
+    background: var(--lightBox-background);
+    color:var(--lightBox-color);
   }
+
+  .clock-button.none:hover{
+    box-shadow: var(--lightBox-shadow);
+    background: var(--lightBox-background);
+    cursor: not-allowed;
+  }
+
+  .clock-button.turning {
+    animation: breathe-lighting  4s infinite;
+    animation-fill-mode: forwards;
+  }
+
+/*  改做动画效果*/
+  @keyframes breathe-lighting {
+    0% {
+      box-shadow: var(--lightBox-shadow-light);
+      background: var(--lightBox-background-light);
+    }
+
+    50% {
+      box-shadow: var(--lightBox-shadow-lighter);
+      background: var(--lightBox-background-lighter);
+      transform: scale(1.1);
+    }
+
+    100% {
+      box-shadow: var(--lightBox-shadow-light);
+      background: var(--lightBox-background-light);
+    }
+  }
+
+ 
 
   .clock-button.active{
 /*    box-shadow:  inset -2px -2px 2px 0 #fafbff, inset 2px 2px 2px 0 #161b1d3b;*/

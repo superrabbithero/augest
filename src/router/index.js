@@ -186,7 +186,10 @@ const routes = [
         name: 'MinuteMaster',
         component: () => import("@/components/MinuteMaster"),
         meta:{
-            title: 'MinuteMaster'
+            title: 'MinuteMaster',
+            footerHidden: true,
+            headerHidden: true,
+            headerBlockHidden: true
         }
     }
 

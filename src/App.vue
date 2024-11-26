@@ -61,7 +61,7 @@
       
     </div>
     <div class="au-main">
-      <div class="header-block"></div>
+      <div class="header-block" v-if="!$route.meta.headerBlockHidden"></div>
       <router-view @toggle-header="setHeaderVisibility"></router-view>
     </div>
     <div v-if="!$route.meta.footerHidden" class="au-footer footer" >
