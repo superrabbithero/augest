@@ -14,10 +14,10 @@
     font-family: 'ScreenMatrix';
     src: url('ScreenMatrix-1.ttf') format('truetype');
 }
-/*@font-face {
-    font-family: 'HYPixel';
-    src: url('HYPixel11pxU-2.ttf') format('truetype');
-}*/
+@font-face {
+    font-family: 'digital-7';
+    src: url('digital-7 mono.ttf') format('truetype');
+}
 @font-face {
   font-family: 'NotoMono';
   src: url('NotoMono-Regular-1.ttf') format('truetype');

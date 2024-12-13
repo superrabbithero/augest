@@ -1,5 +1,5 @@
 const user = {"name":"markethuang:xctest","pwd":"c34dd995a8132605764a9347dae6e8ca"}
-const env_path = ["","https://xqdsj-stagingtest1.xuece.cn/","https://xqdsj-stagingtest2.xuece.cn/"]
+const env_path = ["","https://xuece-xqdsj-stagingtest1.unisolution.cn/","https://xuece-xqdsj-stagingtest2.unisolution.cn/"]
 let Authtoken = ""
 let schoolId = 19
 
