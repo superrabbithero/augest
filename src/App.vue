@@ -25,7 +25,7 @@
                 像素编辑器
               </div>
               <div class="menu-item" @click="goto('/myPixelIcons')">
-                <svg-icon name="picture01"></svg-icon>
+                <svg-icon name="pixIcon02"></svg-icon>
                 我的像素图标
               </div>
               <div class="menu-item" @click="goto('/FQTManagement')">

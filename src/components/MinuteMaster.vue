@@ -4,71 +4,71 @@
 
       <!-- 翻页时钟样式 -->
 
-      <div v-if="skins == 0" class="clock-container rows center">
-        <div :class="{'clock-button is-clock-btn':true,'hidden':!show_clock_btn}" v-show="isClock" @click="setting_show = !setting_show" >
-          <IconWrapper iconName="SettingThree" theme="outline" strokeWidth="6" size="25"/>
-        </div>
-        <div class="clock-card">
-          <div class="clock-item">
-            <div class="timer-rect">
-              <div class="timer">
-                <div class="paper-turning-container">
-                  <div :class="{'paper-turning-bac':true,'turning':turning[0]}">
-                    <div class="paper down">{{hours_pre}}</div>
-                    <div class="paper up">{{hours}}</div>
+      <div v-if="skins == 0" :class="{'clock-container rows center':true,'fullscreen':fullScreen}">
+        <div v-show="fullScreen" class="datetime">{{datetime}}</div>
+        <div class="rows">
+          <div class="clock-card">
+            <div class="clock-item">
+              <div class="timer-rect">
+                <div class="timer">
+                  <div class="paper-turning-container">
+                    <div :class="{'paper-turning-bac':true,'turning':turning[0]}">
+                      <div class="paper down">{{hours_pre}}</div>
+                      <div class="paper up">{{hours}}</div>
+                    </div>
                   </div>
-                </div>
-                <div class="paper-turning-container">
-                  <div :class="{'paper-turning':true,'turning':turning[0]}">
-                    <div class="paper up">{{hours_pre}}</div>
-                    <div class="paper down">{{hours}}</div>
+                  <div class="paper-turning-container">
+                    <div :class="{'paper-turning':true,'turning':turning[0]}">
+                      <div class="paper up">{{hours_pre}}</div>
+                      <div class="paper down">{{hours}}</div>
+                    </div>
                   </div>
                 </div>
               </div>
+              <div class="name">HOURS</div>
             </div>
-            <div class="name">HOURS</div>
           </div>
-        </div>
-        <div class="clock-card">
-          <div class="clock-item">
-            <div class="timer-rect">
-              <div class="timer">
-                <div class="paper-turning-container">
-                  <div :class="{'paper-turning-bac':true,'turning':turning[1]}">
-                    <div class="paper down">{{minutes_pre}}</div>
-                    <div class="paper up">{{minutes}}</div>
+          <div class="clock-card">
+            <div class="clock-item">
+              <div class="timer-rect">
+                <div class="timer">
+                  <div class="paper-turning-container">
+                    <div :class="{'paper-turning-bac':true,'turning':turning[1]}">
+                      <div class="paper down">{{minutes_pre}}</div>
+                      <div class="paper up">{{minutes}}</div>
+                    </div>
                   </div>
-                </div>
-                <div class="paper-turning-container">
-                  <div :class="{'paper-turning':true,'turning':turning[1]}">
-                    <div class="paper up">{{minutes_pre}}</div>
-                    <div class="paper down">{{minutes}}</div>
+                  <div class="paper-turning-container">
+                    <div :class="{'paper-turning':true,'turning':turning[1]}">
+                      <div class="paper up">{{minutes_pre}}</div>
+                      <div class="paper down">{{minutes}}</div>
+                    </div>
                   </div>
                 </div>
               </div>
+              <div class="name">MINUTES</div>
             </div>
-            <div class="name">MINUTES</div>
           </div>
-        </div>
-        <div class="clock-card">
-          <div class="clock-item">
-            <div class="timer-rect">
-              <div class="timer">
-                <div class="paper-turning-container">
-                  <div :class="{'paper-turning-bac':true,'turning':turning[2]}">
-                    <div class="paper down">{{seconds_pre}}</div>
-                    <div class="paper up">{{seconds}}</div>
+          <div class="clock-card">
+            <div class="clock-item">
+              <div class="timer-rect">
+                <div class="timer">
+                  <div class="paper-turning-container">
+                    <div :class="{'paper-turning-bac':true,'turning':turning[2]}">
+                      <div class="paper down">{{seconds_pre}}</div>
+                      <div class="paper up">{{seconds}}</div>
+                    </div>
                   </div>
-                </div>
-                <div class="paper-turning-container">
-                  <div :class="{'paper-turning':true,'turning':turning[2]}">
-                    <div class="paper up">{{seconds_pre}}</div>
-                    <div class="paper down">{{seconds}}</div>
+                  <div class="paper-turning-container">
+                    <div :class="{'paper-turning':true,'turning':turning[2]}">
+                      <div class="paper up">{{seconds_pre}}</div>
+                      <div class="paper down">{{seconds}}</div>
+                    </div>
                   </div>
                 </div>
               </div>
+              <div class="name">SECONDS</div>
             </div>
-            <div class="name">SECONDS</div>
           </div>
         </div>
       </div>
@@ -86,11 +86,12 @@
         <DigitalDisplay :value="seconds" />
       </div>
       <!-- 简单电子钟 -->
-      <div v-if="skins == 2" class=" clock-digit-container rows center" style="transform: scale(0.8);">
+      <div v-if="skins == 2" :class=" {'clock-digit-container rows center':true,'fullscreen':fullScreen}" >
+        <div v-show="fullScreen" class="clock-card-digit-datetime">{{datetime}}</div>
         <div class="clock-card-digit">{{`${hours}:${minutes}:${seconds}`}}</div>
       </div>
 
-      <div class="rows" v-show="!isClock">
+      <div class="rows">
         <div class="cols">
           <div  :class="{'clock-button':true,'active':status!=0,'turning':status==1}" @click="starttimer">
             <IconWrapper v-if="status!=1" iconName="PlayOne" theme="filled" size="40"/>
@@ -200,7 +201,8 @@ export default {
   },
   
   setup() {
-    const skins = ref(1)
+    const fullScreen = ref(false)
+    const skins = ref(2)
 
     const status = ref(0)
     let startTime = 0
@@ -265,7 +267,7 @@ export default {
       const currentDate = new Date();
 
       // 使用 Intl.DateTimeFormat 获取英文月份
-      const month = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(currentDate);
+      const month = new Intl.DateTimeFormat('en-US', { month: 'short' }).format(currentDate);
 
       const weekday = new Intl.DateTimeFormat('en-US', { weekday: 'short' }).format(currentDate);
 
@@ -294,12 +296,16 @@ export default {
 
     const handleClick = () => {
       show_clock_btn.value = true
+      fullScreen.value = false
       if(show_clock_btn_timer){
         clearTimeout(show_clock_btn_timer)
       }
 
       show_clock_btn_timer = setTimeout(()=>{
         show_clock_btn.value = false
+        if(isClock.value && status.value == 1){
+          fullScreen.value = true
+        }
       },5000)
     }
 
@@ -445,7 +451,8 @@ export default {
       examConfig,
       show_clock_btn,
       datetime,
-      skins
+      skins,
+      fullScreen
     }
   }
 };
@@ -461,10 +468,6 @@ export default {
     margin-top: 1rem;
     margin-bottom: calc(6vw + 1rem) !important;
     background-color: var(--content-bgc);
-  }
-
-  .clock-container.fullscreen {
-    height: calc(100vh - 160px);
   }
 
   .clock-card {
@@ -721,7 +724,8 @@ export default {
 
   .side {
     background-color: var(--content-bgc);
-    height: calc(100vh - 2vw);
+    height: 100%;
+    box-sizing: border-box;
     width: 40vw;
     border-radius: 2vw 0 0 2vw;
     position: fixed;
@@ -760,6 +764,7 @@ export default {
     left: 0;
     height: 100%;
     width: 100%;
+    padding: 0;
   }
 
   .mask{
@@ -874,20 +879,55 @@ export default {
   }
 
   .clock-digit-container {
-    width: 75vw;
+    user-select: none;
+    width: 69vw;
     height: 23vw;
     border-radius: 4vw;
     background-color: #101010;
     align-items: center;
     justify-content: center;
+    transition:unset
   }
+
+  .fullscreen{
+    position: absolute;
+    z-index: 999;
+    top:50%;
+    left:50%;
+    transform: translate(-50%,-50%);
+    width: 108vw;
+    height: 108vh;
+    box-shadow: none;
+    transition:width 0.3s ease-in-out,height 0.3s ease-in-out;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  
 
   .clock-card-digit{    
     font-family: "digital-7";
-    font-size: 18vw;
+    font-size: 16vw;
     color: #c74500;
     display: flex;
     filter: drop-shadow(0 0 0.5vw #c74500);
+  }
+
+  .fullscreen .clock-card-digit{
+    width: 80vw;
+    transition: font-size 0.3s ease-in-out;
+    font-size: 22vw;
+  }
+
+  .clock-card-digit-datetime {
+    width: 80vw;
+    transition: font-size 0.3s ease-in-out;
+    font-family: "digital-7";
+    font-size: 4vw!important;
+    text-align: right;
+    color: #c74500;
+    filter: drop-shadow(0 0 0.2vw #c74500)
   }
 
 
