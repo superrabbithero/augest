@@ -41,6 +41,8 @@
 
   --box-darker:#dedede;
 
+  --canvas-grid-gray:#d9d9d9;
+
   --lightBox-shadow:var(--clock-button-shadow-none);
   --lightBox-background:var(--content-bgc);
   --lightBox-shadow-dark:var(--clock-button-shadow-close);
@@ -197,6 +199,9 @@ img {
   --lightBox-background-lighter:#ffe7bb;
   --lightBox-color:#6d583e;
   --lightBox-color-light:#000000b8;
+
+  --canvas-grid-gray:#717171;
+  --canvas-grid-bgc:#454545;
 
   /*markdown-css-dark*/
     color-scheme: dark;
@@ -801,6 +806,11 @@ button.icon-button:active{
     color: var(--main-color);
 }
 
+button.has-icon-button {
+    display: flex;
+    align-items: center;
+    padding: 5px 10px;
+}
 
 textarea {
     font-family: auto;

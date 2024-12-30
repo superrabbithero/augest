@@ -226,6 +226,7 @@
         <au-slider v-model="sliderData" :step="1"></au-slider>
       </div>
     </cpt-view>
+
     <cpt-view name="Switch" >
       <h5>Switch</h5>
       <div>{{switchData}}</div>
@@ -237,6 +238,16 @@
       </div>
       <div class="content">
         <au-switch v-model="switchData" size="small"></au-switch>
+      </div>
+    </cpt-view>
+
+    <cpt-view name="Draged">
+      <div style="width:100%;height: 400px;border: var(--box-border);position: relative;">
+        <auDraged>
+          <div style="width:200px">
+            这是一个可拖拽组件
+          </div>
+        </auDraged>
       </div>
     </cpt-view>
   </div>
@@ -257,6 +268,7 @@ import calender from "./Model/Calendar.vue"
 import auSelect from "./Model/auSelect.vue"
 import auSlider from "./Model/auSlider.vue"
 import auSwitch from "./Model/auSwitch.vue"
+import auDraged from "./Model/auDraged.vue"
 
 import { ref } from 'vue';
 
@@ -272,7 +284,8 @@ export default {
     calender,
     auSelect,
     auSlider,
-    auSwitch
+    auSwitch,
+    auDraged
   },
   data(){
     return {

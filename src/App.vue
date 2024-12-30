@@ -37,7 +37,7 @@
                 常用工具
               </div>
               <div class="menu-item" >
-                <IconWrapper iconName="RoadCone" theme="outline" :strokeWidth='2' />
+                <svg-icon name="roadblock11" />
                 待定...
               </div>
             </div>

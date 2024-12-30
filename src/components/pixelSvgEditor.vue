@@ -8,8 +8,9 @@
         <input type="text" v-model="newFileForm.cols"  >
       </div>
     </div>
-    <div class="center-h">
-      <div v-for="size in [16,32,64]" @click="newFileForm.rows = size,newFileForm.cols = size" :style="{width: `${size}px`,height: `${size}px`,fontSize: `${size*0.5}px`,border: `1px solid var(--fontNormal)`,marginRight: `4px`,cursor: `pointer`}">
+    <div class="center-h" style="align-items: flex-end">
+      <label>画布预设：</label>
+      <div v-for="size in [64,32,16,13,11]" @click="newFileForm.rows = size,newFileForm.cols = size" :style="{width: `${size}px`,height: `${size}px`,fontSize: `${size*0.5}px`,border: `1px solid var(--fontNormal)`,marginRight: `4px`,cursor: `pointer`}">
         {{size}}<sup>2</sup>
       </div>
     </div>
@@ -75,7 +76,8 @@
   </div>
   <div class="work-area">
     <div style="display: flex;flex-grow: 1;overflow: hidden;">
-      <div class="left" v-show="toolsShow">
+      <auDraged>
+
         <div class="tools-bar">
           <div :class="{'tool-item':true,'active':tool == 1}" @click="switchTool(1)">
             <svg-icon name="pencil" className="tool-item-svg"></svg-icon>
@@ -113,13 +115,13 @@
             </div>
           </div>
         </div>
-      </div>
+      </auDraged>
       <div class="middle" 
                           @pointermove="handlePointerMove"
                           @pointerup="handlePointerUp" ref="realViewport" @wheel="zoomWheel">
         <div style="position: absolute;left: 1rem">{{coordinate}}</div>
           <div class="drawing-area" @pointerdown="handlePointerDown">
-            <canvas :width="width" :height="height"  class="gridsytle" :style="canvasStyle" ref="canvas">
+            <canvas :width="width" :height="height"  class="gridstyle" :style="canvasStyle" ref="canvas">
               
             </canvas>
           </div>
@@ -127,22 +129,22 @@
       </div>
       <div class="right" v-show="toolsShow">
         <div class="overview" @pointermove="dragViewportMove" @pointerup="dragViewportUp" @wheel="zoomWheel">
-          <canvas class="gridsytle" ref="canvas_overview" :style="overviewStyle" :width="overviewSize.width" :height="overviewSize.height"></canvas>
+          <canvas class="gridstyle" ref="canvas_overview" :style="overviewStyle" :width="overviewSize.width" :height="overviewSize.height"></canvas>
           <div class="viewport" ref="viewport" @pointerdown="dragViewportDown"></div>
         </div>
         <div class="overview-tools">
           <div class="icon-item" @click="zoomIn">
-            <svg-icon name="zoomIn"></svg-icon>
+            <svg-icon name="zoomIn11-1"></svg-icon>
           </div>
           <div class="icon-item" @click="zoomOut">
-            <svg-icon name="zoomOut"></svg-icon>
+            <svg-icon name="zoomOut11-1"></svg-icon>
           </div>
           <input type="range" style="width: 80px; color: currentColor;" min="10" max="100" v-model="scaleCount" @input="resizeViewport">
           <div class="icon-item" @click="zoomFit">
-            <svg-icon name="fit01"></svg-icon>
+            <svg-icon name="zoomFit11-1"></svg-icon>
           </div>
         </div>
-        <au-select :dataList="['default','Pixel-8']" @change="changeMyColor" style="margin-bottom: 5px;"></au-select>
+        <au-select :dataList="['默认','Pixel-8']" @change="changeMyColor" style="margin-bottom: 5px;"></au-select>
         <div class="color-tools" ref="colorTools" @pointermove="handleMove($event,index)">
           <div class="color-item draged" v-show="dragedColorIndex != null" ref="dragedColor"></div>
           <div v-for="(color,index) in myColors" class="color-item" ref="colorItem" :style="{backgroundColor:color}" 
@@ -164,19 +166,25 @@
       </div>
     </div>
     <div :class="{'gif-tools-box':true,'show':gifToolsShow}">
-      <div class="gif-tools">
-        <svg-icon name="replay01" @click="gifImageDataIndex=0,startAnimate()"></svg-icon>
-        <svg-icon name="play01" @click="startAnimate"></svg-icon>
-        <svg-icon name="pause01" @click="stopAnimate"></svg-icon>
-        <svg-icon name="play-slower01" @click="changeSpeed(-1)"></svg-icon>
-        <svg-icon name="play-faster01" @click="changeSpeed(1)"></svg-icon>
-        {{`${animateFps[animateFpsIndex]}fps`}}
-        <svg-icon @click="pushGifImgList()" name="letter-plus01"></svg-icon>
-        <svg-icon @click="deleteGifImgList()" name="letter-minus01"></svg-icon>
-        <svg-icon @click="saveGifNPngToFolder(gifImageDataList)" name="export01"></svg-icon>
+      <div class="gif-tools" style="justify-content: center">
+        <svg-icon class="gif-tools-item" name="replay02" @click="gifImageDataIndex=0,startAnimate()"></svg-icon>
+        <!-- <svg-icon name="play01" @click="startAnimate"></svg-icon> -->
+        <svg-icon class="gif-tools-item" name="pause01" @click="stopAnimate"></svg-icon>
+        <!-- <svg-icon class="gif-tools-item" name="play-slower01" @click="changeSpeed(-1)"></svg-icon>
+        <svg-icon class="gif-tools-item" name="play-faster01" @click="changeSpeed(1)"></svg-icon> -->
+        <button class="gif-tools-item has-icon-button" @click="changeSpeed(1)">
+          <svg-icon style="margin-right: 0.5rem;" size='16' name="film11-1"></svg-icon>
+          {{`${animateFps[animateFpsIndex]}fps`}}
+        </button>
+        <svg-icon class="gif-tools-item" @click="pushGifImgList()" name="letter-plus01"></svg-icon>
+        <svg-icon class="gif-tools-item" @click="deleteGifImgList()" name="letter-minus01"></svg-icon>
+        <button class="gif-tools-item" @click="saveGifNPngToFolder(gifImageDataList)">导出</button>
       </div>
-      <div class="gif-tools">
-        <canvas ref="gifCanvas" :width="100*cols/rows" height="100" v-for="index in gifImageDataList.length" :style="{outline:`${index-1 == gifImageDataIndex ?'2px solid var(--main-color)':'none'}`}" @click="putGifImage2MainCanvas(index-1)"></canvas>
+      <div class="gif-tools" style="height:80px">
+        
+        <canvas ref="gifCanvas" :width="100*cols/rows" height="100" v-for="index in gifImageDataList.length" :class="{'gifCanvas':true,'currentGifCanvas':index-1 == gifImageDataIndex}" @click="putGifImage2MainCanvas(index-1)"></canvas>
+
+        <div class="addcanvas" @click="pushGifImgList()" v-show="gifImageDataList.length==0">+</div>
       </div>
     </div>
   </div>
@@ -185,14 +193,15 @@
 <script>
 import GIF from 'gif.js'
 import auSelect from "./Model/auSelect.vue"
+import auDraged from "./Model/auDraged.vue"
 
 export default {
   data() {
     return {
       tool:1,
-      rows:60,
-      cols:60,
-      gridSize:20,
+      rows:11,
+      cols:11,
+      gridSize:100,
       outputSize:30,
       coordinate:'x:0,y:0',
       currentColor:'#000001',
@@ -255,7 +264,7 @@ export default {
     };
   },
   components:{
-    auSelect
+    auSelect,auDraged
   },
   computed: {
     width() {
@@ -1597,24 +1606,35 @@ export default {
   font-size: 0;
   height: 100%;
 }
-canvas {
+canvas, .addcanvas {
   position: relative;
   z-index: 1;
   touch-action: none;
-  border: 0.5px solid #d9d9d9;
+  border: 1px solid var(--canvas-grid-gray);
 }
 .canvas-grid {
   position: absolute;
   top: 0;
   left: 0;
 }
+
+
 .tools-bar {
   display: flex;
   flex-wrap: wrap;
+  padding: 0.5rem;
+  padding-bottom: 1rem;
   width: 84px;
   height: fit-content;
-  
 }
+
+.row .tools-bar{
+  flex-direction: column;
+  height: 84px;
+  width: auto;
+  padding-bottom: 0.5rem;
+}
+
 .tool-item{
   width: 30px;
   height: 30px;
@@ -1625,7 +1645,7 @@ canvas {
 }
 
 .tool-item-fullscreen{
-  width: 100%;
+  width: 84px;
   height: 40px;
   padding: 5px;
   margin: 1px;
@@ -1679,11 +1699,14 @@ canvas {
   height: 100%
 }
 .work-area{
+  margin: 0 -30px;
   display: flex;
   flex-direction: column;
-  width: 100%;
+/*  width: calc(100% + 60px);*/
   overflow: hidden;
   height: calc(100vh - 91px);
+  position: relative;
+
 }
 
 .work-area > div{
@@ -1809,24 +1832,24 @@ canvas {
   background-color: var(--white-highlight)
 }
 
-.gridsytle{
+.gridstyle{
   background: linear-gradient(
       -45deg,
-      #d9d9d9 25%,
+      var(--canvas-grid-gray) 25%,
       transparent 25%,
       transparent 75%,
-      #d9d9d9 75%,
-      #d9d9d9 100%
+      var(--canvas-grid-gray) 75%,
+      var(--canvas-grid-gray) 100%
     ),
     linear-gradient(
       -45deg,
-      #d9d9d9 25%,
+      var(--canvas-grid-gray) 25%,
       transparent 25%,
       transparent 75%,
-      #d9d9d9 75%,
-      #d9d9d9 100%
+      var(--canvas-grid-gray) 75%,
+      var(--canvas-grid-gray) 100%
     );
-  background-color: white;
+  background-color: var(--canvas-grid-bgc);
 }
 
 .color-tools {
@@ -1896,21 +1919,26 @@ canvas {
 }
 
 .gif-tools-box {
+  background: var(--modal-bgc);
+  position: fixed;
+  width: 100%;
+/*  height: 100px;*/
+  bottom: 0;
+  z-index: 9;
   flex-shrink: 0;
   overflow: hidden;
-  height: 0px;
-  border-top: var(--box-border);
   display: flex;
   flex-direction: column;
   align-items: center;
   transition: 0.3s ease;
+  transform: translateY(100%);
   opacity: 0;
-  padding: 0 20px;
+  padding: 10px!important;
 }
 
 .gif-tools-box.show {
   opacity: 1;
-  height: 100px;
+  transform: translateY(0);
 }
 
 .gif-tools{
@@ -1920,9 +1948,29 @@ canvas {
   overflow: auto;
   padding: 2px 0;
 }
-.gif-tools > canvas{
-  margin-right: 5px;
+.gif-tools > canvas,.addcanvas{
+  margin: 0 5px;
   height: 60px;
+}
+
+.gifCanvas {
+  background:var(--canvas-grid-bgc);
+}
+
+.currentGifCanvas {
+  outline:2px solid var(--main-color);
+}
+
+.addcanvas{
+  width: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+}
+
+.gif-tools-item {
+  margin: 0 0.8rem;
 }
 
 </style>
