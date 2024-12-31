@@ -172,10 +172,10 @@
         <svg-icon class="gif-tools-item" name="pause01" @click="stopAnimate"></svg-icon>
         <!-- <svg-icon class="gif-tools-item" name="play-slower01" @click="changeSpeed(-1)"></svg-icon>
         <svg-icon class="gif-tools-item" name="play-faster01" @click="changeSpeed(1)"></svg-icon> -->
-        <button class="gif-tools-item has-icon-button" @click="changeSpeed(1)">
-          <svg-icon style="margin-right: 0.5rem;" size='16' name="film11-1"></svg-icon>
-          {{`${animateFps[animateFpsIndex]}fps`}}
-        </button>
+        <div class="gif-tools-item has-icon-button" style="position: relative;" @click="changeSpeed(1)">
+          <svg-icon name="film11-1" ></svg-icon>
+          <label class="fps-label">{{`${animateFps[animateFpsIndex]}`}}</label>
+        </div>
         <svg-icon class="gif-tools-item" @click="pushGifImgList()" name="letter-plus01"></svg-icon>
         <svg-icon class="gif-tools-item" @click="deleteGifImgList()" name="letter-minus01"></svg-icon>
         <button class="gif-tools-item" @click="saveGifNPngToFolder(gifImageDataList)">导出</button>
@@ -961,7 +961,7 @@ export default {
       //遍历pointWithNextPoints得到路径
 
       const findPath = (point,path=null, color=null)=>{
-        console.log(`findPath(\n${point},\n${path},\n${color})`)
+        // console.log(`findPath(\n${point},\n${path},\n${color})`)
         if(pointWithNextPoints.has(point)){
           let nextPoints = pointWithNextPoints.get(point)
           if(color == null){
@@ -1163,6 +1163,7 @@ export default {
       URL.revokeObjectURL(url);
     },
     saveAsGif(){
+
       if(this.gifImageDataIndex == -1){
         this.$toast.show('没有创建gif图片数据序列','error')
         return
@@ -1171,15 +1172,16 @@ export default {
       // 假设你已经有一个数组保存了所有的 ImageData 对象
       const imageDataArray = this.gifImageDataList
 
+
       // 创建一个 GIF 对象
       const gif = new GIF({
         workers: 2,
         quality: 10,
-        workerScript: `${process.env.BASE_URL}js/gifjs/gif.worker.js`,
+        workerScript: `${process.env.NODE_ENV == 'development' ? 'http://192.168.0.119:8080/':'augest/'}js/gifjs/gif.worker.js`,
         transparent: 'rgba(0,0,0,0)',
       });
 
-      
+      console.log(gif)
 
       // 遍历 ImageData 数组，并将每个 ImageData 添加为一帧
       imageDataArray.forEach(imageData => {
@@ -1971,6 +1973,22 @@ canvas, .addcanvas {
 
 .gif-tools-item {
   margin: 0 0.8rem;
+}
+
+.fps-label {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  color: var(--modal-bgc);
+  font-size: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: unset;
+  font-weight: 900;
+  user-select: none;
 }
 
 </style>

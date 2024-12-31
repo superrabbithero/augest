@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "(node generateDocsList.js) && (vue-cli-service serve)",
+    "serve": "(node generateDocsList.js) && (vue-cli-service serve --mode development)",
     "build": "(node generateDocsList.js) && (vue-cli-service build)",
     "lint": "vue-cli-service lint",
     "generate-docslist-script": ""
