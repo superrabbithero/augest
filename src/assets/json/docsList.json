@@ -1,5 +1,13 @@
 [
   {
+    "title": "使用github action部署vue静态博客",
+    "path": "/post/使用github action部署vue静态博客",
+    "tags": [
+      "github"
+    ],
+    "date": "2025-01-07 16:37:56"
+  },
+  {
     "title": "使用firebase为四象限提供数据存储服务",
     "path": "/post/使用firebase为四象限提供数据存储服务",
     "tags": [

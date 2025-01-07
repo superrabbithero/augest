@@ -217,6 +217,16 @@
       "date": "2024-09-13 05:42:25"
     }
   ],
+  "github": [
+    {
+      "title": "使用github action部署vue静态博客",
+      "path": "/post/使用github action部署vue静态博客",
+      "tags": [
+        "github"
+      ],
+      "date": "2025-01-07 16:37:56"
+    }
+  ],
   "canvas": [
     {
       "title": "做了一个基于canvas的像素图片画板",

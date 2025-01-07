@@ -113,7 +113,7 @@ export default {
 
 .post-content, .menu-content{
   padding: 10px 10px;
-  margin-top: 10px;
+  margin: 10px 0;
   background-color: var(--box-bgc);
   border: var(--box-border);
   border-radius: 12px;
