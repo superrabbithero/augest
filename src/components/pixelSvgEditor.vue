@@ -1177,7 +1177,7 @@ export default {
       const gif = new GIF({
         workers: 2,
         quality: 10,
-        workerScript: `${process.env.NODE_ENV == 'development' ? 'http://192.168.0.119:8080/':'augest/'}js/gifjs/gif.worker.js`,
+        workerScript: `${process.env.NODE_ENV == 'development' ? 'http://127.0.0.1:8080/':'augest/'}js/gifjs/gif.worker.js`,
         transparent: 'rgba(0,0,0,0)',
       });
 

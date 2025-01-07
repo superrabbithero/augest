@@ -37,11 +37,21 @@
               <img src="@/assets/imgs/avatar.webp">
             </div>
           </div>
-          <div class="one-sentence" @click="goto('/oneSentence')">
+          <div v-if="false" class="one-sentence" @click="goto('/oneSentence')">
             {{sentence.content}}
             <span>{{sentence.content}}</span>
             <div class="underline"></div>
             <div class="background"></div>
+          </div>
+          <div class="card-item">
+            <span>一个自由发挥的博客</span>
+          </div>
+          <div class="card-item">
+            <svg-icon name="github11-1" size="23" @click="jump2('/test')"/>
+            <div class="gap"></div>
+            <svg-icon name="weib11-1" size="23" @click="jump2('/test')" style="color:#000"/>
+            <div class="gap"></div>
+            <svg-icon name="pinterest11-1" size="23" @click="jump2('/test')"/>
           </div>
         </div>
         <div class="card-content">
@@ -155,7 +165,11 @@ export default {
         this.currentTag = null
         this.filteredJson = this.searchPosts().results
       }
-    }
+    },
+    jump2(url){
+      if(url == '/test')
+        this.$toast.show('跳转还没有做', 'info')
+    },
   }
 }
 
@@ -242,7 +256,16 @@ export default {
 .card-item {
   display: flex;
   justify-content: center;
+  margin-bottom: 1rem;
 }
+
+.card-item span{
+  user-select: none;
+  font-size: 16px;
+  font-family: 'SmileySans-Oblique';
+  opacity: 0.8;
+}
+
 .avatar {
   display: flex;
   align-items: center;
@@ -254,11 +277,12 @@ export default {
   border-radius: 50%;
 }
 .avatar img{
-  position: absolute;
+  /*position: absolute;
   max-width: 200%;
   width: 180px;
   left: -60px;
-  top:0;
+  top:0;*/
+  transform: scale(1.3);
 }
 .one-sentence span{
 
@@ -337,6 +361,12 @@ export default {
   white-space: normal;
 /*  max-height: 50px;*/
   color: #363636;
+}
+.gap {
+  width: 1px;
+  box-sizing: border-box;
+  border-left: var(--box-border);
+  margin: 0 0.6rem;
 }
 
 </style>
