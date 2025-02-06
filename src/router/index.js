@@ -191,8 +191,15 @@ const routes = [
             headerHidden: true,
             headerBlockHidden: true
         }
+    },
+    {
+        path: '/notebookSrcView',
+        name: '笔记资源查看',
+        component: () => import("@/components/notebookSrcView"),
+        meta:{
+            title: '笔记资源查看'
+        }
     }
-
 ]
 
 const router = createRouter({

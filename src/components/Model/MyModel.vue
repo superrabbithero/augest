@@ -85,7 +85,7 @@ export default({
 }
 
 .modal {
-  padding-bottom: 1rem;
+  padding-bottom: 10px;
   width:400px;
 }
 

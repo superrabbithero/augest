@@ -39,7 +39,10 @@ const ToastPlugin = {
         }, 3600);
       }
     };
+    app.provide('$toast', app.config.globalProperties.$toast)
   }
+
+
 };
 
 

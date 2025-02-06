@@ -206,6 +206,28 @@
       "date": "2024-08-02 03:30:58"
     }
   ],
+  "android": [
+    {
+      "title": "使用android studio查看并修改本地数据库",
+      "path": "/post/使用android studio查看并修改本地数据库",
+      "tags": [
+        "android",
+        "sqlite3"
+      ],
+      "date": "2025-01-21 00:42:56"
+    }
+  ],
+  "sqlite3": [
+    {
+      "title": "使用android studio查看并修改本地数据库",
+      "path": "/post/使用android studio查看并修改本地数据库",
+      "tags": [
+        "android",
+        "sqlite3"
+      ],
+      "date": "2025-01-21 00:42:56"
+    }
+  ],
   "firebase": [
     {
       "title": "使用firebase为四象限提供数据存储服务",

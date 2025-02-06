@@ -1,5 +1,5 @@
 <template>
-  <my-model :show="modal_show.addPlanShow" modalKey="addPlanShow">
+  <my-model :show="modal_show.addPlanShow" modalKey="addPlanShow" :modeless="false">
     <div class="line-content-center">
       <label>日期：</label>
       <calender language="EN" type="input" style="width: 150px;" class="form-input" v-model="management.date"></calender>
@@ -12,19 +12,10 @@
       <svg-icon class="text-button" name="delete02" size="16" @click="management.deadline=null"></svg-icon>
     </div>
     <div class="line-content-center">
-      <input class="form-input" type="radio" name="repeat" value="0" v-model="management.repeat"/>
-      <label>不重复</label>
-      <label></label>
-      <input class="form-input" type="radio" name="repeat" value="1" v-model="management.repeat" checked/>
-      <label>每天</label>
-      <input class="form-input" type="radio" name="repeat" value="7" v-model="management.repeat"/>
-      <label>每周</label>
-      <input class="form-input" type="radio" name="repeat" value="30" v-model="management.repeat"/>
-      <label>每月</label>
-      <input class="form-input" type="radio" name="repeat" value="-1" v-model="management.repeat"/>
-      <label>每年</label>
-      <input class="form-input" type="radio" name="repeat" value="-2" v-model="management.repeat"/>
-      <label>艾宾豪斯记忆法</label>
+      <div class="repeat-list" v-for="item in repeatLabelList">
+        <input class="form-input" type="radio" name="repeat" :value="item.value" v-model="management.repeat"/>
+        <label :class="{'selected':item.value == management.repeat}">{{item.label}}</label>
+      </div>
     </div>
     <div class="line-content-center">
       <textarea placeholder="做什么呢..." rows="5" v-model="management.content"></textarea>
@@ -155,6 +146,14 @@ export default {
   data(){
     return{
       fourColors:['#f9A822','#F96635','#2bbaa5','#93d3a2'],
+      repeatLabelList:[
+        {value:0,label:'不重复'},
+        {value:1,label:'每天'},
+        {value:7,label:'每周'},
+        {value:30,label:'每月'},
+        {value:-1,label:'每年'},
+        {value:-2,label:'艾宾浩斯'}
+        ],
     	currentWeek : [],
       today : null,
       currentDate: null,
@@ -437,7 +436,7 @@ export default {
       if(this.draged){
         return
       }
-      // console.log(management)
+      console.log(management,management.repeat)
       if(management==null){
         this.initManagementDate()
       }else if([1,2,3,4].includes(management)){
@@ -674,6 +673,11 @@ export default {
   display: flex;
   align-items: center;
   font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.line-content-center:last-child {
+  margin-bottom: 0;
 }
 
 .line-content-center.left{
@@ -683,6 +687,10 @@ export default {
 .line-content-center label{
   height: 20px;
   line-height: 20px;
+}
+
+.line-content-center label.selected{
+  color:var(--main-color);
 }
 
 .line-content-center textarea {
@@ -747,6 +755,11 @@ export default {
 .update-icon:active{
   transform: rotate(-360deg);
   transition: transform 0s;
+}
+
+.repeat-list {
+  display: flex;
+  align-items: center;
 }
 
 </style>
