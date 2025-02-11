@@ -1,15 +1,28 @@
 <template>
-  <div class="health-card" >
+  <div class="health-card" @click="modal_show.edit_show=true">
     <p :style="{color: bmiColor}">{{bmi.toFixed(2)}}</p>
     <p :style="{color: bmiColor,fontSize: 1+'rem'}">{{bmitake}}</p>
     <div id="weight-chart"></div>
   </div>
+  <my-model :show="modal_show.edit_show" :modeless="false" :modalKey="'edit_show'">
+    <div style="width: 100%">
+      <div style="width: fit-content;margin: 0 auto;">
+        <label>今日体重：</label>
+        <input placeholder="请输入体重" v-model="todayWeight"/>
+        <label style="margin-left: 0.3rem;">kg</label>
+      </div>
+    </div>
+    <div style="width: 100%;display: flex;justify-content: flex-end;margin-top: 0.8rem;">
+      <button class="fill" @click="submitWeight">提交</button>
+    </div>
+  </my-model>
 </template>
 
 <script>
 import * as echarts from 'echarts';
 import { ref, onMounted,  } from 'vue';
 import jsonData from '../../assets/json/data.json'
+
 
 import { doc, updateDoc, arrayUnion,setDoc,getDoc} from "firebase/firestore";
 import { db } from "@/assets/js/firebase.js";  // 引入已初始化的 storage 实例
@@ -25,18 +38,14 @@ export default {
     const bmiColor = ref(null)
     const bmitake = ref("")
     const docRef = doc(db, "jsonfiles", "myWeightJson")
+    const modal_show = ref({edit_show:false})
+    const todayWeight = ref(null)
+    const todayHasAdded = ref(false)
 
     onMounted(() => {
-      
 
-      fetchJson().then((result)=>{
-        weights.value = result
-      }).finally(()=>{
-        weight.value = weights.value.slice(-1)[0].value
-        bmi.value = weight.value/height.value/height.value
-        setBmiColor(bmi.value)
-        drawchart(getdata(weights.value.slice(-7)),getweightdate(weights.value.slice(-7)))
-      })
+      init()
+      
 
       
     });
@@ -47,13 +56,37 @@ export default {
     //   localStorage.setItem('myweights', weights.value)
     // }
 
+    const init = ()=>{
+      const date = new Date();
+      const today = getFormateDate(date)
+
+      fetchJson().then((result)=>{
+        weights.value = result
+      }).finally(()=>{
+        weight.value = weights.value.slice(-1)[0].value
+        console.log( weights.value.slice(-1)[0].date,today)
+        if(weights.value.slice(-1)[0].date == today){
+          todayWeight.value = weights.value.slice(-1)[0].value
+          todayHasAdded.value = true
+        }
+        
+        bmi.value = weight.value/height.value/height.value
+        setBmiColor(bmi.value)
+        drawchart(getdata(weights.value.slice(-7)),getweightdate(weights.value.slice(-7)))
+      })
+    }
+
     async function addMyWeight(weight) {
+      const date = new Date();
+      const today = getFormateDate(date)
       try {
         // 假设你要更新/写入 Firestore 集合中的文档
-        await updateDoc(docRef, { myweights:arrayUnion({date:'2025-02-11',value:87})});
+        await updateDoc(docRef, { myweights:arrayUnion({date:today,value:weight})});
         console.log("Document successfully written!");
+        return 'success'
       } catch (error) {
         console.error("Error writing document:", error);
+        return error
       }
     }
 
@@ -68,7 +101,31 @@ export default {
       }
     }
 
-    // const docRef = doc(db, "jsonfiles", "myWeightJson")
+    const submitWeight = () => {
+
+      const regex = /^-?\d+(\.\d+)?$/;
+
+      if (regex.test(todayWeight.value)) {
+        todayWeight.value = parseFloat(todayWeight.value).toFixed(2);  // 保留两位小数
+        if(todayHasAdded.value){
+          //更新
+          console.log('更新')
+        }else{
+          //新增
+          addMyWeight(todayWeight.value).then((result)=>{
+            if(result === 'success'){
+              init()
+            }else{
+              console.log('更新失败请重试')
+            }
+          })
+        }
+      } else {
+          console.log('请输入有效的数字');  // 提示信息
+          todayWeight.value = null;  
+      }
+      
+    }
 
     function setBmiColor(bmi = bmi.value){
 
@@ -213,12 +270,22 @@ export default {
       };
     }
 
+    const getFormateDate = (date) => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0'); // 月份从0开始，所以需要加1
+      const day = String(date.getDate()).padStart(2, '0'); // 确保是两位数
+      return `${year}-${month}-${day}`;
+    }
+
     return{
       weight,
+      todayWeight,
       height,
       bmi,
       bmiColor,
-      bmitake
+      bmitake,
+      modal_show,
+      submitWeight
     }
   }
 }
