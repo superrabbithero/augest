@@ -10,6 +10,9 @@
 import * as echarts from 'echarts';
 import { ref, onMounted,  } from 'vue';
 import jsonData from '../../assets/json/data.json'
+
+import { doc, updateDoc, arrayUnion,setDoc,getDoc} from "firebase/firestore";
+import { db } from "@/assets/js/firebase.js";  // 引入已初始化的 storage 实例
 // import MyChart from "./MyChart.vue"
 
 export default {
@@ -21,16 +24,21 @@ export default {
     const bmi = ref(0)
     const bmiColor = ref(null)
     const bmitake = ref("")
+    const docRef = doc(db, "jsonfiles", "myWeightJson")
 
     onMounted(() => {
-      // if(localStorage.getItem('myweights')){
-      //   weights.value = (localStorage.getItem('myweights')).split(",")
-      // }
-      // console.log(weights.value)
-      weight.value = weights.value.slice(-1)[0].value
-      bmi.value = weight.value/height.value/height.value
-      setBmiColor(bmi.value)
-      drawchart(getdata(weights.value.slice(-7)),getweightdate(weights.value.slice(-7)))
+      
+
+      fetchJson().then((result)=>{
+        weights.value = result
+      }).finally(()=>{
+        weight.value = weights.value.slice(-1)[0].value
+        bmi.value = weight.value/height.value/height.value
+        setBmiColor(bmi.value)
+        drawchart(getdata(weights.value.slice(-7)),getweightdate(weights.value.slice(-7)))
+      })
+
+      
     });
 
     // function setWeight(w){
@@ -38,6 +46,29 @@ export default {
     //   weights.value.push(w)
     //   localStorage.setItem('myweights', weights.value)
     // }
+
+    async function addMyWeight(weight) {
+      try {
+        // 假设你要更新/写入 Firestore 集合中的文档
+        await updateDoc(docRef, { myweights:arrayUnion({date:'2025-02-11',value:87})});
+        console.log("Document successfully written!");
+      } catch (error) {
+        console.error("Error writing document:", error);
+      }
+    }
+
+    async function fetchJson() {
+      try {
+        // 假设 JSON 文件存储在 Firestore 的一个集合中，叫做 "jsonFiles"
+        const docSnap = await getDoc(docRef);
+        return docSnap.data().myweights
+      } catch (error) {
+        console.error("Error fetching document:", error);
+        throw error
+      }
+    }
+
+    // const docRef = doc(db, "jsonfiles", "myWeightJson")
 
     function setBmiColor(bmi = bmi.value){
 
