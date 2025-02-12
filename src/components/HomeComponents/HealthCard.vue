@@ -1,5 +1,6 @@
 <template>
-  <div class="health-card" @click="modal_show.edit_show=true">
+  <div class="health-card" v-if="weights == null"><loading /></div>
+  <div class="health-card" v-else @click="modal_show.edit_show=true">
     <p :style="{color: bmiColor}">{{bmi.toFixed(2)}}</p>
     <p :style="{color: bmiColor,fontSize: 1+'rem'}">{{bmitake}}</p>
     <div id="weight-chart"></div>
@@ -22,6 +23,8 @@
 import * as echarts from 'echarts';
 import { ref, onMounted,  } from 'vue';
 import jsonData from '../../assets/json/data.json'
+import loading from '@/components/loading/pixLoading.vue'
+import {useToast} from '@/assets/js/toast.js'
 
 
 import { doc, updateDoc, arrayUnion,setDoc,getDoc} from "firebase/firestore";
@@ -30,8 +33,9 @@ import { db } from "@/assets/js/firebase.js";  // 引入已初始化的 storage 
 
 export default {
   name: 'HealthCard',
+  components:{loading},
   setup(){
-    const weights = ref(jsonData.myweights)
+    const weights = ref(null)
     const weight = ref(0)
     const height = ref(1.74)
     const bmi = ref(0)
@@ -41,12 +45,11 @@ export default {
     const modal_show = ref({edit_show:false})
     const todayWeight = ref(null)
     const todayHasAdded = ref(false)
+    const toast = useToast()
 
     onMounted(() => {
 
       init()
-      
-
       
     });
 
@@ -60,11 +63,14 @@ export default {
       const date = new Date();
       const today = getFormateDate(date)
 
+      weights.value = null
+
       fetchJson().then((result)=>{
         weights.value = result
+      }).catch((error)=>{
+        weights.value = jsonData.myweights
       }).finally(()=>{
         weight.value = weights.value.slice(-1)[0].value
-        console.log( weights.value.slice(-1)[0].date,today)
         if(weights.value.slice(-1)[0].date == today){
           todayWeight.value = weights.value.slice(-1)[0].value
           todayHasAdded.value = true
@@ -117,11 +123,13 @@ export default {
               init()
             }else{
               console.log('更新失败请重试')
+              toast.show('更新失败请重试','error')
             }
           })
         }
       } else {
           console.log('请输入有效的数字');  // 提示信息
+          toast.show('请输入有效的数字','error')
           todayWeight.value = null;  
       }
       
@@ -278,6 +286,7 @@ export default {
     }
 
     return{
+      weights,
       weight,
       todayWeight,
       height,
