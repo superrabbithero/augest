@@ -1,4 +1,5 @@
 :root{
+  --select-bgc:#fff;
   --layout-bgc:#d3dce6;
   --main-color : #ffc848;  
   /* 白天样式 */
@@ -144,6 +145,7 @@ img {
   }
 
 .dark{
+  --select-bgc:#212121;
   --layout-bgc  : #46494d;
   --main-color : #c89f3d;  
   --content-bgc:#18171d;

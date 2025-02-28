@@ -32,14 +32,14 @@
               </div>
           </div>
           <div v-else-if="viewType == 1"  class="cows">
-              <div v-for="index of 16" :class="{'date':true,'month':true,'notCur': notCurClass(index-1) , 'today':todayClass(index)}" @click="toMonth(index)">
+              <div v-for="index of 16" :class="{'date':true,'month':true,'notCur': notCurClass(index-1) , 'today':todayClass(index)}" @click="selectMonth(index)">
                   <div  class="content">
                       {{ (index-1)%12+1 }}
                   </div>
               </div>
           </div>
           <div v-else  class="cows">
-              <div v-for="year of current16Years" :class="{'date':true,'month':true,'notCur': notCurClass(year) , 'today':todayClass(year)}" @click="toYear(year)">
+              <div v-for="year of current16Years" :class="{'date':true,'month':true,'notCur': notCurClass(year) , 'today':todayClass(year)}" @click="selectYear(year)">
                   <div class="content">
                       {{ year }}
                   </div>
@@ -215,7 +215,7 @@
             }
             hourEl.style.top = `${top}px`
             if(top == 3*this.timeHeight){
-              hourEl.style.backgroundColor = "var(--main-color)"
+              hourEl.style.backgroundColor = "#ffc848"
               let time = this.selectedTime.split(':')
               time[0] = hourEl.innerText
               this.selectedTime = time.join(':');
@@ -245,7 +245,7 @@
             }
             minEl.style.top = `${top}px`
             if(top == 3*this.timeHeight){
-              minEl.style.backgroundColor = "var(--main-color)"
+              minEl.style.backgroundColor = "#ffc848"
               let time = this.selectedTime.split(':')
               time[1] = minEl.innerText
               this.selectedTime = time.join(':');
@@ -314,11 +314,11 @@
 
         this.getDates()
       },
-      toYear(year){
+      selectYear(year){
         this.currentYear = year
         this.viewType = 1
       },
-      toMonth(month){
+      selectMonth(month){
         this.currentMonth = (month-1)%12
         this.currentYear += Math.floor((month-1)/12)
         this.viewType = 2
@@ -366,6 +366,7 @@
           },300)
           this.show = false
           document.removeEventListener('click',this.closeCalendar)
+          return
         }
         el.style.top = offsetTop+"px"
         if(this.type == 'datetime' && !this.timeHeight ){
@@ -373,7 +374,7 @@
           this.$refs.hour.forEach((hourEl, index)=>{
             hourEl.style.top = `${(index-1)*this.timeHeight}px`
             if(index == 4){
-            hourEl.style.backgroundColor = "var(--main-color)"
+            hourEl.style.backgroundColor = "#ffc848"
             let time = this.selectedTime.split(':')
             time[0] = hourEl.innerText
             this.selectedTime = time.join(':');
@@ -382,7 +383,7 @@
           this.$refs.min.forEach((minEl, index)=>{
             minEl.style.top = `${(index-1)*this.timeHeight}px`
             if(index == 4){
-            minEl.style.backgroundColor = "var(--main-color)"
+            minEl.style.backgroundColor = "#ffc848"
             let time = this.selectedTime.split(':')
             time[1] = minEl.innerText
             this.selectedTime = time.join(':');
@@ -396,7 +397,7 @@
         
       },
       closeCalendar(e){
-        if(!this.$refs.calendar.contains(e.target)){
+        if(!this.$refs.calendar.contains(e.target) && !e.target.closest('.date .content')){
           setTimeout(()=>{
             this.$refs.calendarContainer.style.display="none"
           },300)
@@ -469,6 +470,7 @@
     bottom: 0;
     left: 0;
     right: 0;
+    color: #363636;
 
     display: flex;
     justify-content: center;
@@ -483,8 +485,8 @@
   }
 
   .today .content{
-    background-color: var(--main-color);
-    border: 2px solid var(--main-color);
+    background-color: #ffc848;
+    border: 2px solid #ffc848;
   }
 
   .content.title{
@@ -502,12 +504,12 @@
       background-color: var(--white-highlight);
     }
     .today .content:hover{
-      background-color: var(--main-color);
+      background-color: #ffc848;
       box-shadow:0px 0px 0px 2px var(--box-bgc) inset;
-      border: 2px solid var(--main-color);
+      border: 2px solid #ffc848;
     }
     .input-button:hover{
-      color:var(--main-color)
+      color:#ffc848
     }
   }
 
@@ -519,8 +521,8 @@
     opacity: 0;
     z-index: 9;
     padding: 0;
-    border:var(--box-border);
-    background-color: var(--box-bgc);
+/*    border:var(--box-border);*/
+/*    background-color: var(--box-bgc);*/
     border-radius: 5px;
     pointer-events: none;
     transform: translateY(-10%);
@@ -540,7 +542,14 @@
   .calendar-container.input .date-select {
     padding: 5px;
     width: 220px;
+    margin-right: 10px;
    }
+
+  .calendar-container.input .date-select,.calendar-container.input .time-select {
+    background-color: var(--select-bgc);
+    border-radius: 14px;
+    border: var(--box-border);
+  }
 
   .input .cows.title{
     font-size: 16px!important;
@@ -576,7 +585,6 @@
   }
   .calendar-container.input .time-select{
     padding: 5px;
-    border-left: var(--box-border);
     display: flex;
   }
 
