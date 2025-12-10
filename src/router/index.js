@@ -150,6 +150,15 @@ const routes = [
         }
     },
     {
+        path: '/minigames/BeachStackingTurtles',
+        name: 'theTurtleFamily',
+        component: () => import("@/components/BeachStackingTurtles"),
+        meta:{
+            title: '乌龟家族2',
+            footerHidden: true
+        }
+    },
+    {
         path: '/myTools',
         name: 'MyTools',
         component: () => import("@/components/MyTools"),
